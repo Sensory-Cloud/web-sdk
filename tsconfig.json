@@ -3,7 +3,11 @@
     "module": "esnext",
     "target": "es2015",
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"

@@ -3,18 +3,21 @@ import { AppendEnrollmentGroupRequest, CreateEnrollmentGroupRequest, DeleteEnrol
 import { EnrollmentServiceClient } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../managers/token.manager";
 
-
+/* Service to handle all typical CRUD functions */
 export class ManagementService {
-  private enrollmentClient: EnrollmentServiceClient;
-
-  constructor(private readonly config: Config, private readonly tokenManager: ITokenManager) {
-    this.enrollmentClient = new EnrollmentServiceClient(config.cloud.host);
+  constructor(
+    private readonly config: Config,
+    private readonly tokenManager: ITokenManager,
+    private readonly enrollmentClient = new EnrollmentServiceClient(config.cloud.host)) {
   }
+  /**
+   * @param  {string} userId
+   * @returns Promise
+   */
+  public async getEnrollments(userId: string): Promise<GetEnrollmentsResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-  public async getEnrollments(userId: string): Promise<GetEnrollmentsResponse> {
-    const meta = await this.tokenManager.getHeader();
-
-    return new Promise<GetEnrollmentsResponse>((resolve, reject) => {
+    return new Promise<GetEnrollmentsResponse.AsObject>((resolve, reject) => {
       const request = new GetEnrollmentsRequest();
       request.setUserid(userId);
 
@@ -22,15 +25,19 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }
 
-  public async getEnrollmentGroups(userId: string): Promise<GetEnrollmentGroupsResponse> {
-    const meta = await this.tokenManager.getHeader();
+  /**
+   * @param  {string} userId
+   * @returns Promise
+   */
+  public async getEnrollmentGroups(userId: string): Promise<GetEnrollmentGroupsResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-    return new Promise<GetEnrollmentGroupsResponse>((resolve, reject) => {
+    return new Promise<GetEnrollmentGroupsResponse.AsObject>((resolve, reject) => {
       const request = new GetEnrollmentsRequest();
       request.setUserid(userId);
 
@@ -38,15 +45,23 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }
+  /**
+   * @param  {string} userId
+   * @param  {string} groupId
+   * @param  {string} groupName
+   * @param  {string} description
+   * @param  {string} modelName
+   * @param  {string[]} enrollmentIds
+   * @returns Promise
+   */
+  public async createEnrollmentGroup(userId: string, groupId: string, groupName: string, description: string, modelName: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-  public async createEnrollmentGroup(userId: string, groupId: string, groupName: string, description: string, modelName: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse> {
-    const meta = await this.tokenManager.getHeader();
-
-    return new Promise<EnrollmentGroupResponse>((resolve, reject) => {
+    return new Promise<EnrollmentGroupResponse.AsObject>((resolve, reject) => {
       const request = new CreateEnrollmentGroupRequest();
       request.setId(groupId);
       request.setName(groupName);
@@ -59,15 +74,19 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }
+  /**
+   * @param  {string} groupId
+   * @param  {string[]} enrollmentIds
+   * @returns Promise
+   */
+  public async appendEnrollmentGroup(groupId: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-  public async appendEnrollmentGroup(groupId: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse> {
-    const meta = await this.tokenManager.getHeader();
-
-    return new Promise<EnrollmentGroupResponse>((resolve, reject) => {
+    return new Promise<EnrollmentGroupResponse.AsObject>((resolve, reject) => {
       const request = new AppendEnrollmentGroupRequest();
       request.setGroupid(groupId);
       request.setEnrollmentidsList(enrollmentIds);
@@ -76,15 +95,18 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }
+  /**
+   * @param  {string} id
+   * @returns Promise
+   */
+  public async deleteEnrollment(id: string): Promise<EnrollmentResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-  public async deleteEnrollment(id: string): Promise<EnrollmentResponse> {
-    const meta = await this.tokenManager.getHeader();
-
-    return new Promise<EnrollmentResponse>((resolve, reject) => {
+    return new Promise<EnrollmentResponse.AsObject>((resolve, reject) => {
       const request = new DeleteEnrollmentRequest();
       request.setId(id);
 
@@ -92,15 +114,18 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }
+  /**
+   * @param  {string} groupId
+   * @returns Promise
+   */
+  public async deleteEnrollmentGroup(groupId: string): Promise<EnrollmentGroupResponse.AsObject> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
 
-  public async deleteEnrollmentGroup(groupId: string): Promise<EnrollmentGroupResponse> {
-    const meta = await this.tokenManager.getHeader();
-
-    return new Promise<EnrollmentGroupResponse>((resolve, reject) => {
+    return new Promise<EnrollmentGroupResponse.AsObject>((resolve, reject) => {
       const request = new DeleteEnrollmentGroupRequest();
       request.setId(groupId);
 
@@ -108,7 +133,7 @@ export class ManagementService {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
-        return resolve(res);
+        return resolve(res.toObject());
       });
     });
   }

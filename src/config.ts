@@ -9,6 +9,7 @@ export type TenantConfig = {
 
 export type DeviceConfig = {
   deviceId: string;
+  defaultLanguageCode: string;
 }
 
 export type Config = {

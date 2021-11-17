@@ -1,12 +1,13 @@
 import { IOauthService } from "../services/oauth.service";
 
-import { grpc } from '@improbable-eng/grpc-web';
+import { grpc } from "@improbable-eng/grpc-web";
 
 export interface ITokenManager {
   getToken(): Promise<string>
-  getHeader(): Promise<grpc.Metadata>;
+  getAuthorizationMetadata(): Promise<grpc.Metadata>;
 }
 
+/* Manages the rotation and injection of OAuth JWTs */
 export class TokenManager implements ITokenManager {
   private readonly expiresBufferSeconds = 60 * 60; // 1 hour
 
@@ -17,22 +18,33 @@ export class TokenManager implements ITokenManager {
 
   }
 
-  private setToken(token: string, expiresIn: number) {
-    const now = new Date();
-    this.token = token;
-    this.expires = new Date(now.getTime() + (expiresIn - this.expiresBufferSeconds) * 1000)
-  }
+  /**
+   * @returns Promise
+   */
+  public async getToken(): Promise<string> {
+    if (this.token && this.expires && new Date() < this.expires) {
+      return this.token;
+    }
 
-  public getToken(): Promise<string> {
-    // TODO: Stopped here
-    const oauthToken = this.oauthService.getToken()
-  }
+    const oauthToken = await this.oauthService.getToken();
+    this.setToken(oauthToken.token, oauthToken.expires);
 
-  public async getHeader(): Promise<grpc.Metadata> {
+    return oauthToken.token;
+  }
+  /**
+   * @returns Promise
+   */
+  public async getAuthorizationMetadata(): Promise<grpc.Metadata> {
     const meta = new grpc.Metadata();
     const token = await this.getToken();
 
     meta.set("Authorization", `Bearer ${token}`);
     return meta;
+  }
+
+
+  private setToken(token: string, expires: Date) {
+    this.token = token;
+    this.expires = new Date(expires.getTime() - this.expiresBufferSeconds * 1000)
   }
 }

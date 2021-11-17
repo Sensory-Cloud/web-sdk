@@ -3,10 +3,14 @@
   "version": "0.4.2",
   "description": "Allows web browsers to make calls to Sensory Cloud.",
   "dependencies": {
-    "@improbable-eng/grpc-web": "^0.9.6",
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "extendable-media-recorder": "^6.5.11",
+    "extendable-media-recorder-wav-encoder": "^7.0.63",
+    "google-protobuf": "^3.19.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/google-protobuf": "^3.15.5",
     "@types/uuid": "^8.3.1",
     "ts-protoc-gen": "^0.15.0",
     "tslint": "~6.1.0",
