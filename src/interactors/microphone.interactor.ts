@@ -58,6 +58,8 @@ export class MicrophoneInteractor {
   private readonly sampleRate = 16000;
   private readonly channelCount = 1;
 
+   // TODO: ALLOW DEVICE SELECT
+
   public async requestPermission(): Promise<void> {
     const stream = await this.getAudioStream();
     stream.getTracks().forEach((track) => track.stop());
@@ -77,7 +79,7 @@ export class MicrophoneInteractor {
    */
   public async startCapturing(dataIntervalMs: number): Promise<IAudioEvent> {
     if (this.stream || this.mediaRecorder) {
-      throw Error('cannot start listening. A session is already in progress.');
+      throw Error('cannot start capturing. A session is already in progress.');
     }
 
     const audioEventTarget = new AudioEventTarget();
