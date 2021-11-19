@@ -7,13 +7,56 @@ export type VideoStreamConfig = {
   compressions: Array<CompressionTypeMap[keyof CompressionTypeMap]>
 };
 
+/* Interactor to capture a stream of images from the host device */
 export interface IVideoStreamInteractor {
+  /**
+   * Prompt the user for permission to access video devices.
+   * @returns Promise - Will throw an error if permission is declined
+   */
   requestPermission(): Promise<void>;
+
+  /**
+   * Returns the current video configuration.
+   * @returns VideoStreamConfig
+   */
   getVideoConfig(): VideoStreamConfig;
+
+  /**
+   * Allows setting the ID of the video element rendered on-screen. Images captured by the VideoStreamInteractor
+   * will be mirrored to this element. If this Id is not set, a random one will be generated and video will be
+   * rendered off-screen.
+   * @param  {number} elementId
+   * @returns void
+   */
+  setVideoElementId(elementId: string): void;
+
+  /**
+   * Obtains a current list of the supported video devices
+   * @returns Promise - array of MediaDeviceInfo objects as detected by the web browser
+   */
+  getVideoStreamDevices(): Promise<MediaDeviceInfo[]>;
+
+  /**
+   * Sets the preferred video listening device. Will error out if a capture is in progress.
+   * @param  {string} deviceId - the deviceId found in the MediaDeviceInfo returned from getVideoStreamDevices()
+   * @returns void
+   */
+  setPreferredVideoStreamDevice(deviceId: string): void;
+
+  /**
+   * Start the camera and begin rendering to the video element.
+   * @returns Promise<CaptureFrameFunction> - returns a callback function that when called will capture a single image.
+   */
   startCapturing(): Promise<CaptureFrameFunction>;
+
+  /**
+   * End video capturing
+   * @returns Promise - promise resolution indicates the video device is stopped
+   */
   stopCapturing(): Promise<void>;
 }
 
+/* Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
 export class VideoStreamInteractor implements IVideoStreamInteractor {
   private readonly jpegImageQuality = 0.95;
   private readonly width =  { min: 480, ideal: 480 };
@@ -23,28 +66,56 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
   private stream?: MediaStream;
   private canvas?: HTMLCanvasElement;
 
+  /**
+   * Prompt the user for permission to access video devices. Utilizes navigator.mediaDevices.getUserMedia under the hood.
+   * @returns Promise - Will throw an error if permission is declined.
+   */
   public async requestPermission(): Promise<void> {
     const stream = await this.getVideoStream();
     stream.getTracks().forEach((track) => track.stop());
   }
 
-  public setVideoElementId(elementId: string) {
-    this.videoElementId = elementId;
-  }
-
-  public setPreferredVideoStreamDevice(deviceId: string) {
-    this.preferredDeviceId = deviceId;
-  }
-
+   /**
+   * Returns the current video configuration.
+   * @returns VideoStreamConfig
+   */
   public getVideoConfig(): VideoStreamConfig {
     return { compressions: [] };
   }
 
+  /**
+   * Allows setting the ID of the video element rendered on-screen. Images captured by the VideoStreamInteractor
+   * will be mirrored to this element. If this Id is not set, a random one will be generated and video will be
+   * rendered off-screen.
+   * @param  {number} elementId
+   * @returns void
+   */
+  public setVideoElementId(elementId: string) {
+    this.videoElementId = elementId;
+  }
+
+  /**
+   * Obtains a current list of the supported video devices
+   * @returns Promise - array of MediaDeviceInfo objects as detected by the web browser
+   */
   public async getVideoStreamDevices(): Promise<MediaDeviceInfo[]> {
     const devices = await navigator.mediaDevices.enumerateDevices();
     return devices.filter((device) => device.kind === 'videoinput');
   }
 
+  /**
+   * Sets the preferred video listening device. Will error out if a capture is in progress.
+   * @param  {string} deviceId - the deviceId found in the MediaDeviceInfo returned from getVideoStreamDevices()
+   * @returns void
+   */
+  public setPreferredVideoStreamDevice(deviceId: string) {
+    this.preferredDeviceId = deviceId;
+  }
+
+  /**
+   * Start the camera and begin rendering to the video element.
+   * @returns Promise<CaptureFrameFunction> - returns a callback function that when called will capture a single image.
+   */
   public async startCapturing(): Promise<CaptureFrameFunction> {
     if (this.stream) {
       throw Error('cannot start capturing. A session is already in progress.');
@@ -99,6 +170,10 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
     return takePhoto.bind(this);
   }
 
+  /**
+   * End video capturing
+   * @returns Promise - promise resolution indicates the video device is stopped
+   */
   public async stopCapturing(): Promise<void> {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());

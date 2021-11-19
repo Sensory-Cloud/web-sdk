@@ -3,10 +3,10 @@ import { TokenRequest } from "../generated/oauth/oauth_pb";
 import { OauthServiceClient } from "../generated/oauth/oauth_pb_service";
 import { CryptoService } from "./crypto.service";
 import {  EnrollDeviceRequest } from "../generated/v1/management/device_pb";
-import { CreateGenericClientRequest } from "../generated/v1/management/client_pb";
 
 import { v4 } from 'uuid';
 import { DeviceServiceClient } from "../generated/v1/management/device_pb_service";
+import { GenericClient } from "../generated/common/common_pb";
 
 /* Manages OAuth interactions with Sensory Cloud */
 export interface IOauthService {
@@ -124,7 +124,7 @@ export class OauthService implements IOauthService {
     request.setCredential(credential);
     request.setTenantid(this.config.tenant.tenantId);
 
-    const client = new CreateGenericClientRequest()
+    const client = new GenericClient()
     client.setClientid(clientId);
     client.setSecret(clientSecret);
 

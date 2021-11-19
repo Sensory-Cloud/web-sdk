@@ -1,22 +1,17 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse } from "../generated/v1/audio/audio_pb";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
-import { AudioEvent, IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
-
-export interface IAudioService {
-
-}
+import { IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
 
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
 export type EnrollmentIdentifier = {enrollmentId: string, enrollmentGroupId?: never} | {enrollmentId?: never, enrollmentGroupId: string};
 
-export class AudioService implements IAudioService {
-  private readonly dataUploadInterval = 100 // 100 ms;
-
+/* Handles all audio requests to Sensory Cloud */
+export class AudioService {
   constructor(
     private readonly config: Config,
     private readonly tokenManager: ITokenManager,
@@ -28,7 +23,8 @@ export class AudioService implements IAudioService {
   ) {}
 
   /**
-   * @returns Promise
+   * Fetch all the models supported by your instance of Sensory Cloud.
+   * @returns Promise<GetModelsResponse.AsObject>
    */
   public async getModels(): Promise<GetModelsResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -45,7 +41,22 @@ export class AudioService implements IAudioService {
     });
   }
 
-  public async streamEnrollment(description: string, userId: string, deviceId: string, modelName: string, languageCode?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+  /**
+   * Stream audio to Sensory Cloud as a means for user enrollment.
+   *
+   * @param  {string} description - a description of this enrollment. Useful if a user could have multiple enrollments, as it helps differentiate between them.
+   * @param  {string} userId - the unique userId for this enrollment.
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
+   */
+  public async streamEnrollment(
+    description: string,
+    userId: string,
+    modelName: string,
+    isLivenessEnabled: boolean,
+    languageCode?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.biometricsClient.createEnrollment(meta);
 
@@ -55,8 +66,9 @@ export class AudioService implements IAudioService {
 
     config.setDescription(description);
     config.setUserid(userId);
-    config.setDeviceid(deviceId);
+    config.setDeviceid(this.config.device.deviceId);
     config.setModelname(modelName);
+    config.setIslivenessenabled(isLivenessEnabled)
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
@@ -71,7 +83,20 @@ export class AudioService implements IAudioService {
     return enrollmentStream;
   }
 
-  public async streamAuthentication(enrollment: EnrollmentIdentifier, sensitivity: AudioRecognitionSensitivity, security: AudioSecurityThreshold, languageCode?: string): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
+  /**
+   * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
+   * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
+   * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
+   * @param  {AudioSecurityThreshold=AuthenticateConfig.ThresholdSecurity.HIGH} security - the security threshold enforced by the recognition engine. Defaults to high.
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @returns Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> - a bidirectional stream where AuthenticateRequests can be passed to the cloud and AuthenticateResponses are passed back
+   */
+  public async streamAuthentication(
+    enrollment: EnrollmentIdentifier,
+    isLivenessEnabled: boolean,
+    sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
+    security: AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurity.HIGH,
+    languageCode?: string): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const authenticationStream = this.biometricsClient.authenticate(meta);
 
@@ -89,6 +114,7 @@ export class AudioService implements IAudioService {
 
     config.setSensitivity(sensitivity);
     config.setSecurity(security);
+    config.setIslivenessenabled(isLivenessEnabled);
 
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
@@ -104,7 +130,18 @@ export class AudioService implements IAudioService {
     return authenticationStream;
   }
 
-  public async streamEvent(modelName: string, userId: string, sensitivity: AudioRecognitionSensitivity, languageCode?: string): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
+  /**
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {string} userId - the unique userId for the user requesting this event
+   * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @returns Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> - a bidirectional stream where ValidateEventRequests can be passed to the cloud and ValidateEventResponses are passed back
+   */
+  public async streamEvent(
+    modelName: string,
+    userId: string,
+    sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
+    languageCode?: string): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const eventStream = this.eventClient.validateEvent(meta);
 
@@ -129,6 +166,12 @@ export class AudioService implements IAudioService {
     return eventStream;
   }
 
+  /**
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {string} userId - the unique userId for the user requesting this event
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @returns Promise<TranscribeRequest<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
+   */
   public async streamTranscription(modelName: string, userId: string, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const transcriptionStream = this.transcribeClient.transcribe(meta);

@@ -10,9 +10,11 @@ export class ManagementService {
     private readonly tokenManager: ITokenManager,
     private readonly enrollmentClient = new EnrollmentServiceClient(config.cloud.host)) {
   }
+
   /**
-   * @param  {string} userId
-   * @returns Promise
+   * Obtains all of the active enrollments given the userId
+   * @param  {string} userId - the unique userId
+   * @returns Promise<GetEnrollmentsResponse.AsObject> - a list of user enrollments
    */
   public async getEnrollments(userId: string): Promise<GetEnrollmentsResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -31,8 +33,9 @@ export class ManagementService {
   }
 
   /**
-   * @param  {string} userId
-   * @returns Promise
+   * Obtains all of the active enrollment groups registered by this userId
+   * @param  {string} userId - the unique userId
+   * @returns Promise<GetEnrollmentGroupsResponse.AsObject> - a list of enrollment groups
    */
   public async getEnrollmentGroups(userId: string): Promise<GetEnrollmentGroupsResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -49,14 +52,16 @@ export class ManagementService {
       });
     });
   }
+
   /**
-   * @param  {string} userId
-   * @param  {string} groupId
-   * @param  {string} groupName
-   * @param  {string} description
-   * @param  {string} modelName
-   * @param  {string[]} enrollmentIds
-   * @returns Promise
+   * Register a new enrollment group. Enrollment groups can contain up to 10 enrollments, and they enable multiple users to be recognized with the same request.
+   * @param  {string} userId - the unique userId who will act as the owner of this enrollment group
+   * @param  {string} groupId - the ID to be associated with this group
+   * @param  {string} groupName - the friendly name of this group
+   * @param  {string} description - a brief description of this group
+   * @param  {string} modelName - the exact name of the model tied to this enrollment group. This model name can be retrieved from the getModels() call.
+   * @param  {string[]} enrollmentIds - The enrollmentIds to be associated with this group. Max 10.
+   * @returns Promise<EnrollmentGroupResponse.AsObject> - a summary of the enrollment group
    */
   public async createEnrollmentGroup(userId: string, groupId: string, groupName: string, description: string, modelName: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -78,10 +83,12 @@ export class ManagementService {
       });
     });
   }
+
   /**
-   * @param  {string} groupId
-   * @param  {string[]} enrollmentIds
-   * @returns Promise
+   * Add a new enrollment to an enrollment group.
+   * @param  {string} groupId - the ID associated with this group
+   * @param  {string[]} enrollmentIds - The enrollmentIds to be associated with this group. Max 10.
+   * @returns Promise<EnrollmentGroupResponse.AsObject> - a summary of the enrollment group
    */
   public async appendEnrollmentGroup(groupId: string, enrollmentIds: string[]): Promise<EnrollmentGroupResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -99,9 +106,11 @@ export class ManagementService {
       });
     });
   }
+
   /**
-   * @param  {string} id
-   * @returns Promise
+   * Removes an enrollment from the system
+   * @param  {string} id - the unique enrollmentId
+   * @returns Promise<EnrollmentResponse.AsObject> - a summary of the removed enrollment
    */
   public async deleteEnrollment(id: string): Promise<EnrollmentResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -118,9 +127,11 @@ export class ManagementService {
       });
     });
   }
+
   /**
-   * @param  {string} groupId
-   * @returns Promise
+   * Removes an enrollment group from the system
+   * @param  {string} id - the unique enrollmentGroupId
+   * @returns Promise<EnrollmentGroupResponse.AsObject> - a summary of the removed enrollment group
    */
   public async deleteEnrollmentGroup(groupId: string): Promise<EnrollmentGroupResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();

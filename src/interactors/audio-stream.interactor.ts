@@ -3,38 +3,53 @@ import { AudioConfig } from "../generated/v1/audio/audio_pb";
 import { IBlobEvent, IMediaRecorder, MediaRecorder, register } from 'extendable-media-recorder';
 import { connect } from 'extendable-media-recorder-wav-encoder';
 
-export type AudioEvent = {bytes: Uint8Array};
-
-export interface IAudioEvent {
-  addListener(callback: (evt: CustomEvent<AudioEvent>) => void): void
-  removeListener(callback: (evt: CustomEvent<AudioEvent>) => void): void
-}
-
-export interface IAudioEventTarget extends IAudioEvent {
-  dispatch(event: AudioEvent): boolean;
-}
-export class AudioEventTarget extends EventTarget implements IAudioEventTarget {
-  private readonly targetType = 'audio-event';
-
-  addListener(callback: (evt: CustomEvent<AudioEvent>) => void): void {
-    return this.addEventListener(this.targetType, callback as (evt: Event) => void);
-  }
-
-  dispatch(event: AudioEvent): boolean {
-    return this.dispatchEvent(new CustomEvent(this.targetType, { detail: event }));
-  }
-
-  removeListener(callback: (evt: CustomEvent<AudioEvent>) => void): void {
-    return this.removeEventListener(this.targetType, callback as (evt: Event) => void);
-  }
-};
-
 export type AudioStreamConfig = Omit<AudioConfig.AsObject, 'languagecode'>;
 
+/* Interactor to capture audio from the host device */
 export interface IAudioStreamInteractor {
+  /**
+   * Prompt the user for permission to access audio devices. Will throw an error if permission is declined.
+   * @returns Promise
+   */
   requestPermission(): Promise<void>;
+
+  /**
+   * Returns the current audio configuration.
+   * @returns AudioStreamConfig
+   */
   getAudioConfig(): AudioStreamConfig;
+
+  /**
+   * Allows adjusting the sampling rate of a stopped AudioStreamInteractor. Should throw an error if a stream is already in progress.
+   * @param  {number} sampleRateHz
+   * @returns void
+   */
+  setSampleRate(sampleRateHz: number): void;
+
+  /**
+   * Obtains a current list of the supported audio devices
+   * @returns Promise - array of MediaDeviceInfo objects as detected by the web browser
+   */
+  getAudioStreamDevices(): Promise<MediaDeviceInfo[]>;
+
+  /**
+   * Sets the preferred audio listening device. Will error out if a capture is in progress.
+   * @param  {string} deviceId - the deviceId found in the MediaDeviceInfo returned from getAudioStreamDevices()
+   * @returns void
+   */
+  setPreferredAudioStreamDevice(deviceId: string): void;
+
+  /**
+   * Begin capturing audio data at the specified interval.
+   * @param  {number} dataIntervalMs
+   * @returns Promise - an IAudioEvent, which should be subscribed to. And event will be fired every dataIntervalMs.
+   */
   startCapturing(dataIntervalMs: number): Promise<IAudioEvent>;
+
+  /**
+   * End audio capturing
+   * @returns Promise - promise resolution indicates the audio device is stopped
+   */
   stopCapturing(): Promise<void>;
 }
 
@@ -50,20 +65,28 @@ type WavHeader = {
   subChunk2Size: number;
 }
 
-export class AudioStreamInteractor {
+/* Interactor provided by the Sensory Cloud SDK to access web browser audio using best practices */
+export class AudioStreamInteractor implements IAudioStreamInteractor {
   private stream?: MediaStream;
   private mediaRecorder?: IMediaRecorder;
   private isRegistered = false;
+  private sampleRate = 16000;
   private readonly wavHeaderSize = 44;  // Wav header is 44 bytes
-  private readonly sampleRate = 16000;
   private readonly channelCount = 1;
   private preferredDeviceId?: string;
 
+  /**
+   * Request browser permission to access audio devices. Utilizes navigator.mediaDevices.getUserMedia under the hood.
+   * @returns Promise - will error out if permission is declined
+   */
   public async requestPermission(): Promise<void> {
     const stream = await this.getAudioStream();
     stream.getTracks().forEach((track) => track.stop());
   }
-
+  /**
+   * Returns the current audio configuration.
+   * @returns AudioStreamConfig
+   */
   public getAudioConfig(): AudioStreamConfig {
     return {
       audiochannelcount: this.channelCount,
@@ -72,19 +95,45 @@ export class AudioStreamInteractor {
     };
   }
 
-  public setPreferredAudioStreamDevice(deviceId: string) {
-    this.preferredDeviceId = deviceId;
+  /**
+   * Allows adjusting the sampling rate of a stopped AudioStreamInteractor. Should throw an error if a stream is already in progress.
+   * @param  {number} sampleRateHz
+   * @returns void
+   */
+  setSampleRate(sampleRateHz: number): void {
+    if (this.stream || this.mediaRecorder) {
+      throw Error('cannot set sampling rate. A session is already in progress.');
+    }
+
+    this.sampleRate = sampleRateHz;
   }
 
+  /**
+   * Obtains a current list of the supported audio devices
+   * @returns Promise - array of MediaDeviceInfo objects as detected by the web browser
+   */
   public async getAudioStreamDevices(): Promise<MediaDeviceInfo[]> {
     const devices = await navigator.mediaDevices.enumerateDevices();
     return devices.filter((device) => device.kind === 'audioinput');
   }
 
   /**
+   * Sets the preferred audio listening device. Will error out if a capture is in progress.
+   * @param  {string} deviceId - the deviceId found in the MediaDeviceInfo returned from getAudioStreamDevices()
+   * @returns void
+   */
+  public setPreferredAudioStreamDevice(deviceId: string) {
+    if (this.stream || this.mediaRecorder) {
+      throw Error('cannot set preferred deviceId. A session is already in progress.');
+    }
+
+    this.preferredDeviceId = deviceId;
+  }
+
+  /**
+   * Begin capturing audio data at the specified interval.
    * @param  {number} dataIntervalMs
-   * @param  {OnAudioDataHandler} onData
-   * @returns Promise
+   * @returns Promise - an IAudioEvent, which should be subscribed to. And event will be fired every dataIntervalMs.
    */
   public async startCapturing(dataIntervalMs: number): Promise<IAudioEvent> {
     if (this.stream || this.mediaRecorder) {
@@ -123,7 +172,10 @@ export class AudioStreamInteractor {
     this.mediaRecorder.start(dataIntervalMs);
     return audioEventTarget;
   }
+
   /**
+   * End audio capturing
+   * @returns Promise - promise resolution indicates the audio device is stopped
    */
   public async stopCapturing(): Promise<void> {
     if (this.mediaRecorder) {
@@ -199,3 +251,29 @@ export class AudioStreamInteractor {
     });
   }
 }
+
+export type AudioEvent = {bytes: Uint8Array};
+
+export interface IAudioEvent {
+  addListener(callback: (evt: CustomEvent<AudioEvent>) => void): void
+  removeListener(callback: (evt: CustomEvent<AudioEvent>) => void): void
+}
+
+export interface IAudioEventTarget extends IAudioEvent {
+  dispatch(event: AudioEvent): boolean;
+}
+export class AudioEventTarget extends EventTarget implements IAudioEventTarget {
+  private readonly targetType = 'audio-event';
+
+  addListener(callback: (evt: CustomEvent<AudioEvent>) => void): void {
+    return this.addEventListener(this.targetType, callback as (evt: Event) => void);
+  }
+
+  dispatch(event: AudioEvent): boolean {
+    return this.dispatchEvent(new CustomEvent(this.targetType, { detail: event }));
+  }
+
+  removeListener(callback: (evt: CustomEvent<AudioEvent>) => void): void {
+    return this.removeEventListener(this.targetType, callback as (evt: Event) => void);
+  }
+};

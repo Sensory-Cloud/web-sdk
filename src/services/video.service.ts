@@ -1,19 +1,15 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config } from "../config";
 import { CompressionConfiguration, CompressionTypeMap } from "../generated/common/common_pb";
-import { AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, LivenessRecognitionResponse, RecognitionThresholdMap, ValidateRecognitionConfig, ValidateRecognitionRequest } from "../generated/v1/video/video_pb";
+import { AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, LivenessRecognitionResponse, RecognitionThreshold, RecognitionThresholdMap, ValidateRecognitionConfig, ValidateRecognitionRequest } from "../generated/v1/video/video_pb";
 import { BidirectionalStream, VideoBiometricsClient, VideoModelsClient, VideoRecognitionClient } from "../generated/v1/video/video_pb_service";
 import { IVideoStreamInteractor } from "../interactors/video-stream.interactor";
 import { ITokenManager } from "../token-manager/token.manager";
 
-export interface IVideoService {
+export type RecognitionThreshold = RecognitionThresholdMap[keyof RecognitionThresholdMap]
 
-}
-
-export type LivenessThreshold = RecognitionThresholdMap[keyof RecognitionThresholdMap]
-
-export class VideoService implements IVideoService {
-
+/* Handles all image and video requests to Sensory Cloud */
+export class VideoService {
   constructor(
     private readonly config: Config,
     private readonly tokenManager: ITokenManager,
@@ -23,6 +19,10 @@ export class VideoService implements IVideoService {
     private recognitionStreamingClient = new VideoRecognitionClient(config.cloud.host, { transport: grpc.WebsocketTransport()}),
   ) {}
 
+  /**
+   * Fetch all the models supported by your instance of Sensory Cloud.
+   * @returns Promise<GetModelsRequest.AsObject>
+   */
   public async getModels(): Promise<GetModelsRequest.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
 
@@ -38,7 +38,21 @@ export class VideoService implements IVideoService {
     });
   }
 
-  public async streamEnrollment(description: string, userId: string, deviceId: string, modelName: string, isLivenessEnabled: boolean, threshold: LivenessThreshold): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+  /**
+   * Stream images to Sensory Cloud as a means for user enrollment.
+   * @param  {string} description - a description of this enrollment. Useful if a user could have multiple enrollments, as it helps differentiate between them.
+   * @param  {string} userId  - the unique userId for this enrollment.
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
+   * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled). Defaults to HIGH.
+   * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
+   */
+  public async streamEnrollment(
+    description: string,
+    userId: string,
+    modelName: string,
+    isLivenessEnabled: boolean,
+    threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.biometricStreamingClient.createEnrollment(meta);
 
@@ -50,7 +64,7 @@ export class VideoService implements IVideoService {
 
     config.setDescription(description);
     config.setUserid(userId);
-    config.setDeviceid(deviceId);
+    config.setDeviceid(this.config.device.deviceId);
     config.setModelname(modelName);
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
@@ -63,8 +77,17 @@ export class VideoService implements IVideoService {
 
     return enrollmentStream;
   }
-
-  public async streamAuthentication(enrollmentId: string, isLivenessEnabled: boolean, threshold: LivenessThreshold): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
+  /**
+   * Stream images to sensory cloud for authentication.
+   * @param  {string} enrollmentId - the unique enrollment ID.
+   * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request.
+   * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled) Defaults to HIGH.
+   * @returns Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> - a bidirectional stream where AuthenticateRequests can be passed to the cloud and AuthenticateResponses are passed back.
+   */
+  public async streamAuthentication(
+    enrollmentId: string,
+    isLivenessEnabled: boolean,
+    threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const authenticateStream = this.biometricStreamingClient.authenticate(meta);
 
@@ -84,8 +107,17 @@ export class VideoService implements IVideoService {
 
     return authenticateStream;
   }
-
-  public async streamRecognition(userId: string, modelName: string, threshold: LivenessThreshold): Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> {
+  /**
+   * Stream images to Sensory Cloud in order to recognize particular features.
+   * @param  {string} userId - The unique user identifier making the request.
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the threshold. Defaults to HIGH.
+   * @returns Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> - a bidirectional stream where ValidateRecognitionRequests can be passed to the cloud and LivenessRecognitionResponses are passed back.
+   */
+  public async streamRecognition(
+    userId: string,
+    modelName: string,
+    threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const recognitionStream = this.recognitionStreamingClient.validateLiveness(meta);
 
