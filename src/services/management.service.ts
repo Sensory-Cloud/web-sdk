@@ -1,7 +1,7 @@
 import { Config } from "../config";
 import { AppendEnrollmentGroupRequest, CreateEnrollmentGroupRequest, DeleteEnrollmentGroupRequest, DeleteEnrollmentRequest, EnrollmentGroupResponse, EnrollmentResponse, GetEnrollmentGroupsResponse, GetEnrollmentsRequest, GetEnrollmentsResponse } from "../generated/v1/management/enrollment_pb";
 import { EnrollmentServiceClient } from "../generated/v1/management/enrollment_pb_service";
-import { ITokenManager } from "../managers/token.manager";
+import { ITokenManager } from "../token-manager/token.manager";
 
 /* Service to handle all typical CRUD functions */
 export class ManagementService {

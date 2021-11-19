@@ -3,8 +3,8 @@ import { Config } from "../config";
 import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
-import { ITokenManager } from "../managers/token.manager";
-import { AudioEvent, IMicrophoneInteractor } from "../interactors/microphone.interactor";
+import { ITokenManager } from "../token-manager/token.manager";
+import { AudioEvent, IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
 
 export interface IAudioService {
 
@@ -20,7 +20,7 @@ export class AudioService implements IAudioService {
   constructor(
     private readonly config: Config,
     private readonly tokenManager: ITokenManager,
-    private readonly microphoneInteractor :IMicrophoneInteractor,
+    private readonly audioStreamInteractor :IAudioStreamInteractor,
     private readonly modelsClient = new AudioModelsClient(config.cloud.host),
     private readonly biometricsClient = new AudioBiometricsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
     private readonly eventClient = new AudioEventsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
@@ -57,9 +57,9 @@ export class AudioService implements IAudioService {
     config.setUserid(userId);
     config.setDeviceid(deviceId);
     config.setModelname(modelName);
-    audio.setEncoding(this.microphoneInteractor.getAudioConfig().encoding);
-    audio.setSampleratehertz(this.microphoneInteractor.getAudioConfig().sampleratehertz);
-    audio.setAudiochannelcount(this.microphoneInteractor.getAudioConfig().audiochannelcount);
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
     audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
 
     config.setAudio(audio)
@@ -67,28 +67,6 @@ export class AudioService implements IAudioService {
 
     // Send config
     enrollmentStream.write(request);
-
-    // Create Listener
-    const audioEventListener = (evt: CustomEvent<AudioEvent>) => {
-      const request = new CreateEnrollmentRequest();
-      request.setAudiocontent(evt.detail.bytes);
-
-      try {
-        enrollmentStream.write(request);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // Start microphone
-    const audioEvent = await this.microphoneInteractor.startCapturing(this.dataUploadInterval);
-    audioEvent.addListener(audioEventListener);
-
-    // Stop Microphone and de-register listener on stream end
-    enrollmentStream.on('end', (_) => {
-      this.microphoneInteractor.stopCapturing();
-      audioEvent.removeListener(audioEventListener);
-    });
 
     return enrollmentStream;
   }
@@ -112,9 +90,9 @@ export class AudioService implements IAudioService {
     config.setSensitivity(sensitivity);
     config.setSecurity(security);
 
-    audio.setEncoding(this.microphoneInteractor.getAudioConfig().encoding);
-    audio.setSampleratehertz(this.microphoneInteractor.getAudioConfig().sampleratehertz);
-    audio.setAudiochannelcount(this.microphoneInteractor.getAudioConfig().audiochannelcount);
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
     audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
 
     config.setAudio(audio)
@@ -123,27 +101,6 @@ export class AudioService implements IAudioService {
     // Send config
     authenticationStream.write(request);
 
-    // Create Listener
-    const audioEventListener = (evt: CustomEvent<AudioEvent>) => {
-      const request = new AuthenticateRequest();
-      request.setAudiocontent(evt.detail.bytes);
-
-      try {
-        authenticationStream.write(request);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // Start microphone
-    const audioEvent = await this.microphoneInteractor.startCapturing(this.dataUploadInterval);
-    audioEvent.addListener(audioEventListener);
-
-    // Stop Microphone and de-register listener on stream end
-    authenticationStream.on('end', (_) => {
-      this.microphoneInteractor.stopCapturing();
-      audioEvent.removeListener(audioEventListener);
-    });
     return authenticationStream;
   }
 
@@ -158,9 +115,9 @@ export class AudioService implements IAudioService {
     config.setModelname(modelName);
     config.setUserid(userId);
     config.setSensitivity(sensitivity);
-    audio.setEncoding(this.microphoneInteractor.getAudioConfig().encoding);
-    audio.setSampleratehertz(this.microphoneInteractor.getAudioConfig().sampleratehertz);
-    audio.setAudiochannelcount(this.microphoneInteractor.getAudioConfig().audiochannelcount);
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
     audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
 
     config.setAudio(audio);
@@ -168,28 +125,6 @@ export class AudioService implements IAudioService {
 
     // Send config
     eventStream.write(request);
-
-    // Create Listener
-    const audioEventListener = (evt: CustomEvent<AudioEvent>) => {
-      const request = new ValidateEventRequest();
-      request.setAudiocontent(evt.detail.bytes);
-
-      try {
-        eventStream.write(request);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // Start microphone
-    const audioEvent = await this.microphoneInteractor.startCapturing(this.dataUploadInterval);
-    audioEvent.addListener(audioEventListener);
-
-    // Stop Microphone and de-register listener on stream end
-    eventStream.on('end', (_) => {
-      this.microphoneInteractor.stopCapturing();
-      audioEvent.removeListener(audioEventListener);
-    });
 
     return eventStream;
   }
@@ -204,9 +139,9 @@ export class AudioService implements IAudioService {
 
     config.setModelname(modelName);
     config.setUserid(userId);
-    audio.setEncoding(this.microphoneInteractor.getAudioConfig().encoding);
-    audio.setSampleratehertz(this.microphoneInteractor.getAudioConfig().sampleratehertz);
-    audio.setAudiochannelcount(this.microphoneInteractor.getAudioConfig().audiochannelcount);
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
     audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
 
     config.setAudio(audio);
@@ -214,28 +149,6 @@ export class AudioService implements IAudioService {
 
     // Stop Microphone on stream end
     transcriptionStream.write(request);
-
-    // Create Listener
-    const audioEventListener = (evt: CustomEvent<AudioEvent>) => {
-      const request = new ValidateEventRequest();
-      request.setAudiocontent(evt.detail.bytes);
-
-      try {
-        transcriptionStream.write(request);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // Start microphone
-    const audioEvent = await this.microphoneInteractor.startCapturing(this.dataUploadInterval);
-    audioEvent.addListener(audioEventListener);
-
-    // Stop Microphone and de-register listener on stream end
-    transcriptionStream.on('end', (_) => {
-      this.microphoneInteractor.stopCapturing();
-      audioEvent.removeListener(audioEventListener);
-    });
 
     return transcriptionStream;
   }

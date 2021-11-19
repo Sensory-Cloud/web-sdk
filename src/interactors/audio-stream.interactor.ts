@@ -29,11 +29,11 @@ export class AudioEventTarget extends EventTarget implements IAudioEventTarget {
   }
 };
 
-export type MicrophoneAudioConfig = Omit<AudioConfig.AsObject, 'languagecode'>;
+export type AudioStreamConfig = Omit<AudioConfig.AsObject, 'languagecode'>;
 
-export interface IMicrophoneInteractor {
+export interface IAudioStreamInteractor {
   requestPermission(): Promise<void>;
-  getAudioConfig(): MicrophoneAudioConfig;
+  getAudioConfig(): AudioStreamConfig;
   startCapturing(dataIntervalMs: number): Promise<IAudioEvent>;
   stopCapturing(): Promise<void>;
 }
@@ -50,28 +50,37 @@ type WavHeader = {
   subChunk2Size: number;
 }
 
-export class MicrophoneInteractor {
+export class AudioStreamInteractor {
   private stream?: MediaStream;
   private mediaRecorder?: IMediaRecorder;
   private isRegistered = false;
   private readonly wavHeaderSize = 44;  // Wav header is 44 bytes
   private readonly sampleRate = 16000;
   private readonly channelCount = 1;
-
-   // TODO: ALLOW DEVICE SELECT
+  private preferredDeviceId?: string;
 
   public async requestPermission(): Promise<void> {
     const stream = await this.getAudioStream();
     stream.getTracks().forEach((track) => track.stop());
   }
 
-  public getAudioConfig(): MicrophoneAudioConfig {
+  public getAudioConfig(): AudioStreamConfig {
     return {
       audiochannelcount: this.channelCount,
       encoding: AudioConfig.AudioEncoding.LINEAR16,
       sampleratehertz: this.sampleRate
     };
   }
+
+  public setPreferredAudioStreamDevice(deviceId: string) {
+    this.preferredDeviceId = deviceId;
+  }
+
+  public async getAudioStreamDevices(): Promise<MediaDeviceInfo[]> {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    return devices.filter((device) => device.kind === 'audioinput');
+  }
+
   /**
    * @param  {number} dataIntervalMs
    * @param  {OnAudioDataHandler} onData
@@ -137,7 +146,8 @@ export class MicrophoneInteractor {
       audio: {
         channelCount: this.channelCount,
         echoCancellation: true,
-        sampleRate: this.sampleRate
+        sampleRate: this.sampleRate,
+        deviceId: this.preferredDeviceId
       }
     });
   }

@@ -1,27 +1,48 @@
 import { v4 } from "uuid";
+import { CompressionTypeMap } from "../generated/common/common_pb";
 
 export type CaptureFrameFunction = () => Promise<Uint8Array>;
 
-export interface ICameraInteractor {
+export type VideoStreamConfig = {
+  compressions: Array<CompressionTypeMap[keyof CompressionTypeMap]>
+};
+
+export interface IVideoStreamInteractor {
   requestPermission(): Promise<void>;
-  // getAudioConfig(): MicrophoneAudioConfig;
+  getVideoConfig(): VideoStreamConfig;
   startCapturing(): Promise<CaptureFrameFunction>;
   stopCapturing(): Promise<void>;
 }
 
-export class CameraInteractor implements ICameraInteractor {
+export class VideoStreamInteractor implements IVideoStreamInteractor {
   private readonly jpegImageQuality = 0.95;
-  private readonly width =  480;
-  // private readonly height =  720;
-  private readonly videoElementId = `video-${v4()}`; // TODO: Allow setting of this selector
+  private readonly width =  { min: 480, ideal: 480 };
+  private readonly height = { min: 720, ideal: 720 };
+  private videoElementId = `video-${v4()}`;
+  private preferredDeviceId?: string;
   private stream?: MediaStream;
   private canvas?: HTMLCanvasElement;
-
-  // TODO: ALLOW DEVICE SELECT
 
   public async requestPermission(): Promise<void> {
     const stream = await this.getVideoStream();
     stream.getTracks().forEach((track) => track.stop());
+  }
+
+  public setVideoElementId(elementId: string) {
+    this.videoElementId = elementId;
+  }
+
+  public setPreferredVideoStreamDevice(deviceId: string) {
+    this.preferredDeviceId = deviceId;
+  }
+
+  public getVideoConfig(): VideoStreamConfig {
+    return { compressions: [] };
+  }
+
+  public async getVideoStreamDevices(): Promise<MediaDeviceInfo[]> {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    return devices.filter((device) => device.kind === 'videoinput');
   }
 
   public async startCapturing(): Promise<CaptureFrameFunction> {
@@ -46,21 +67,25 @@ export class CameraInteractor implements ICameraInteractor {
     // Wait for video to be ready
     await new Promise<void>((resolve) => videoElement?.addEventListener('canplay', (_) => resolve()));
 
-    const height = videoElement.videoHeight / (videoElement.videoWidth/this.width);
+    let height = videoElement.videoHeight / (videoElement.videoWidth/this.width.ideal);
+    if (isNaN(height)) {
+      height = this.width.ideal / (4/3);
+    }
+
     videoElement.setAttribute('height', height.toString());
-    videoElement.setAttribute('width', this.width.toString());
+    videoElement.setAttribute('width', this.width.ideal.toString());
 
     this.canvas = document.createElement('canvas');
     this.canvas.width = videoElement.videoWidth;
     this.canvas.height = videoElement.videoHeight;
 
-    const context = this.canvas.getContext('2d');
-    context?.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight, 0, 0, 256, 256);
-
     const takePhoto: CaptureFrameFunction = async () => {
       if (!this.canvas) {
         throw new Error('Canvas is not initialized. Was stopCapturing() called?');
       }
+
+      const context = this.canvas.getContext('2d');
+      context?.drawImage(videoElement, 0, 0);
 
       const image = await new Promise<Blob | null>((res) => this.canvas?.toBlob(res, 'image/jpeg', this.jpegImageQuality));
 
@@ -87,6 +112,12 @@ export class CameraInteractor implements ICameraInteractor {
   }
 
   private async getVideoStream(): Promise<MediaStream> {
-    return navigator.mediaDevices.getUserMedia({ video: { width: this.width } });
+    return navigator.mediaDevices.getUserMedia({
+      video: {
+        width: this.width,
+        height: this.height,
+        deviceId: this.preferredDeviceId
+      }
+    });
   }
 }
