@@ -232,6 +232,30 @@ export namespace MemorySummary {
   }
 }
 
+export class GenericClient extends jspb.Message {
+  getClientid(): string;
+  setClientid(value: string): void;
+
+  getSecret(): string;
+  setSecret(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GenericClient.AsObject;
+  static toObject(includeInstance: boolean, msg: GenericClient): GenericClient.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GenericClient, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GenericClient;
+  static deserializeBinaryFromReader(message: GenericClient, reader: jspb.BinaryReader): GenericClient;
+}
+
+export namespace GenericClient {
+  export type AsObject = {
+    clientid: string,
+    secret: string,
+  }
+}
+
 export interface KeyTypeMap {
   PUBLIC_KEY: 0;
   PUBLIC_KEY_ED25519: 1;
@@ -249,6 +273,7 @@ export interface ModelTypeMap {
   VOICE_TRANSCRIBE_COMMAND_AND_SEARCH: 5;
   VOICE_RECOGNITION_ACTIVITY_DETECTION: 6;
   VOICE_FEATURE_EXTRACTOR: 7;
+  VOICE_BIOMETRIC_LIVENESS_DIGIT: 8;
   SOUND_EVENT_ENROLLABLE: 100;
   SOUND_EVENT_REVALIDATION: 101;
   SOUND_EVENT_FIXED: 102;

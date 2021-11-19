@@ -331,7 +331,8 @@ proto.sensory.api.v1.video.VideoModel.toObject = function(includeInstance, msg) 
     modeltype: jspb.Message.getFieldWithDefault(msg, 3, 0),
     fixedobject: jspb.Message.getFieldWithDefault(msg, 4, ""),
     versionsList: (f = jspb.Message.getRepeatedField(msg, 5)) == null ? undefined : f,
-    technology: jspb.Message.getFieldWithDefault(msg, 6, 0)
+    technology: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    islivenesssupported: jspb.Message.getBooleanFieldWithDefault(msg, 7, false)
   };
 
   if (includeInstance) {
@@ -391,6 +392,10 @@ proto.sensory.api.v1.video.VideoModel.deserializeBinaryFromReader = function(msg
     case 6:
       var value = /** @type {!proto.sensory.api.common.TechnologyType} */ (reader.readEnum());
       msg.setTechnology(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIslivenesssupported(value);
       break;
     default:
       reader.skipField();
@@ -460,6 +465,13 @@ proto.sensory.api.v1.video.VideoModel.serializeBinaryToWriter = function(message
   if (f !== 0.0) {
     writer.writeEnum(
       6,
+      f
+    );
+  }
+  f = message.getIslivenesssupported();
+  if (f) {
+    writer.writeBool(
+      7,
       f
     );
   }
@@ -590,6 +602,24 @@ proto.sensory.api.v1.video.VideoModel.prototype.getTechnology = function() {
  */
 proto.sensory.api.v1.video.VideoModel.prototype.setTechnology = function(value) {
   return jspb.Message.setProto3EnumField(this, 6, value);
+};
+
+
+/**
+ * optional bool isLivenessSupported = 7;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.VideoModel.prototype.getIslivenesssupported = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 7, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.video.VideoModel} returns this
+ */
+proto.sensory.api.v1.video.VideoModel.prototype.setIslivenesssupported = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 7, value);
 };
 
 

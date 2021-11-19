@@ -15,10 +15,10 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var common_common_pb = require('../../common/common_pb.js');
+goog.object.extend(proto, common_common_pb);
 var validate_validate_pb = require('../../validate/validate_pb.js');
 goog.object.extend(proto, validate_validate_pb);
-var v1_management_client_pb = require('../../v1/management/client_pb.js');
-goog.object.extend(proto, v1_management_client_pb);
 goog.exportSymbol('proto.sensory.api.v1.management.DeviceGetWhoAmIRequest', null, global);
 goog.exportSymbol('proto.sensory.api.v1.management.DeviceResponse', null, global);
 goog.exportSymbol('proto.sensory.api.v1.management.EnrollDeviceRequest', null, global);
@@ -120,7 +120,7 @@ proto.sensory.api.v1.management.EnrollDeviceRequest.toObject = function(includeI
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
     deviceid: jspb.Message.getFieldWithDefault(msg, 2, ""),
     tenantid: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    client: (f = msg.getClient()) && v1_management_client_pb.CreateGenericClientRequest.toObject(includeInstance, f),
+    client: (f = msg.getClient()) && common_common_pb.GenericClient.toObject(includeInstance, f),
     credential: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
 
@@ -171,8 +171,8 @@ proto.sensory.api.v1.management.EnrollDeviceRequest.deserializeBinaryFromReader 
       msg.setTenantid(value);
       break;
     case 4:
-      var value = new v1_management_client_pb.CreateGenericClientRequest;
-      reader.readMessage(value,v1_management_client_pb.CreateGenericClientRequest.deserializeBinaryFromReader);
+      var value = new common_common_pb.GenericClient;
+      reader.readMessage(value,common_common_pb.GenericClient.deserializeBinaryFromReader);
       msg.setClient(value);
       break;
     case 5:
@@ -234,7 +234,7 @@ proto.sensory.api.v1.management.EnrollDeviceRequest.serializeBinaryToWriter = fu
     writer.writeMessage(
       4,
       f,
-      v1_management_client_pb.CreateGenericClientRequest.serializeBinaryToWriter
+      common_common_pb.GenericClient.serializeBinaryToWriter
     );
   }
   f = message.getCredential();
@@ -302,17 +302,17 @@ proto.sensory.api.v1.management.EnrollDeviceRequest.prototype.setTenantid = func
 
 
 /**
- * optional CreateGenericClientRequest client = 4;
- * @return {?proto.sensory.api.v1.management.CreateGenericClientRequest}
+ * optional sensory.api.common.GenericClient client = 4;
+ * @return {?proto.sensory.api.common.GenericClient}
  */
 proto.sensory.api.v1.management.EnrollDeviceRequest.prototype.getClient = function() {
-  return /** @type{?proto.sensory.api.v1.management.CreateGenericClientRequest} */ (
-    jspb.Message.getWrapperField(this, v1_management_client_pb.CreateGenericClientRequest, 4));
+  return /** @type{?proto.sensory.api.common.GenericClient} */ (
+    jspb.Message.getWrapperField(this, common_common_pb.GenericClient, 4));
 };
 
 
 /**
- * @param {?proto.sensory.api.v1.management.CreateGenericClientRequest|undefined} value
+ * @param {?proto.sensory.api.common.GenericClient|undefined} value
  * @return {!proto.sensory.api.v1.management.EnrollDeviceRequest} returns this
 */
 proto.sensory.api.v1.management.EnrollDeviceRequest.prototype.setClient = function(value) {

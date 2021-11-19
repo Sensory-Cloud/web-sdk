@@ -45,6 +45,9 @@ export class AudioModel extends jspb.Message {
   getTechnology(): common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap];
   setTechnology(value: common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap]): void;
 
+  getIslivenesssupported(): boolean;
+  setIslivenesssupported(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AudioModel.AsObject;
   static toObject(includeInstance: boolean, msg: AudioModel): AudioModel.AsObject;
@@ -64,6 +67,7 @@ export namespace AudioModel {
     samplerate: number,
     versionsList: Array<string>,
     technology: common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap],
+    islivenesssupported: boolean,
   }
 }
 
@@ -253,6 +257,12 @@ export class CreateEnrollmentResponse extends jspb.Message {
   getModelversion(): string;
   setModelversion(value: string): void;
 
+  getModelprompt(): string;
+  setModelprompt(value: string): void;
+
+  getPercentsegmentcomplete(): number;
+  setPercentsegmentcomplete(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentResponse): CreateEnrollmentResponse.AsObject;
@@ -270,6 +280,8 @@ export namespace CreateEnrollmentResponse {
     enrollmentid: string,
     modelname: string,
     modelversion: string,
+    modelprompt: string,
+    percentsegmentcomplete: number,
   }
 }
 
@@ -291,6 +303,12 @@ export class AuthenticateResponse extends jspb.Message {
   getEnrollmentid(): string;
   setEnrollmentid(value: string): void;
 
+  getModelprompt(): string;
+  setModelprompt(value: string): void;
+
+  getPercentsegmentcomplete(): number;
+  setPercentsegmentcomplete(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateResponse.AsObject;
   static toObject(includeInstance: boolean, msg: AuthenticateResponse): AuthenticateResponse.AsObject;
@@ -308,6 +326,8 @@ export namespace AuthenticateResponse {
     token?: common_common_pb.TokenResponse.AsObject,
     userid: string,
     enrollmentid: string,
+    modelprompt: string,
+    percentsegmentcomplete: number,
   }
 }
 
@@ -350,6 +370,9 @@ export class TranscribeResponse extends jspb.Message {
   getTranscript(): string;
   setTranscript(value: string): void;
 
+  getIspartialresult(): boolean;
+  setIspartialresult(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeResponse.AsObject;
   static toObject(includeInstance: boolean, msg: TranscribeResponse): TranscribeResponse.AsObject;
@@ -364,6 +387,7 @@ export namespace TranscribeResponse {
   export type AsObject = {
     audioenergy: number,
     transcript: string,
+    ispartialresult: boolean,
   }
 }
 
@@ -385,6 +409,20 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
+  getIslivenessenabled(): boolean;
+  setIslivenessenabled(value: boolean): void;
+
+  hasEnrollmentnumutterances(): boolean;
+  clearEnrollmentnumutterances(): void;
+  getEnrollmentnumutterances(): number;
+  setEnrollmentnumutterances(value: number): void;
+
+  hasEnrollmentduration(): boolean;
+  clearEnrollmentduration(): void;
+  getEnrollmentduration(): number;
+  setEnrollmentduration(value: number): void;
+
+  getEnrolllengthCase(): CreateEnrollmentConfig.EnrolllengthCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentConfig): CreateEnrollmentConfig.AsObject;
@@ -402,6 +440,15 @@ export namespace CreateEnrollmentConfig {
     deviceid: string,
     modelname: string,
     description: string,
+    islivenessenabled: boolean,
+    enrollmentnumutterances: number,
+    enrollmentduration: number,
+  }
+
+  export enum EnrolllengthCase {
+    ENROLLLENGTH_NOT_SET = 0,
+    ENROLLMENTNUMUTTERANCES = 7,
+    ENROLLMENTDURATION = 8,
   }
 }
 
@@ -430,6 +477,9 @@ export class AuthenticateConfig extends jspb.Message {
   getSecurity(): AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
   setSecurity(value: AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap]): void;
 
+  getIslivenessenabled(): boolean;
+  setIslivenessenabled(value: boolean): void;
+
   getAuthidCase(): AuthenticateConfig.AuthidCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateConfig.AsObject;
@@ -449,6 +499,7 @@ export namespace AuthenticateConfig {
     doincludetoken: boolean,
     sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
     security: AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap],
+    islivenessenabled: boolean,
   }
 
   export interface ThresholdSecurityMap {

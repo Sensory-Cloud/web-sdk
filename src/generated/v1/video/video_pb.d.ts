@@ -26,6 +26,9 @@ export class VideoModel extends jspb.Message {
   getTechnology(): common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap];
   setTechnology(value: common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap]): void;
 
+  getIslivenesssupported(): boolean;
+  setIslivenesssupported(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): VideoModel.AsObject;
   static toObject(includeInstance: boolean, msg: VideoModel): VideoModel.AsObject;
@@ -44,6 +47,7 @@ export namespace VideoModel {
     fixedobject: string,
     versionsList: Array<string>,
     technology: common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap],
+    islivenesssupported: boolean,
   }
 }
 

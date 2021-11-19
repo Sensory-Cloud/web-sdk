@@ -581,7 +581,8 @@ proto.sensory.api.v1.management.EnrollmentResponse.toObject = function(includeIn
     deviceid: jspb.Message.getFieldWithDefault(msg, 8, ""),
     userid: jspb.Message.getFieldWithDefault(msg, 9, ""),
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
-    devicename: jspb.Message.getFieldWithDefault(msg, 11, "")
+    devicename: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    didenrollwithliveness: jspb.Message.getBooleanFieldWithDefault(msg, 12, false)
   };
 
   if (includeInstance) {
@@ -664,6 +665,10 @@ proto.sensory.api.v1.management.EnrollmentResponse.deserializeBinaryFromReader =
     case 11:
       var value = /** @type {string} */ (reader.readString());
       msg.setDevicename(value);
+      break;
+    case 12:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDidenrollwithliveness(value);
       break;
     default:
       reader.skipField();
@@ -771,6 +776,13 @@ proto.sensory.api.v1.management.EnrollmentResponse.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       11,
+      f
+    );
+  }
+  f = message.getDidenrollwithliveness();
+  if (f) {
+    writer.writeBool(
+      12,
       f
     );
   }
@@ -1029,6 +1041,24 @@ proto.sensory.api.v1.management.EnrollmentResponse.prototype.getDevicename = fun
  */
 proto.sensory.api.v1.management.EnrollmentResponse.prototype.setDevicename = function(value) {
   return jspb.Message.setProto3StringField(this, 11, value);
+};
+
+
+/**
+ * optional bool didEnrollWithLiveness = 12;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.getDidenrollwithliveness = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.management.EnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.setDidenrollwithliveness = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 12, value);
 };
 
 

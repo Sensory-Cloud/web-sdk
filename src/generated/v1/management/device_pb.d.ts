@@ -2,8 +2,8 @@
 // file: v1/management/device.proto
 
 import * as jspb from "google-protobuf";
+import * as common_common_pb from "../../common/common_pb";
 import * as validate_validate_pb from "../../validate/validate_pb";
-import * as v1_management_client_pb from "../../v1/management/client_pb";
 
 export class EnrollDeviceRequest extends jspb.Message {
   getName(): string;
@@ -17,8 +17,8 @@ export class EnrollDeviceRequest extends jspb.Message {
 
   hasClient(): boolean;
   clearClient(): void;
-  getClient(): v1_management_client_pb.CreateGenericClientRequest | undefined;
-  setClient(value?: v1_management_client_pb.CreateGenericClientRequest): void;
+  getClient(): common_common_pb.GenericClient | undefined;
+  setClient(value?: common_common_pb.GenericClient): void;
 
   getCredential(): string;
   setCredential(value: string): void;
@@ -38,7 +38,7 @@ export namespace EnrollDeviceRequest {
     name: string,
     deviceid: string,
     tenantid: string,
-    client?: v1_management_client_pb.CreateGenericClientRequest.AsObject,
+    client?: common_common_pb.GenericClient.AsObject,
     credential: string,
   }
 }

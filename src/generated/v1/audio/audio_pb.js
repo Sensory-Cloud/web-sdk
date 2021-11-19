@@ -29,6 +29,7 @@ goog.exportSymbol('proto.sensory.api.v1.audio.AuthenticateRequest', null, global
 goog.exportSymbol('proto.sensory.api.v1.audio.AuthenticateRequest.StreamingrequestCase', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.AuthenticateResponse', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentConfig', null, global);
+goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentConfig.EnrolllengthCase', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentRequest', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentRequest.StreamingrequestCase', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentResponse', null, global);
@@ -285,7 +286,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.audio.CreateEnrollmentConfig = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_);
 };
 goog.inherits(proto.sensory.api.v1.audio.CreateEnrollmentConfig, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -525,7 +526,8 @@ proto.sensory.api.v1.audio.AudioModel.toObject = function(includeInstance, msg) 
     fixedphrase: jspb.Message.getFieldWithDefault(msg, 4, ""),
     samplerate: jspb.Message.getFieldWithDefault(msg, 5, 0),
     versionsList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-    technology: jspb.Message.getFieldWithDefault(msg, 7, 0)
+    technology: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    islivenesssupported: jspb.Message.getBooleanFieldWithDefault(msg, 8, false)
   };
 
   if (includeInstance) {
@@ -589,6 +591,10 @@ proto.sensory.api.v1.audio.AudioModel.deserializeBinaryFromReader = function(msg
     case 7:
       var value = /** @type {!proto.sensory.api.common.TechnologyType} */ (reader.readEnum());
       msg.setTechnology(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIslivenesssupported(value);
       break;
     default:
       reader.skipField();
@@ -665,6 +671,13 @@ proto.sensory.api.v1.audio.AudioModel.serializeBinaryToWriter = function(message
   if (f !== 0.0) {
     writer.writeEnum(
       7,
+      f
+    );
+  }
+  f = message.getIslivenesssupported();
+  if (f) {
+    writer.writeBool(
+      8,
       f
     );
   }
@@ -813,6 +826,24 @@ proto.sensory.api.v1.audio.AudioModel.prototype.getTechnology = function() {
  */
 proto.sensory.api.v1.audio.AudioModel.prototype.setTechnology = function(value) {
   return jspb.Message.setProto3EnumField(this, 7, value);
+};
+
+
+/**
+ * optional bool isLivenessSupported = 8;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.AudioModel.prototype.getIslivenesssupported = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 8, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.AudioModel} returns this
+ */
+proto.sensory.api.v1.audio.AudioModel.prototype.setIslivenesssupported = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 8, value);
 };
 
 
@@ -2008,7 +2039,9 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.toObject = function(includeI
     audioenergy: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
     enrollmentid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     modelname: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    modelversion: jspb.Message.getFieldWithDefault(msg, 5, "")
+    modelversion: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    modelprompt: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    percentsegmentcomplete: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -2064,6 +2097,14 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.deserializeBinaryFromReader 
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setModelversion(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setModelprompt(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPercentsegmentcomplete(value);
       break;
     default:
       reader.skipField();
@@ -2126,6 +2167,20 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.serializeBinaryToWriter = fu
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getModelprompt();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+  f = message.getPercentsegmentcomplete();
+  if (f !== 0) {
+    writer.writeInt64(
+      7,
       f
     );
   }
@@ -2222,6 +2277,42 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.setModelversion = 
 };
 
 
+/**
+ * optional string modelPrompt = 6;
+ * @return {string}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.getModelprompt = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.setModelprompt = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional int64 percentSegmentComplete = 7;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.getPercentsegmentcomplete = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.setPercentsegmentcomplete = function(value) {
+  return jspb.Message.setProto3IntField(this, 7, value);
+};
+
+
 
 
 
@@ -2258,7 +2349,9 @@ proto.sensory.api.v1.audio.AuthenticateResponse.toObject = function(includeInsta
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     token: (f = msg.getToken()) && common_common_pb.TokenResponse.toObject(includeInstance, f),
     userid: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    enrollmentid: jspb.Message.getFieldWithDefault(msg, 5, "")
+    enrollmentid: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    modelprompt: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    percentsegmentcomplete: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -2315,6 +2408,14 @@ proto.sensory.api.v1.audio.AuthenticateResponse.deserializeBinaryFromReader = fu
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setEnrollmentid(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setModelprompt(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPercentsegmentcomplete(value);
       break;
     default:
       reader.skipField();
@@ -2378,6 +2479,20 @@ proto.sensory.api.v1.audio.AuthenticateResponse.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getModelprompt();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+  f = message.getPercentsegmentcomplete();
+  if (f !== 0) {
+    writer.writeInt64(
+      7,
       f
     );
   }
@@ -2490,6 +2605,42 @@ proto.sensory.api.v1.audio.AuthenticateResponse.prototype.getEnrollmentid = func
  */
 proto.sensory.api.v1.audio.AuthenticateResponse.prototype.setEnrollmentid = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string modelPrompt = 6;
+ * @return {string}
+ */
+proto.sensory.api.v1.audio.AuthenticateResponse.prototype.getModelprompt = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.audio.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.audio.AuthenticateResponse.prototype.setModelprompt = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional int64 percentSegmentComplete = 7;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.AuthenticateResponse.prototype.getPercentsegmentcomplete = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.audio.AuthenticateResponse.prototype.setPercentsegmentcomplete = function(value) {
+  return jspb.Message.setProto3IntField(this, 7, value);
 };
 
 
@@ -2746,7 +2897,8 @@ proto.sensory.api.v1.audio.TranscribeResponse.prototype.toObject = function(opt_
 proto.sensory.api.v1.audio.TranscribeResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     audioenergy: jspb.Message.getFloatingPointFieldWithDefault(msg, 1, 0.0),
-    transcript: jspb.Message.getFieldWithDefault(msg, 2, "")
+    transcript: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    ispartialresult: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -2791,6 +2943,10 @@ proto.sensory.api.v1.audio.TranscribeResponse.deserializeBinaryFromReader = func
       var value = /** @type {string} */ (reader.readString());
       msg.setTranscript(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIspartialresult(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2834,6 +2990,13 @@ proto.sensory.api.v1.audio.TranscribeResponse.serializeBinaryToWriter = function
       f
     );
   }
+  f = message.getIspartialresult();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -2873,6 +3036,50 @@ proto.sensory.api.v1.audio.TranscribeResponse.prototype.setTranscript = function
 };
 
 
+/**
+ * optional bool isPartialResult = 3;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.TranscribeResponse.prototype.getIspartialresult = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeResponse} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeResponse.prototype.setIspartialresult = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_ = [[7,8]];
+
+/**
+ * @enum {number}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.EnrolllengthCase = {
+  ENROLLLENGTH_NOT_SET: 0,
+  ENROLLMENTNUMUTTERANCES: 7,
+  ENROLLMENTDURATION: 8
+};
+
+/**
+ * @return {proto.sensory.api.v1.audio.CreateEnrollmentConfig.EnrolllengthCase}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getEnrolllengthCase = function() {
+  return /** @type {proto.sensory.api.v1.audio.CreateEnrollmentConfig.EnrolllengthCase} */(jspb.Message.computeOneofCase(this, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_[0]));
+};
 
 
 
@@ -2909,7 +3116,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.toObject = function(includeIns
     userid: jspb.Message.getFieldWithDefault(msg, 2, ""),
     deviceid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     modelname: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    description: jspb.Message.getFieldWithDefault(msg, 5, "")
+    description: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0)
   };
 
   if (includeInstance) {
@@ -2966,6 +3176,18 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIslivenessenabled(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setEnrollmentnumutterances(value);
+      break;
+    case 8:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setEnrollmentduration(value);
       break;
     default:
       reader.skipField();
@@ -3029,6 +3251,27 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getIslivenessenabled();
+  if (f) {
+    writer.writeBool(
+      6,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 7));
+  if (f != null) {
+    writer.writeUint32(
+      7,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 8));
+  if (f != null) {
+    writer.writeFloat(
+      8,
       f
     );
   }
@@ -3144,6 +3387,96 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setDescription = fun
 };
 
 
+/**
+ * optional bool isLivenessEnabled = 6;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getIslivenessenabled = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setIslivenessenabled = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+
+/**
+ * optional uint32 enrollmentNumUtterances = 7;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getEnrollmentnumutterances = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setEnrollmentnumutterances = function(value) {
+  return jspb.Message.setOneofField(this, 7, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.clearEnrollmentnumutterances = function() {
+  return jspb.Message.setOneofField(this, 7, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.hasEnrollmentnumutterances = function() {
+  return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional float enrollmentDuration = 8;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getEnrollmentduration = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 8, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setEnrollmentduration = function(value) {
+  return jspb.Message.setOneofField(this, 8, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.clearEnrollmentduration = function() {
+  return jspb.Message.setOneofField(this, 8, proto.sensory.api.v1.audio.CreateEnrollmentConfig.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.hasEnrollmentduration = function() {
+  return jspb.Message.getField(this, 8) != null;
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -3207,7 +3540,8 @@ proto.sensory.api.v1.audio.AuthenticateConfig.toObject = function(includeInstanc
     enrollmentgroupid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     doincludetoken: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
     sensitivity: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    security: jspb.Message.getFieldWithDefault(msg, 6, 0)
+    security: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 7, false)
   };
 
   if (includeInstance) {
@@ -3268,6 +3602,10 @@ proto.sensory.api.v1.audio.AuthenticateConfig.deserializeBinaryFromReader = func
     case 6:
       var value = /** @type {!proto.sensory.api.v1.audio.AuthenticateConfig.ThresholdSecurity} */ (reader.readEnum());
       msg.setSecurity(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIslivenessenabled(value);
       break;
     default:
       reader.skipField();
@@ -3338,6 +3676,13 @@ proto.sensory.api.v1.audio.AuthenticateConfig.serializeBinaryToWriter = function
   if (f !== 0.0) {
     writer.writeEnum(
       6,
+      f
+    );
+  }
+  f = message.getIslivenessenabled();
+  if (f) {
+    writer.writeBool(
+      7,
       f
     );
   }
@@ -3512,6 +3857,24 @@ proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getSecurity = function()
  */
 proto.sensory.api.v1.audio.AuthenticateConfig.prototype.setSecurity = function(value) {
   return jspb.Message.setProto3EnumField(this, 6, value);
+};
+
+
+/**
+ * optional bool isLivenessEnabled = 7;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getIslivenessenabled = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 7, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.AuthenticateConfig} returns this
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.setIslivenessenabled = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 7, value);
 };
 
 
