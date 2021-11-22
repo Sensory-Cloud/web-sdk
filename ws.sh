@@ -100,18 +100,20 @@ case "$1" in
   ;;
 
   "build"|"b")
-    throw_not_implemented_error
+    generate_proto_files
+    mkdir -p ./dist/generated
+    cp -r ./src/generated ./dist
+    npx tsc
   ;;
 
   "test"|"t")
-    throw_not_implemented_error
+    npx jest
   ;;
 
   "genproto"|"gp")
     generate_proto_files
     exit 0;
   ;;
-
 
   "help"|"h")
     print_helper

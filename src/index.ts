@@ -1,4 +1,3 @@
-// TODO add items to export here
 export * from './config';
 
 export * from './interactors/audio-stream.interactor';
