@@ -3,7 +3,7 @@ import { AppendEnrollmentGroupRequest, CreateEnrollmentGroupRequest, DeleteEnrol
 import { EnrollmentServiceClient } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
 
-/* Service to handle all typical CRUD functions */
+/** Service to handle all typical CRUD functions */
 export class ManagementService {
   constructor(
     private readonly config: Config,

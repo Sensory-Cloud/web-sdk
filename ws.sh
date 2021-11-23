@@ -4,7 +4,7 @@
 # [Title] Sensory Cloud Web SDK Helper Script
 # ------------------------------------------------------------------
 SUBJECT=ph
-USAGE="Usage: ph [OPTIONS] [COMMAND]"
+USAGE="Usage: ws [OPTIONS] [COMMAND]"
 
 OPTIONS="
     Options:\n
@@ -17,7 +17,7 @@ COMMANDS="
     build | b\t\t Build Tsc Package\n
     test | t\t\t Run Unit Tests\n
     genproto | gp\t\t Generate Proto Files\n
-    help | h\t\t Display This Help Message\n
+    help | h\t\t Display a Help Message\n
 "
 # --- Initialization -----------------------------------------------
 set -euo pipefail

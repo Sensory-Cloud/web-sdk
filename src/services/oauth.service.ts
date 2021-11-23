@@ -2,38 +2,56 @@ import { Config } from "../config";
 import { TokenRequest } from "../generated/oauth/oauth_pb";
 import { OauthServiceClient } from "../generated/oauth/oauth_pb_service";
 import { CryptoService } from "./crypto.service";
-import {  EnrollDeviceRequest } from "../generated/v1/management/device_pb";
+import { DeviceResponse, EnrollDeviceRequest } from "../generated/v1/management/device_pb";
 
 import { v4 } from 'uuid';
 import { DeviceServiceClient } from "../generated/v1/management/device_pb_service";
 import { GenericClient } from "../generated/common/common_pb";
 
-/* Manages OAuth interactions with Sensory Cloud */
+/** Manages OAuth interactions with Sensory Cloud */
 export interface IOauthService {
+  /**
+   * Creates a new cryptographically random OAuth client
+   * @returns OauthClient
+   */
   generateCredentials(): OauthClient;
+
+  /**
+   * Obtains an OAuth token used for API authentication
+   * @returns Promise
+   */
   getToken(): Promise<OauthToken>;
-  register(deviceName: string, credential: string): Promise<void>;
+
+  /**
+   * Register credentials provided by the attached SecureCredentialStore to Sensory Cloud. This function should only be called
+   * once per unique credential pair. An error will be thrown if registration fails.
+   *
+   * @param  {string} deviceName - The friendly name of the registering device
+   * @param  {string} credential - The credential configured on the Sensory Cloud server
+   * @returns Promise
+   */
+  register(deviceName: string, credential: string): Promise<DeviceResponse.AsObject>;
 }
 
-/* Holds OAuth token and expiration */
+/** Holds OAuth token and expiration */
 export type OauthToken = {
   token: string
   expires: Date
 }
 
-/* Holds OAuth clientId and secret */
+/** Holds OAuth clientId and secret */
 export type OauthClient = {
   clientId: string;
   clientSecret: string;
 }
 
-/* Securely serves credentials */
+/** Securely serves credentials */
 export interface ISecureCredentialStore {
   getClientId(): Promise<string>
   getClientSecret(): Promise<string>
 }
 
-/* Service to manage all OAuth-related functions */
+/** Service to manage all OAuth-related functions */
 export class OauthService implements IOauthService {
   constructor(
     private readonly config: Config,
@@ -81,11 +99,11 @@ export class OauthService implements IOauthService {
     const now = new Date();
 
     return new Promise<OauthToken>((resolve, reject) => {
-      const body = new TokenRequest();
-      body.setClientid(clientId.trim());
-      body.setSecret(clientSecret);
+      const request = new TokenRequest();
+      request.setClientid(clientId.trim());
+      request.setSecret(clientSecret);
 
-      this.oauthClient.getToken(body, (err, res) => {
+      this.oauthClient.getToken(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -104,7 +122,7 @@ export class OauthService implements IOauthService {
    * @param  {string} credential - The credential configured on the Sensory Cloud server
    * @returns Promise
    */
-  public async register(deviceName: string, credential: string): Promise<void> {
+  public async register(deviceName: string, credential: string): Promise<DeviceResponse.AsObject> {
     const clientId = await this.credentialStore.getClientId();
     if (!clientId) {
       throw Error('clientId not set in credential store');
@@ -130,13 +148,13 @@ export class OauthService implements IOauthService {
 
     request.setClient(client);
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise<DeviceResponse.AsObject>(async (resolve, reject) => {
       this.deviceClient.enrollDevice(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
 
-        return resolve();
+        return resolve(res.toObject());
       });
     });
   }

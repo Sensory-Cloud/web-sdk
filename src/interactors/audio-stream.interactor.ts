@@ -5,7 +5,7 @@ import { connect } from 'extendable-media-recorder-wav-encoder';
 
 export type AudioStreamConfig = Omit<AudioConfig.AsObject, 'languagecode'>;
 
-/* Interactor to capture audio from the host device */
+/** Interactor to capture audio from the host device */
 export interface IAudioStreamInteractor {
   /**
    * Prompt the user for permission to access audio devices. Will throw an error if permission is declined.
@@ -65,7 +65,7 @@ type WavHeader = {
   subChunk2Size: number;
 }
 
-/* Interactor provided by the Sensory Cloud SDK to access web browser audio using best practices */
+/** Interactor provided by the Sensory Cloud SDK to access web browser audio using best practices */
 export class AudioStreamInteractor implements IAudioStreamInteractor {
   private stream?: MediaStream;
   private mediaRecorder?: IMediaRecorder;

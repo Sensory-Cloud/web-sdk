@@ -2,7 +2,7 @@ import { IOauthService } from "../services/oauth.service";
 
 import { grpc } from "@improbable-eng/grpc-web";
 
-/* Manages the rotation and injection of OAuth JWTs into requests */
+/** Manages the rotation and injection of OAuth JWTs into requests */
 export interface ITokenManager {
   /**
    * Get a token.
@@ -16,7 +16,7 @@ export interface ITokenManager {
   getAuthorizationMetadata(): Promise<grpc.Metadata>;
 }
 
-/* Manages the rotation and injection of OAuth JWTs into requests */
+/** Manages the rotation and injection of OAuth JWTs into grpc requests */
 export class TokenManager implements ITokenManager {
   private readonly expiresBufferSeconds = 60 * 60; // 1 hour
 

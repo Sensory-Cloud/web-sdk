@@ -7,7 +7,7 @@ export type VideoStreamConfig = {
   compressions: Array<CompressionTypeMap[keyof CompressionTypeMap]>
 };
 
-/* Interactor to capture a stream of images from the host device */
+/** Interactor to capture a stream of images from the host device */
 export interface IVideoStreamInteractor {
   /**
    * Prompt the user for permission to access video devices.
@@ -56,7 +56,7 @@ export interface IVideoStreamInteractor {
   stopCapturing(): Promise<void>;
 }
 
-/* Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
+/** Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
 export class VideoStreamInteractor implements IVideoStreamInteractor {
   private readonly jpegImageQuality = 0.95;
   private readonly width =  { min: 480, ideal: 480 };

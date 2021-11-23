@@ -1,4 +1,4 @@
-/* Handles cryptographic operations */
+/** Handles cryptographic operations */
 export class CryptoService {
   private static readonly base64chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 

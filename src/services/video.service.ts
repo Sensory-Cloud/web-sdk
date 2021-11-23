@@ -8,7 +8,7 @@ import { ITokenManager } from "../token-manager/token.manager";
 
 export type RecognitionThreshold = RecognitionThresholdMap[keyof RecognitionThresholdMap]
 
-/* Handles all image and video requests to Sensory Cloud */
+/** Handles all image and video requests to Sensory Cloud */
 export class VideoService {
   constructor(
     private readonly config: Config,
@@ -20,7 +20,7 @@ export class VideoService {
   ) {}
 
   /**
-   * Fetch all the models supported by your instance of Sensory Cloud.
+   * Fetch all video the models supported by your instance of Sensory Cloud.
    * @returns Promise<GetModelsRequest.AsObject>
    */
   public async getModels(): Promise<GetModelsRequest.AsObject> {
@@ -78,7 +78,7 @@ export class VideoService {
     return enrollmentStream;
   }
   /**
-   * Stream images to sensory cloud for authentication.
+   * Stream images to sensory cloud in order to authenticate a user against an existing enrollment.
    * @param  {string} enrollmentId - the unique enrollment ID.
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request.
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled) Defaults to HIGH.
@@ -108,13 +108,14 @@ export class VideoService {
     return authenticateStream;
   }
   /**
-   * Stream images to Sensory Cloud in order to recognize particular features.
+   * Stream images to Sensory Cloud in order to recognize "liveness" of a particular image.
+   *
    * @param  {string} userId - The unique user identifier making the request.
-   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {string} modelName - the exact name of the model you intend to use for recognition. This model name can be retrieved from the getModels() call.
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the threshold. Defaults to HIGH.
    * @returns Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> - a bidirectional stream where ValidateRecognitionRequests can be passed to the cloud and LivenessRecognitionResponses are passed back.
    */
-  public async streamRecognition(
+  public async streamLivenessRecognition(
     userId: string,
     modelName: string,
     threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> {

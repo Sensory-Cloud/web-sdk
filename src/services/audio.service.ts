@@ -10,7 +10,7 @@ export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof Threshol
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
 export type EnrollmentIdentifier = {enrollmentId: string, enrollmentGroupId?: never} | {enrollmentId?: never, enrollmentGroupId: string};
 
-/* Handles all audio requests to Sensory Cloud */
+/** Handles all audio requests to Sensory Cloud */
 export class AudioService {
   constructor(
     private readonly config: Config,
@@ -23,7 +23,7 @@ export class AudioService {
   ) {}
 
   /**
-   * Fetch all the models supported by your instance of Sensory Cloud.
+   * Fetch all the audio models supported by your instance of Sensory Cloud.
    * @returns Promise<GetModelsResponse.AsObject>
    */
   public async getModels(): Promise<GetModelsResponse.AsObject> {
@@ -84,6 +84,8 @@ export class AudioService {
   }
 
   /**
+   * Authenticate against an existing audio enrollment in Sensory Cloud.
+   *
    * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
@@ -131,15 +133,17 @@ export class AudioService {
   }
 
   /**
-   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * Stream audio to Sensory Cloud in order to recognize a specific phrase or sound
+   *
+   * @param  {string} modelName - the exact name of the model you intend to recognize against. This model name can be retrieved from the getModels() call.
    * @param  {string} userId - the unique userId for the user requesting this event
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @returns Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> - a bidirectional stream where ValidateEventRequests can be passed to the cloud and ValidateEventResponses are passed back
    */
   public async streamEvent(
-    modelName: string,
     userId: string,
+    modelName: string,
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
     languageCode?: string): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -167,7 +171,9 @@ export class AudioService {
   }
 
   /**
-   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * Stream audio to Sensory Cloud in order to transcribe spoken words
+   *
+   * @param  {string} modelName - the exact name of the model you intend use for transcription. This model name can be retrieved from the getModels() call.
    * @param  {string} userId - the unique userId for the user requesting this event
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @returns Promise<TranscribeRequest<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
