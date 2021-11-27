@@ -1,5 +1,5 @@
 {
-  "name": "sensory-cloud",
+  "name": "@sensory-cloud/web-sdk",
   "version": "0.4.2",
   "description": "Allows web browsers to make calls to Sensory Cloud.",
   "dependencies": {

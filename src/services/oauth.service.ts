@@ -158,5 +158,4 @@ export class OauthService implements IOauthService {
       });
     });
   }
-
 }

@@ -1,6 +1,6 @@
 # Sensory Cloud Web SDK
 
-TODO ALL OF THIS
+Sensory Cloud Web SDK.
 
 
 # Examples
@@ -15,7 +15,7 @@ TODO ALL OF THIS
 
 ## Creating an AudioService
 
-AudioService blablabla
+AudioService
 
 ```typescript
 
@@ -135,7 +135,7 @@ transcriptionStream.on('end', (_) => {
 
 ## Creating a VideoService
 
-VideoService blablabla
+VideoService
 
 ### Obtaining Video Models
 
@@ -147,4 +147,4 @@ VideoService blablabla
 
 ## Creating a ManagementService
 
-ManagementService bla bla
+ManagementService

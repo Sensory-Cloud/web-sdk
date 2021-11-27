@@ -64,6 +64,14 @@ generate_proto_files() {
   done
 }
 
+build() {
+  echo "Building Sensory Cloud Web SDK"
+  generate_proto_files
+  mkdir -p ./dist/generated
+  cp -r ./src/generated ./dist
+  npx tsc
+}
+
 # --- Environment --------------------------------------------------
 
 IMAGE=ph
@@ -100,10 +108,17 @@ case "$1" in
   ;;
 
   "build"|"b")
-    generate_proto_files
-    mkdir -p ./dist/generated
-    cp -r ./src/generated ./dist
-    npx tsc
+    build
+  ;;
+
+  "publish"|"p")
+    build
+
+    if [ "$1" == "-login" ]; then
+      npm login
+    fi
+
+    npm publish --access public
   ;;
 
   "test"|"t")

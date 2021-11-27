@@ -1,6 +1,7 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config } from "../config";
-import { CompressionConfiguration, CompressionTypeMap } from "../generated/common/common_pb";
+import { CompressionConfiguration } from "../generated/common/common_pb";
+import { GetModelsResponse } from "../generated/v1/video";
 import { AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, LivenessRecognitionResponse, RecognitionThreshold, RecognitionThresholdMap, ValidateRecognitionConfig, ValidateRecognitionRequest } from "../generated/v1/video/video_pb";
 import { BidirectionalStream, VideoBiometricsClient, VideoModelsClient, VideoRecognitionClient } from "../generated/v1/video/video_pb_service";
 import { IVideoStreamInteractor } from "../interactors/video-stream.interactor";
@@ -23,10 +24,10 @@ export class VideoService {
    * Fetch all video the models supported by your instance of Sensory Cloud.
    * @returns Promise<GetModelsRequest.AsObject>
    */
-  public async getModels(): Promise<GetModelsRequest.AsObject> {
+  public async getModels(): Promise<GetModelsResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
 
-    return new Promise((resolve, reject) => {
+    return new Promise<GetModelsResponse.AsObject>((resolve, reject) => {
       const request = new GetModelsRequest();
 
       this.modelsClient.getModels(request, meta, (err, res) => {
