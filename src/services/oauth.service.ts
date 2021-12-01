@@ -2,11 +2,12 @@ import { Config } from "../config";
 import { TokenRequest } from "../generated/oauth/oauth_pb";
 import { OauthServiceClient } from "../generated/oauth/oauth_pb_service";
 import { CryptoService } from "./crypto.service";
-import { DeviceResponse, EnrollDeviceRequest } from "../generated/v1/management/device_pb";
+import { DeviceResponse, DeviceGetWhoAmIRequest, EnrollDeviceRequest } from "../generated/v1/management/device_pb";
 
 import { v4 } from 'uuid';
 import { DeviceServiceClient } from "../generated/v1/management/device_pb_service";
 import { GenericClient } from "../generated/common/common_pb";
+import { grpc } from "@improbable-eng/grpc-web";
 
 /** Manages OAuth interactions with Sensory Cloud */
 export interface IOauthService {
@@ -74,12 +75,36 @@ export class OauthService implements IOauthService {
    *
    * @returns OauthClient
    */
-     public generateCredentials(): OauthClient {
-      return {
-        clientId: v4(),
-        clientSecret: CryptoService.getSecureRandomString(16)
-      }
+  public generateCredentials(): OauthClient {
+    return {
+      clientId: v4(),
+      clientSecret: CryptoService.getSecureRandomString(16)
     }
+  }
+
+  /**
+   * Gets information about the current device. The device information is
+   * inferred via the OAuth token passed in.
+   *
+   * @returns Promise - containing information about the device
+   */
+  public async getWhoAmI(): Promise<DeviceResponse.AsObject> {
+    const meta = new grpc.Metadata();
+    const token = await this.getToken();
+
+    meta.set("Authorization", `Bearer ${token.token}`);
+
+    return new Promise<DeviceResponse.AsObject>((resolve, reject) => {
+      const request = new DeviceGetWhoAmIRequest();
+
+      this.deviceClient.getWhoAmI(request, meta, async (err, res) => {
+        if (err || !res) {
+          return reject(err || Error('No response returned'));
+        }
+        return resolve(res.toObject());
+      });
+    });
+  }
 
   /**
    * Obtains an Oauth JWT from Sensory Cloud.

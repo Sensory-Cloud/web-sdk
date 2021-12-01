@@ -181,7 +181,12 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
     }
 
     if (this.canvas) {
-      document.removeChild(this.canvas);
+      try {
+        document.removeChild(this.canvas);
+      } catch(err) {
+        // Suppress error
+      }
+
       delete this.canvas;
     }
   }

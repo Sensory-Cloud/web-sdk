@@ -1,9 +1,14 @@
-import { TokenManager, IOauthService, OauthClient, OauthToken } from '../token-manager';
+import { TokenManager, IOauthService, OauthClient, OauthToken } from '../../dist';
+import { DeviceResponse } from '../../dist/generated/v1/management/device_pb';
 
 class MockOAuthService implements IOauthService {
   public countGetTokenWasCalled = 0;
 
-  constructor(public oauthToken: OauthToken) {};
+  constructor(public oauthToken: OauthToken) {}
+
+  register(deviceName: string, credential: string): Promise<DeviceResponse.AsObject> {
+    throw new Error('Method not implemented.');
+  }
 
   generateCredentials(): OauthClient {
     throw new Error('Method not implemented.');
@@ -12,10 +17,6 @@ class MockOAuthService implements IOauthService {
   async getToken(): Promise<OauthToken> {
     this.countGetTokenWasCalled++;
     return this.oauthToken;
-  }
-
-  register(deviceName: string, credential: string): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 
 }

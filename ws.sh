@@ -122,7 +122,8 @@ case "$1" in
   ;;
 
   "test"|"t")
-    npx jest
+    cd test
+    npx jest --coverage --passWithNoTests
   ;;
 
   "genproto"|"gp")

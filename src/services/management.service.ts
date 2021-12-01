@@ -1,6 +1,4 @@
 import { Config } from "../config";
-import { DeviceGetWhoAmIRequest, DeviceResponse } from "../generated/v1/management";
-import { DeviceServiceClient } from "../generated/v1/management/device_pb_service";
 import { AppendEnrollmentGroupRequest, CreateEnrollmentGroupRequest, DeleteEnrollmentGroupRequest, DeleteEnrollmentRequest, EnrollmentGroupResponse, EnrollmentResponse, GetEnrollmentGroupsResponse, GetEnrollmentsRequest, GetEnrollmentsResponse } from "../generated/v1/management/enrollment_pb";
 import { EnrollmentServiceClient } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
@@ -10,28 +8,7 @@ export class ManagementService {
   constructor(
     private readonly config: Config,
     private readonly tokenManager: ITokenManager,
-    private readonly enrollmentClient = new EnrollmentServiceClient(config.cloud.host),
-    private readonly deviceClient = new DeviceServiceClient(config.cloud.host)) {
-  }
-  /**
-   * Gets information about the current device. The device information is
-   * inferred via the OAuth token passed in.
-   *
-   * @returns Promise - containing information about the device
-   */
-  public async getWhoAmI(): Promise<DeviceResponse.AsObject> {
-    const meta = await this.tokenManager.getAuthorizationMetadata();
-
-    return new Promise<DeviceResponse.AsObject>((resolve, reject) => {
-      const request = new DeviceGetWhoAmIRequest();
-
-      this.deviceClient.getWhoAmI(request, meta, async (err, res) => {
-        if (err || !res) {
-          return reject(err || Error('No response returned'));
-        }
-        return resolve(res.toObject());
-      });
-    });
+    private readonly enrollmentClient = new EnrollmentServiceClient(config.cloud.host)) {
   }
 
   /**

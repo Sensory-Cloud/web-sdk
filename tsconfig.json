@@ -7,7 +7,8 @@
     "strict": true,
     "noImplicitAny": true,
     "alwaysStrict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"

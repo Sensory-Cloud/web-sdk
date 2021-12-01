@@ -192,6 +192,7 @@ export class AudioStreamInteractor implements IAudioStreamInteractor {
   private async getAudioStream(): Promise<MediaStream> {
     if (!this.isRegistered) {
       await register(await connect());
+      this.isRegistered = true;
     }
 
     return navigator.mediaDevices.getUserMedia({
