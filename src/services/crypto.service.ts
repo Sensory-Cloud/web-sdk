@@ -8,7 +8,7 @@ export class CryptoService {
    * @param  {number} length - length of the string
    * @returns string
    */
-  public static getSecureRandomString(length: number): string {
+  public static getSecureRandomString(length=26): string {
     return Array.from(crypto.getRandomValues(new Uint32Array(length)))
       .map((x) => this.base64chars[x % this.base64chars.length])
       .join('');

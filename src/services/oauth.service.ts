@@ -78,7 +78,7 @@ export class OauthService implements IOauthService {
   public generateCredentials(): OauthClient {
     return {
       clientId: v4(),
-      clientSecret: CryptoService.getSecureRandomString(16)
+      clientSecret: CryptoService.getSecureRandomString(26)
     }
   }
 
