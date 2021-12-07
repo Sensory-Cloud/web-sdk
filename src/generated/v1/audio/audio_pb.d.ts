@@ -71,6 +71,54 @@ export namespace AudioModel {
   }
 }
 
+export class AudioRequestPostProcessingAction extends jspb.Message {
+  getActionid(): string;
+  setActionid(value: string): void;
+
+  getAction(): AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap];
+  setAction(value: AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AudioRequestPostProcessingAction.AsObject;
+  static toObject(includeInstance: boolean, msg: AudioRequestPostProcessingAction): AudioRequestPostProcessingAction.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AudioRequestPostProcessingAction, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AudioRequestPostProcessingAction;
+  static deserializeBinaryFromReader(message: AudioRequestPostProcessingAction, reader: jspb.BinaryReader): AudioRequestPostProcessingAction;
+}
+
+export namespace AudioRequestPostProcessingAction {
+  export type AsObject = {
+    actionid: string,
+    action: AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap],
+  }
+}
+
+export class AudioResponsePostProcessingAction extends jspb.Message {
+  getActionid(): string;
+  setActionid(value: string): void;
+
+  getAction(): AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap];
+  setAction(value: AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AudioResponsePostProcessingAction.AsObject;
+  static toObject(includeInstance: boolean, msg: AudioResponsePostProcessingAction): AudioResponsePostProcessingAction.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AudioResponsePostProcessingAction, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AudioResponsePostProcessingAction;
+  static deserializeBinaryFromReader(message: AudioResponsePostProcessingAction, reader: jspb.BinaryReader): AudioResponsePostProcessingAction;
+}
+
+export namespace AudioResponsePostProcessingAction {
+  export type AsObject = {
+    actionid: string,
+    action: AudioPostProcessingActionMap[keyof AudioPostProcessingActionMap],
+  }
+}
+
 export class GetModelsResponse extends jspb.Message {
   clearModelsList(): void;
   getModelsList(): Array<AudioModel>;
@@ -180,6 +228,11 @@ export class ValidateEventRequest extends jspb.Message {
   getAudiocontent_asB64(): string;
   setAudiocontent(value: Uint8Array | string): void;
 
+  hasPostprocessingaction(): boolean;
+  clearPostprocessingaction(): void;
+  getPostprocessingaction(): AudioRequestPostProcessingAction | undefined;
+  setPostprocessingaction(value?: AudioRequestPostProcessingAction): void;
+
   getStreamingrequestCase(): ValidateEventRequest.StreamingrequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ValidateEventRequest.AsObject;
@@ -195,6 +248,7 @@ export namespace ValidateEventRequest {
   export type AsObject = {
     config?: ValidateEventConfig.AsObject,
     audiocontent: Uint8Array | string,
+    postprocessingaction?: AudioRequestPostProcessingAction.AsObject,
   }
 
   export enum StreamingrequestCase {
@@ -217,6 +271,11 @@ export class TranscribeRequest extends jspb.Message {
   getAudiocontent_asB64(): string;
   setAudiocontent(value: Uint8Array | string): void;
 
+  hasPostprocessingaction(): boolean;
+  clearPostprocessingaction(): void;
+  getPostprocessingaction(): AudioRequestPostProcessingAction | undefined;
+  setPostprocessingaction(value?: AudioRequestPostProcessingAction): void;
+
   getStreamingrequestCase(): TranscribeRequest.StreamingrequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeRequest.AsObject;
@@ -232,6 +291,7 @@ export namespace TranscribeRequest {
   export type AsObject = {
     config?: TranscribeConfig.AsObject,
     audiocontent: Uint8Array | string,
+    postprocessingaction?: AudioRequestPostProcessingAction.AsObject,
   }
 
   export enum StreamingrequestCase {
@@ -344,6 +404,11 @@ export class ValidateEventResponse extends jspb.Message {
   getScore(): number;
   setScore(value: number): void;
 
+  hasPostprocessingaction(): boolean;
+  clearPostprocessingaction(): void;
+  getPostprocessingaction(): AudioResponsePostProcessingAction | undefined;
+  setPostprocessingaction(value?: AudioResponsePostProcessingAction): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ValidateEventResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ValidateEventResponse): ValidateEventResponse.AsObject;
@@ -360,6 +425,7 @@ export namespace ValidateEventResponse {
     success: boolean,
     resultid: string,
     score: number,
+    postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
   }
 }
 
@@ -372,6 +438,11 @@ export class TranscribeResponse extends jspb.Message {
 
   getIspartialresult(): boolean;
   setIspartialresult(value: boolean): void;
+
+  hasPostprocessingaction(): boolean;
+  clearPostprocessingaction(): void;
+  getPostprocessingaction(): AudioResponsePostProcessingAction | undefined;
+  setPostprocessingaction(value?: AudioResponsePostProcessingAction): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeResponse.AsObject;
@@ -388,6 +459,7 @@ export namespace TranscribeResponse {
     audioenergy: number,
     transcript: string,
     ispartialresult: boolean,
+    postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
   }
 }
 
@@ -619,6 +691,14 @@ export namespace AudioConfig {
 
   export const AudioEncoding: AudioEncodingMap;
 }
+
+export interface AudioPostProcessingActionMap {
+  NOT_SET: 0;
+  FLUSH: 1;
+  RESET: 2;
+}
+
+export const AudioPostProcessingAction: AudioPostProcessingActionMap;
 
 export interface ThresholdSensitivityMap {
   LOWEST: 0;
