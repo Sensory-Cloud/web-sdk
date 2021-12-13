@@ -53,7 +53,8 @@ export class VideoService {
     userId: string,
     modelName: string,
     isLivenessEnabled: boolean,
-    threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+    threshold: RecognitionThreshold = RecognitionThreshold.HIGH,
+    referenceId?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.biometricStreamingClient.createEnrollment(meta);
 
@@ -70,6 +71,10 @@ export class VideoService {
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
     config.setCompression(compressionConfig);
+
+    if (referenceId) {
+      config.setReferenceid(referenceId);
+    }
 
     request.setConfig(config);
 

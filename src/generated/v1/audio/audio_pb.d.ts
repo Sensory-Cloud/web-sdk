@@ -494,6 +494,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getEnrollmentduration(): number;
   setEnrollmentduration(value: number): void;
 
+  getReferenceid(): string;
+  setReferenceid(value: string): void;
+
   getEnrolllengthCase(): CreateEnrollmentConfig.EnrolllengthCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
@@ -515,6 +518,7 @@ export namespace CreateEnrollmentConfig {
     islivenessenabled: boolean,
     enrollmentnumutterances: number,
     enrollmentduration: number,
+    referenceid: string,
   }
 
   export enum EnrolllengthCase {

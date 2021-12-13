@@ -2320,7 +2320,8 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.toObject = function(includeIns
     description: jspb.Message.getFieldWithDefault(msg, 4, ""),
     islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     livenessthreshold: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f)
+    compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
+    referenceid: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -2385,6 +2386,10 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.deserializeBinaryFromReader = 
       var value = new common_common_pb.CompressionConfiguration;
       reader.readMessage(value,common_common_pb.CompressionConfiguration.deserializeBinaryFromReader);
       msg.setCompression(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setReferenceid(value);
       break;
     default:
       reader.skipField();
@@ -2463,6 +2468,13 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.serializeBinaryToWriter = func
       7,
       f,
       common_common_pb.CompressionConfiguration.serializeBinaryToWriter
+    );
+  }
+  f = message.getReferenceid();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
     );
   }
 };
@@ -2610,6 +2622,24 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.clearCompression = f
  */
 proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.hasCompression = function() {
   return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional string referenceId = 8;
+ * @return {string}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.getReferenceid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setReferenceid = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

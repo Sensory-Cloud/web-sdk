@@ -95,6 +95,9 @@ export class EnrollmentResponse extends jspb.Message {
   getDidenrollwithliveness(): boolean;
   setDidenrollwithliveness(value: boolean): void;
 
+  getReferenceid(): string;
+  setReferenceid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: EnrollmentResponse): EnrollmentResponse.AsObject;
@@ -119,6 +122,7 @@ export namespace EnrollmentResponse {
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     devicename: string,
     didenrollwithliveness: boolean,
+    referenceid: string,
   }
 }
 

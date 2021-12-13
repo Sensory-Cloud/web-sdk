@@ -3688,7 +3688,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.toObject = function(includeIns
     description: jspb.Message.getFieldWithDefault(msg, 5, ""),
     islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
     enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 7, 0),
-    enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0)
+    enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0),
+    referenceid: jspb.Message.getFieldWithDefault(msg, 9, "")
   };
 
   if (includeInstance) {
@@ -3757,6 +3758,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 8:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setEnrollmentduration(value);
+      break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setReferenceid(value);
       break;
     default:
       reader.skipField();
@@ -3841,6 +3846,13 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f != null) {
     writer.writeFloat(
       8,
+      f
+    );
+  }
+  f = message.getReferenceid();
+  if (f.length > 0) {
+    writer.writeString(
+      9,
       f
     );
   }
@@ -4043,6 +4055,24 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.clearEnrollmentdurat
  */
 proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.hasEnrollmentduration = function() {
   return jspb.Message.getField(this, 8) != null;
+};
+
+
+/**
+ * optional string referenceId = 9;
+ * @return {string}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getReferenceid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setReferenceid = function(value) {
+  return jspb.Message.setProto3StringField(this, 9, value);
 };
 
 

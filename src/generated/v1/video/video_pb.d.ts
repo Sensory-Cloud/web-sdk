@@ -318,6 +318,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getCompression(): common_common_pb.CompressionConfiguration | undefined;
   setCompression(value?: common_common_pb.CompressionConfiguration): void;
 
+  getReferenceid(): string;
+  setReferenceid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentConfig): CreateEnrollmentConfig.AsObject;
@@ -337,6 +340,7 @@ export namespace CreateEnrollmentConfig {
     islivenessenabled: boolean,
     livenessthreshold: RecognitionThresholdMap[keyof RecognitionThresholdMap],
     compression?: common_common_pb.CompressionConfiguration.AsObject,
+    referenceid: string,
   }
 }
 

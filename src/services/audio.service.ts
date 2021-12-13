@@ -49,6 +49,7 @@ export class AudioService {
    * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @param  {string} referenceId? - the external referenceId for this enrollment. Can be used by you in any way.
    * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
    */
   public async streamEnrollment(
@@ -56,7 +57,8 @@ export class AudioService {
     userId: string,
     modelName: string,
     isLivenessEnabled: boolean,
-    languageCode?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+    languageCode?: string,
+    referenceId?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.biometricsClient.createEnrollment(meta);
 
@@ -68,7 +70,12 @@ export class AudioService {
     config.setUserid(userId);
     config.setDeviceid(this.config.device.deviceId);
     config.setModelname(modelName);
-    config.setIslivenessenabled(isLivenessEnabled)
+    config.setIslivenessenabled(isLivenessEnabled);
+
+    if (referenceId) {
+      config.setReferenceid(referenceId);
+    }
+
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);

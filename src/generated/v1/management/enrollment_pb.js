@@ -582,7 +582,8 @@ proto.sensory.api.v1.management.EnrollmentResponse.toObject = function(includeIn
     userid: jspb.Message.getFieldWithDefault(msg, 9, ""),
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
     devicename: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    didenrollwithliveness: jspb.Message.getBooleanFieldWithDefault(msg, 12, false)
+    didenrollwithliveness: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
+    referenceid: jspb.Message.getFieldWithDefault(msg, 13, "")
   };
 
   if (includeInstance) {
@@ -669,6 +670,10 @@ proto.sensory.api.v1.management.EnrollmentResponse.deserializeBinaryFromReader =
     case 12:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setDidenrollwithliveness(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setReferenceid(value);
       break;
     default:
       reader.skipField();
@@ -783,6 +788,13 @@ proto.sensory.api.v1.management.EnrollmentResponse.serializeBinaryToWriter = fun
   if (f) {
     writer.writeBool(
       12,
+      f
+    );
+  }
+  f = message.getReferenceid();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
       f
     );
   }
@@ -1059,6 +1071,24 @@ proto.sensory.api.v1.management.EnrollmentResponse.prototype.getDidenrollwithliv
  */
 proto.sensory.api.v1.management.EnrollmentResponse.prototype.setDidenrollwithliveness = function(value) {
   return jspb.Message.setProto3BooleanField(this, 12, value);
+};
+
+
+/**
+ * optional string referenceId = 13;
+ * @return {string}
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.getReferenceid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.management.EnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.setReferenceid = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
 };
 
 
