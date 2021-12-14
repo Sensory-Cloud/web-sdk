@@ -1667,7 +1667,8 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.toObject = function(includeI
     isalive: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     enrollmentid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     modelname: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    modelversion: jspb.Message.getFieldWithDefault(msg, 5, "")
+    modelversion: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    score: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0)
   };
 
   if (includeInstance) {
@@ -1723,6 +1724,10 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.deserializeBinaryFromReader 
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setModelversion(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setScore(value);
       break;
     default:
       reader.skipField();
@@ -1785,6 +1790,13 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.serializeBinaryToWriter = fu
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getScore();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      6,
       f
     );
   }
@@ -1878,6 +1890,24 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.getModelversion = 
  */
 proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.setModelversion = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional float score = 6;
+ * @return {number}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.getScore = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 6, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.setScore = function(value) {
+  return jspb.Message.setProto3FloatField(this, 6, value);
 };
 
 

@@ -216,6 +216,9 @@ export class CreateEnrollmentResponse extends jspb.Message {
   getModelversion(): string;
   setModelversion(value: string): void;
 
+  getScore(): number;
+  setScore(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentResponse): CreateEnrollmentResponse.AsObject;
@@ -233,6 +236,7 @@ export namespace CreateEnrollmentResponse {
     enrollmentid: string,
     modelname: string,
     modelversion: string,
+    score: number,
   }
 }
 
