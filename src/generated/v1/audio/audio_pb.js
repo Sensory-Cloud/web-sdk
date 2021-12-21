@@ -4028,7 +4028,7 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.toObject = function(inc
   var f, obj = {
     audioenergy: jspb.Message.getFloatingPointFieldWithDefault(msg, 1, 0.0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    enrollentid: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    enrollmentid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     userid: jspb.Message.getFieldWithDefault(msg, 4, ""),
     modelprompt: jspb.Message.getFieldWithDefault(msg, 5, "")
   };
@@ -4077,7 +4077,7 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.deserializeBinaryFromRe
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setEnrollentid(value);
+      msg.setEnrollmentid(value);
       break;
     case 4:
       var value = /** @type {string} */ (reader.readString());
@@ -4130,7 +4130,7 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.serializeBinaryToWriter
       f
     );
   }
-  f = message.getEnrollentid();
+  f = message.getEnrollmentid();
   if (f.length > 0) {
     writer.writeString(
       3,
@@ -4191,10 +4191,10 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.setSuccess = 
 
 
 /**
- * optional string enrollentId = 3;
+ * optional string enrollmentId = 3;
  * @return {string}
  */
-proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.getEnrollentid = function() {
+proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.getEnrollmentid = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -4203,7 +4203,7 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.getEnrollenti
  * @param {string} value
  * @return {!proto.sensory.api.v1.audio.ValidateEnrolledEventResponse} returns this
  */
-proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.setEnrollentid = function(value) {
+proto.sensory.api.v1.audio.ValidateEnrolledEventResponse.prototype.setEnrollmentid = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 

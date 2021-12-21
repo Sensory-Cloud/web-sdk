@@ -510,8 +510,8 @@ export class ValidateEnrolledEventResponse extends jspb.Message {
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
 
-  getEnrollentid(): string;
-  setEnrollentid(value: string): void;
+  getEnrollmentid(): string;
+  setEnrollmentid(value: string): void;
 
   getUserid(): string;
   setUserid(value: string): void;
@@ -533,7 +533,7 @@ export namespace ValidateEnrolledEventResponse {
   export type AsObject = {
     audioenergy: number,
     success: boolean,
-    enrollentid: string,
+    enrollmentid: string,
     userid: string,
     modelprompt: string,
   }
