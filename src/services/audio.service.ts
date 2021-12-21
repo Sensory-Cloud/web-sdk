@@ -183,7 +183,7 @@ export class AudioService {
   /**
    * Stream audio to Sensory Cloud as a means for general audio enrollment.
    * Enrolled events are not subjected to the same rigor that biometric enrollments are.
-   * Any enrollable model may be used with streamCreateEnrolledEvent.
+   * Any non-biometric enrollable model may be used with streamCreateEnrolledEvent.
    *
    * @param  {string} description - a description of this enrollment. Useful if a user could have multiple enrollments, as it helps differentiate between them.
    * @param  {string} userId - the unique userId for this enrollment.
