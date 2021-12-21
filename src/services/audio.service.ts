@@ -1,10 +1,11 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse } from "../generated/v1/audio/audio_pb";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
 import { IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
+import { EnrollmentResponse } from "../generated/v1/management";
 
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
@@ -43,6 +44,7 @@ export class AudioService {
 
   /**
    * Stream audio to Sensory Cloud as a means for user enrollment.
+   * Only biometric models may be used with the streamEnrollment method.
    *
    * @param  {string} description - a description of this enrollment. Useful if a user could have multiple enrollments, as it helps differentiate between them.
    * @param  {string} userId - the unique userId for this enrollment.
@@ -92,6 +94,7 @@ export class AudioService {
 
   /**
    * Authenticate against an existing audio enrollment in Sensory Cloud.
+   * Only biometric models may be used with the streamAuthentication method.
    *
    * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
@@ -175,6 +178,98 @@ export class AudioService {
     eventStream.write(request);
 
     return eventStream;
+  }
+
+  /**
+   * Stream audio to Sensory Cloud as a means for general audio enrollment.
+   * Enrolled events are not subjected to the same rigor that biometric enrollments are.
+   * Any enrollable model may be used with streamCreateEnrolledEvent.
+   *
+   * @param  {string} description - a description of this enrollment. Useful if a user could have multiple enrollments, as it helps differentiate between them.
+   * @param  {string} userId - the unique userId for this enrollment.
+   * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @param  {string} referenceId? - the external referenceId for this enrollment. Can be used by you in any way.
+   * @returns Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrolledEventRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
+   */
+  public async streamCreateEnrolledEvent(
+    description: string,
+    userId: string,
+    modelName: string,
+    languageCode?: string,
+    referenceId?: string): Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
+    const enrollmentStream = this.eventClient.createEnrolledEvent(meta);
+
+    const request = new CreateEnrolledEventRequest();
+    const config = new CreateEnrollmentEventConfig();
+    const audio = new AudioConfig();
+
+    config.setDescription(description);
+    config.setUserid(userId);
+    config.setModelname(modelName);
+
+    if (referenceId) {
+      config.setReferenceid(referenceId);
+    }
+
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
+    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+
+    config.setAudio(audio)
+    request.setConfig(config);
+
+    // Send config
+    enrollmentStream.write(request);
+
+    return enrollmentStream;
+  }
+
+  /**
+   * Validate against an existing enrolled event in Sensory Cloud.
+   * Enrolled events are not subjected to the same rigor that biometric enrollments are.
+   * Any enrollable model may be used with streamValidateEnrolledEvent.
+   *
+   * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
+   * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
+   * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @returns Promise<BidirectionalStream<ValidateEnrolledEventRequest, ValidateEnrolledEventResponse>> - a bidirectional stream where ValidateEnrolledEventRequests can be passed to the cloud and ValidateEnrolledEventResponses are passed back
+   */
+  public async streamValidateEnrolledEvent(
+    enrollment: EnrollmentIdentifier,
+    sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
+    languageCode?: string): Promise<BidirectionalStream<ValidateEnrolledEventRequest, ValidateEnrolledEventResponse>> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
+    const authenticationStream = this.eventClient.validateEnrolledEvent(meta);
+
+    const request = new ValidateEnrolledEventRequest();
+    const config = new ValidateEnrolledEventConfig();
+    const audio = new AudioConfig();
+
+    if (enrollment.enrollmentId) {
+      config.setEnrollmentid(enrollment.enrollmentId);
+    }
+
+    if (enrollment.enrollmentGroupId) {
+      config.setEnrollmentgroupid(enrollment.enrollmentGroupId);
+    }
+
+    config.setSensitivity(sensitivity);
+
+    audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+    audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+    audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
+    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+
+    config.setAudio(audio)
+    request.setConfig(config);
+
+    // Send config
+    authenticationStream.write(request);
+
+    return authenticationStream;
   }
 
   /**

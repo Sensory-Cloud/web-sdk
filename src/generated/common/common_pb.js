@@ -2009,7 +2009,8 @@ proto.sensory.api.common.TechnologyType = {
   NOT_SET: 0,
   TSSV: 1,
   TS: 2,
-  TNL: 3
+  TNL: 3,
+  STT: 4
 };
 
 /**

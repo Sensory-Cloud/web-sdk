@@ -51,9 +51,29 @@ type AudioEventsValidateEvent = {
   readonly responseType: typeof v1_audio_audio_pb.ValidateEventResponse;
 };
 
+type AudioEventsCreateEnrolledEvent = {
+  readonly methodName: string;
+  readonly service: typeof AudioEvents;
+  readonly requestStream: true;
+  readonly responseStream: true;
+  readonly requestType: typeof v1_audio_audio_pb.CreateEnrolledEventRequest;
+  readonly responseType: typeof v1_audio_audio_pb.CreateEnrollmentResponse;
+};
+
+type AudioEventsValidateEnrolledEvent = {
+  readonly methodName: string;
+  readonly service: typeof AudioEvents;
+  readonly requestStream: true;
+  readonly responseStream: true;
+  readonly requestType: typeof v1_audio_audio_pb.ValidateEnrolledEventRequest;
+  readonly responseType: typeof v1_audio_audio_pb.ValidateEnrolledEventResponse;
+};
+
 export class AudioEvents {
   static readonly serviceName: string;
   static readonly ValidateEvent: AudioEventsValidateEvent;
+  static readonly CreateEnrolledEvent: AudioEventsCreateEnrolledEvent;
+  static readonly ValidateEnrolledEvent: AudioEventsValidateEnrolledEvent;
 }
 
 type AudioTranscriptionsTranscribe = {
@@ -126,6 +146,8 @@ export class AudioEventsClient {
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
   validateEvent(metadata?: grpc.Metadata): BidirectionalStream<v1_audio_audio_pb.ValidateEventRequest, v1_audio_audio_pb.ValidateEventResponse>;
+  createEnrolledEvent(metadata?: grpc.Metadata): BidirectionalStream<v1_audio_audio_pb.CreateEnrolledEventRequest, v1_audio_audio_pb.CreateEnrollmentResponse>;
+  validateEnrolledEvent(metadata?: grpc.Metadata): BidirectionalStream<v1_audio_audio_pb.ValidateEnrolledEventRequest, v1_audio_audio_pb.ValidateEnrolledEventResponse>;
 }
 
 export class AudioTranscriptionsClient {

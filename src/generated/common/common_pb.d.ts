@@ -292,6 +292,7 @@ export interface TechnologyTypeMap {
   TSSV: 1;
   TS: 2;
   TNL: 3;
+  STT: 4;
 }
 
 export const TechnologyType: TechnologyTypeMap;

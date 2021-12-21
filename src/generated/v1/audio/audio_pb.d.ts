@@ -258,6 +258,80 @@ export namespace ValidateEventRequest {
   }
 }
 
+export class CreateEnrolledEventRequest extends jspb.Message {
+  hasConfig(): boolean;
+  clearConfig(): void;
+  getConfig(): CreateEnrollmentEventConfig | undefined;
+  setConfig(value?: CreateEnrollmentEventConfig): void;
+
+  hasAudiocontent(): boolean;
+  clearAudiocontent(): void;
+  getAudiocontent(): Uint8Array | string;
+  getAudiocontent_asU8(): Uint8Array;
+  getAudiocontent_asB64(): string;
+  setAudiocontent(value: Uint8Array | string): void;
+
+  getStreamingrequestCase(): CreateEnrolledEventRequest.StreamingrequestCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateEnrolledEventRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateEnrolledEventRequest): CreateEnrolledEventRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateEnrolledEventRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateEnrolledEventRequest;
+  static deserializeBinaryFromReader(message: CreateEnrolledEventRequest, reader: jspb.BinaryReader): CreateEnrolledEventRequest;
+}
+
+export namespace CreateEnrolledEventRequest {
+  export type AsObject = {
+    config?: CreateEnrollmentEventConfig.AsObject,
+    audiocontent: Uint8Array | string,
+  }
+
+  export enum StreamingrequestCase {
+    STREAMINGREQUEST_NOT_SET = 0,
+    CONFIG = 1,
+    AUDIOCONTENT = 2,
+  }
+}
+
+export class ValidateEnrolledEventRequest extends jspb.Message {
+  hasConfig(): boolean;
+  clearConfig(): void;
+  getConfig(): ValidateEnrolledEventConfig | undefined;
+  setConfig(value?: ValidateEnrolledEventConfig): void;
+
+  hasAudiocontent(): boolean;
+  clearAudiocontent(): void;
+  getAudiocontent(): Uint8Array | string;
+  getAudiocontent_asU8(): Uint8Array;
+  getAudiocontent_asB64(): string;
+  setAudiocontent(value: Uint8Array | string): void;
+
+  getStreamingrequestCase(): ValidateEnrolledEventRequest.StreamingrequestCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ValidateEnrolledEventRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ValidateEnrolledEventRequest): ValidateEnrolledEventRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ValidateEnrolledEventRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ValidateEnrolledEventRequest;
+  static deserializeBinaryFromReader(message: ValidateEnrolledEventRequest, reader: jspb.BinaryReader): ValidateEnrolledEventRequest;
+}
+
+export namespace ValidateEnrolledEventRequest {
+  export type AsObject = {
+    config?: ValidateEnrolledEventConfig.AsObject,
+    audiocontent: Uint8Array | string,
+  }
+
+  export enum StreamingrequestCase {
+    STREAMINGREQUEST_NOT_SET = 0,
+    CONFIG = 1,
+    AUDIOCONTENT = 2,
+  }
+}
+
 export class TranscribeRequest extends jspb.Message {
   hasConfig(): boolean;
   clearConfig(): void;
@@ -426,6 +500,42 @@ export namespace ValidateEventResponse {
     resultid: string,
     score: number,
     postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
+  }
+}
+
+export class ValidateEnrolledEventResponse extends jspb.Message {
+  getAudioenergy(): number;
+  setAudioenergy(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  getEnrollentid(): string;
+  setEnrollentid(value: string): void;
+
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  getModelprompt(): string;
+  setModelprompt(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ValidateEnrolledEventResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ValidateEnrolledEventResponse): ValidateEnrolledEventResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ValidateEnrolledEventResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ValidateEnrolledEventResponse;
+  static deserializeBinaryFromReader(message: ValidateEnrolledEventResponse, reader: jspb.BinaryReader): ValidateEnrolledEventResponse;
+}
+
+export namespace ValidateEnrolledEventResponse {
+  export type AsObject = {
+    audioenergy: number,
+    success: boolean,
+    enrollentid: string,
+    userid: string,
+    modelprompt: string,
   }
 }
 
@@ -623,6 +733,108 @@ export namespace ValidateEventConfig {
     modelname: string,
     userid: string,
     sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+  }
+}
+
+export class CreateEnrollmentEventConfig extends jspb.Message {
+  hasAudio(): boolean;
+  clearAudio(): void;
+  getAudio(): AudioConfig | undefined;
+  setAudio(value?: AudioConfig): void;
+
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  getModelname(): string;
+  setModelname(value: string): void;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  hasEnrollmentnumutterances(): boolean;
+  clearEnrollmentnumutterances(): void;
+  getEnrollmentnumutterances(): number;
+  setEnrollmentnumutterances(value: number): void;
+
+  hasEnrollmentduration(): boolean;
+  clearEnrollmentduration(): void;
+  getEnrollmentduration(): number;
+  setEnrollmentduration(value: number): void;
+
+  getReferenceid(): string;
+  setReferenceid(value: string): void;
+
+  getEnrolllengthCase(): CreateEnrollmentEventConfig.EnrolllengthCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateEnrollmentEventConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateEnrollmentEventConfig): CreateEnrollmentEventConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateEnrollmentEventConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateEnrollmentEventConfig;
+  static deserializeBinaryFromReader(message: CreateEnrollmentEventConfig, reader: jspb.BinaryReader): CreateEnrollmentEventConfig;
+}
+
+export namespace CreateEnrollmentEventConfig {
+  export type AsObject = {
+    audio?: AudioConfig.AsObject,
+    userid: string,
+    modelname: string,
+    description: string,
+    enrollmentnumutterances: number,
+    enrollmentduration: number,
+    referenceid: string,
+  }
+
+  export enum EnrolllengthCase {
+    ENROLLLENGTH_NOT_SET = 0,
+    ENROLLMENTNUMUTTERANCES = 5,
+    ENROLLMENTDURATION = 6,
+  }
+}
+
+export class ValidateEnrolledEventConfig extends jspb.Message {
+  hasAudio(): boolean;
+  clearAudio(): void;
+  getAudio(): AudioConfig | undefined;
+  setAudio(value?: AudioConfig): void;
+
+  hasEnrollmentid(): boolean;
+  clearEnrollmentid(): void;
+  getEnrollmentid(): string;
+  setEnrollmentid(value: string): void;
+
+  hasEnrollmentgroupid(): boolean;
+  clearEnrollmentgroupid(): void;
+  getEnrollmentgroupid(): string;
+  setEnrollmentgroupid(value: string): void;
+
+  getSensitivity(): ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+  setSensitivity(value: ThresholdSensitivityMap[keyof ThresholdSensitivityMap]): void;
+
+  getAuthidCase(): ValidateEnrolledEventConfig.AuthidCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ValidateEnrolledEventConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: ValidateEnrolledEventConfig): ValidateEnrolledEventConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ValidateEnrolledEventConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ValidateEnrolledEventConfig;
+  static deserializeBinaryFromReader(message: ValidateEnrolledEventConfig, reader: jspb.BinaryReader): ValidateEnrolledEventConfig;
+}
+
+export namespace ValidateEnrolledEventConfig {
+  export type AsObject = {
+    audio?: AudioConfig.AsObject,
+    enrollmentid: string,
+    enrollmentgroupid: string,
+    sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+  }
+
+  export enum AuthidCase {
+    AUTHID_NOT_SET = 0,
+    ENROLLMENTID = 2,
+    ENROLLMENTGROUPID = 3,
   }
 }
 

@@ -197,6 +197,24 @@ AudioEvents.ValidateEvent = {
   responseType: v1_audio_audio_pb.ValidateEventResponse
 };
 
+AudioEvents.CreateEnrolledEvent = {
+  methodName: "CreateEnrolledEvent",
+  service: AudioEvents,
+  requestStream: true,
+  responseStream: true,
+  requestType: v1_audio_audio_pb.CreateEnrolledEventRequest,
+  responseType: v1_audio_audio_pb.CreateEnrollmentResponse
+};
+
+AudioEvents.ValidateEnrolledEvent = {
+  methodName: "ValidateEnrolledEvent",
+  service: AudioEvents,
+  requestStream: true,
+  responseStream: true,
+  requestType: v1_audio_audio_pb.ValidateEnrolledEventRequest,
+  responseType: v1_audio_audio_pb.ValidateEnrolledEventResponse
+};
+
 exports.AudioEvents = AudioEvents;
 
 function AudioEventsClient(serviceHost, options) {
@@ -211,6 +229,96 @@ AudioEventsClient.prototype.validateEvent = function validateEvent(metadata) {
     status: []
   };
   var client = grpc.client(AudioEvents.ValidateEvent, {
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport
+  });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+AudioEventsClient.prototype.createEnrolledEvent = function createEnrolledEvent(metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.client(AudioEvents.CreateEnrolledEvent, {
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport
+  });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+AudioEventsClient.prototype.validateEnrolledEvent = function validateEnrolledEvent(metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.client(AudioEvents.ValidateEnrolledEvent, {
     host: this.serviceHost,
     metadata: metadata,
     transport: this.options.transport
