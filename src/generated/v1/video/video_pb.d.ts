@@ -349,8 +349,15 @@ export namespace CreateEnrollmentConfig {
 }
 
 export class AuthenticateConfig extends jspb.Message {
+  hasEnrollmentid(): boolean;
+  clearEnrollmentid(): void;
   getEnrollmentid(): string;
   setEnrollmentid(value: string): void;
+
+  hasEnrollmentgroupid(): boolean;
+  clearEnrollmentgroupid(): void;
+  getEnrollmentgroupid(): string;
+  setEnrollmentgroupid(value: string): void;
 
   getIslivenessenabled(): boolean;
   setIslivenessenabled(value: boolean): void;
@@ -366,6 +373,7 @@ export class AuthenticateConfig extends jspb.Message {
   getDoincludetoken(): boolean;
   setDoincludetoken(value: boolean): void;
 
+  getAuthidCase(): AuthenticateConfig.AuthidCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateConfig.AsObject;
   static toObject(includeInstance: boolean, msg: AuthenticateConfig): AuthenticateConfig.AsObject;
@@ -379,10 +387,17 @@ export class AuthenticateConfig extends jspb.Message {
 export namespace AuthenticateConfig {
   export type AsObject = {
     enrollmentid: string,
+    enrollmentgroupid: string,
     islivenessenabled: boolean,
     livenessthreshold: RecognitionThresholdMap[keyof RecognitionThresholdMap],
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     doincludetoken: boolean,
+  }
+
+  export enum AuthidCase {
+    AUTHID_NOT_SET = 0,
+    ENROLLMENTID = 1,
+    ENROLLMENTGROUPID = 2,
   }
 }
 

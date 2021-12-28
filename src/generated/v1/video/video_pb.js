@@ -20,6 +20,7 @@ goog.object.extend(proto, validate_validate_pb);
 var common_common_pb = require('../../common/common_pb.js');
 goog.object.extend(proto, common_common_pb);
 goog.exportSymbol('proto.sensory.api.v1.video.AuthenticateConfig', null, global);
+goog.exportSymbol('proto.sensory.api.v1.video.AuthenticateConfig.AuthidCase', null, global);
 goog.exportSymbol('proto.sensory.api.v1.video.AuthenticateRequest', null, global);
 goog.exportSymbol('proto.sensory.api.v1.video.AuthenticateRequest.StreamingrequestCase', null, global);
 goog.exportSymbol('proto.sensory.api.v1.video.AuthenticateResponse', null, global);
@@ -256,7 +257,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.video.AuthenticateConfig = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_);
 };
 goog.inherits(proto.sensory.api.v1.video.AuthenticateConfig, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -2674,6 +2675,32 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setReferenceid = fun
 
 
 
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_ = [[1,2]];
+
+/**
+ * @enum {number}
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.AuthidCase = {
+  AUTHID_NOT_SET: 0,
+  ENROLLMENTID: 1,
+  ENROLLMENTGROUPID: 2
+};
+
+/**
+ * @return {proto.sensory.api.v1.video.AuthenticateConfig.AuthidCase}
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.getAuthidCase = function() {
+  return /** @type {proto.sensory.api.v1.video.AuthenticateConfig.AuthidCase} */(jspb.Message.computeOneofCase(this, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_[0]));
+};
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2706,10 +2733,11 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.toObject = function(opt_
 proto.sensory.api.v1.video.AuthenticateConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     enrollmentid: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    livenessthreshold: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    enrollmentgroupid: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    livenessthreshold: jspb.Message.getFieldWithDefault(msg, 4, 0),
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
-    doincludetoken: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
+    doincludetoken: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
   };
 
   if (includeInstance) {
@@ -2751,19 +2779,23 @@ proto.sensory.api.v1.video.AuthenticateConfig.deserializeBinaryFromReader = func
       msg.setEnrollmentid(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEnrollmentgroupid(value);
+      break;
+    case 3:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIslivenessenabled(value);
       break;
-    case 3:
+    case 4:
       var value = /** @type {!proto.sensory.api.v1.video.RecognitionThreshold} */ (reader.readEnum());
       msg.setLivenessthreshold(value);
       break;
-    case 4:
+    case 5:
       var value = new common_common_pb.CompressionConfiguration;
       reader.readMessage(value,common_common_pb.CompressionConfiguration.deserializeBinaryFromReader);
       msg.setCompression(value);
       break;
-    case 5:
+    case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setDoincludetoken(value);
       break;
@@ -2796,31 +2828,38 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.serializeBinary = functi
  */
 proto.sensory.api.v1.video.AuthenticateConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getEnrollmentid();
-  if (f.length > 0) {
+  f = /** @type {string} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
     writer.writeString(
       1,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
       f
     );
   }
   f = message.getIslivenessenabled();
   if (f) {
     writer.writeBool(
-      2,
+      3,
       f
     );
   }
   f = message.getLivenessthreshold();
   if (f !== 0.0) {
     writer.writeEnum(
-      3,
+      4,
       f
     );
   }
   f = message.getCompression();
   if (f != null) {
     writer.writeMessage(
-      4,
+      5,
       f,
       common_common_pb.CompressionConfiguration.serializeBinaryToWriter
     );
@@ -2828,7 +2867,7 @@ proto.sensory.api.v1.video.AuthenticateConfig.serializeBinaryToWriter = function
   f = message.getDoincludetoken();
   if (f) {
     writer.writeBool(
-      5,
+      6,
       f
     );
   }
@@ -2849,16 +2888,70 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.getEnrollmentid = functi
  * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.setEnrollmentid = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return jspb.Message.setOneofField(this, 1, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_[0], value);
 };
 
 
 /**
- * optional bool isLivenessEnabled = 2;
+ * Clears the field making it undefined.
+ * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.clearEnrollmentid = function() {
+  return jspb.Message.setOneofField(this, 1, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.hasEnrollmentid = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional string enrollmentGroupId = 2;
+ * @return {string}
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.getEnrollmentgroupid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.setEnrollmentgroupid = function(value) {
+  return jspb.Message.setOneofField(this, 2, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.clearEnrollmentgroupid = function() {
+  return jspb.Message.setOneofField(this, 2, proto.sensory.api.v1.video.AuthenticateConfig.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.AuthenticateConfig.prototype.hasEnrollmentgroupid = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional bool isLivenessEnabled = 3;
  * @return {boolean}
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.getIslivenessenabled = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
 
@@ -2867,16 +2960,16 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.getIslivenessenabled = f
  * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.setIslivenessenabled = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 2, value);
+  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
 /**
- * optional RecognitionThreshold livenessThreshold = 3;
+ * optional RecognitionThreshold livenessThreshold = 4;
  * @return {!proto.sensory.api.v1.video.RecognitionThreshold}
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.getLivenessthreshold = function() {
-  return /** @type {!proto.sensory.api.v1.video.RecognitionThreshold} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {!proto.sensory.api.v1.video.RecognitionThreshold} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
@@ -2885,17 +2978,17 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.getLivenessthreshold = f
  * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.setLivenessthreshold = function(value) {
-  return jspb.Message.setProto3EnumField(this, 3, value);
+  return jspb.Message.setProto3EnumField(this, 4, value);
 };
 
 
 /**
- * optional sensory.api.common.CompressionConfiguration compression = 4;
+ * optional sensory.api.common.CompressionConfiguration compression = 5;
  * @return {?proto.sensory.api.common.CompressionConfiguration}
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.getCompression = function() {
   return /** @type{?proto.sensory.api.common.CompressionConfiguration} */ (
-    jspb.Message.getWrapperField(this, common_common_pb.CompressionConfiguration, 4));
+    jspb.Message.getWrapperField(this, common_common_pb.CompressionConfiguration, 5));
 };
 
 
@@ -2904,7 +2997,7 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.getCompression = functio
  * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
 */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.setCompression = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 5, value);
 };
 
 
@@ -2922,16 +3015,16 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.clearCompression = funct
  * @return {boolean}
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.hasCompression = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
 /**
- * optional bool doIncludeToken = 5;
+ * optional bool doIncludeToken = 6;
  * @return {boolean}
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.getDoincludetoken = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
 };
 
 
@@ -2940,7 +3033,7 @@ proto.sensory.api.v1.video.AuthenticateConfig.prototype.getDoincludetoken = func
  * @return {!proto.sensory.api.v1.video.AuthenticateConfig} returns this
  */
 proto.sensory.api.v1.video.AuthenticateConfig.prototype.setDoincludetoken = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 5, value);
+  return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
 
