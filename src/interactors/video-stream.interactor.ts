@@ -22,6 +22,13 @@ export interface IVideoStreamInteractor {
   getVideoConfig(): VideoStreamConfig;
 
   /**
+   * Sets preferred video dimensions. Must be called before startCapturing() is called.
+   * @param  {PreferredVideoDimension} width
+   * @param  {PreferredVideoDimension} height
+   */
+   setVideoPreferredDimensions(width: PreferredVideoDimension, height: PreferredVideoDimension): void
+
+  /**
    * Allows setting the ID of the video element rendered on-screen. Images captured by the VideoStreamInteractor
    * will be mirrored to this element. If this Id is not set, a random one will be generated and video will be
    * rendered off-screen.
@@ -56,11 +63,15 @@ export interface IVideoStreamInteractor {
   stopCapturing(): Promise<void>;
 }
 
+export type PreferredVideoDimension = {
+  min: number, ideal: number, max?: number
+}
+
 /** Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
 export class VideoStreamInteractor implements IVideoStreamInteractor {
   private readonly jpegImageQuality = 0.95;
-  private readonly width =  { min: 480, ideal: 480 };
-  private readonly height = { min: 720, ideal: 720 };
+  private width: PreferredVideoDimension =  { min: 480, ideal: 480 };
+  private height: PreferredVideoDimension = { min: 720, ideal: 720 };
   private videoElementId = `video-${v4()}`;
   private preferredDeviceId?: string;
   private stream?: MediaStream;
@@ -81,6 +92,16 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
    */
   public getVideoConfig(): VideoStreamConfig {
     return { compressions: [] };
+  }
+
+  /**
+   * Sets preferred video dimensions. Must be called before startCapturing() is called.
+   * @param  {PreferredVideoDimension} width
+   * @param  {PreferredVideoDimension} height
+   */
+  public setVideoPreferredDimensions(width: PreferredVideoDimension, height: PreferredVideoDimension) {
+    this.width = width;
+    this.height = height;
   }
 
   /**
