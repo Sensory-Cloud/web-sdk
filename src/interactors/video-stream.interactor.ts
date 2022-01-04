@@ -64,7 +64,7 @@ export interface IVideoStreamInteractor {
 }
 
 export type PreferredVideoDimension = {
-  min: number, ideal: number, max?: number
+  min?: number, ideal: number, max?: number
 }
 
 /** Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
