@@ -5,7 +5,6 @@ import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioTrans
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
 import { IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
-import { EnrollmentResponse } from "../generated/v1/management";
 
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];

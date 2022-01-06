@@ -191,7 +191,13 @@ export class AudioStreamInteractor implements IAudioStreamInteractor {
 
   private async getAudioStream(): Promise<MediaStream> {
     if (!this.isRegistered) {
-      await register(await connect());
+      try {
+        await register(await connect());
+      } catch (err) {
+        // Likely the encode is already registered
+        console.error(err);
+      }
+
       this.isRegistered = true;
     }
 
