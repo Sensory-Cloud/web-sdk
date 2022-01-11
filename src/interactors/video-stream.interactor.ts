@@ -22,6 +22,12 @@ export interface IVideoStreamInteractor {
   getVideoConfig(): VideoStreamConfig;
 
   /**
+   * Sets the preferred jpeg image quality. Number must be between 0 and 1 (inclusive)
+   * @param  {number} quality
+   */
+   setPreferredJpegImageQuality(quality: number): void
+
+  /**
    * Sets preferred video dimensions. Must be called before startCapturing() is called.
    * @param  {PreferredVideoDimension} width
    * @param  {PreferredVideoDimension} height
@@ -69,7 +75,7 @@ export type PreferredVideoDimension = {
 
 /** Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
 export class VideoStreamInteractor implements IVideoStreamInteractor {
-  private readonly jpegImageQuality = 0.95;
+  private jpegImageQuality = 0.30;
   private width: PreferredVideoDimension =  { min: 480, ideal: 480 };
   private height: PreferredVideoDimension = { min: 720, ideal: 720 };
   private videoElementId = `video-${v4()}`;
@@ -92,6 +98,18 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
    */
   public getVideoConfig(): VideoStreamConfig {
     return { compressions: [] };
+  }
+
+  /**
+   * Sets the preferred jpeg image quality. Number must be between 0 and 1 (inclusive)
+   * @param  {number} quality
+   */
+  public setPreferredJpegImageQuality(quality: number) {
+    if (quality <= 0 || quality > 1) {
+      throw RangeError(`specified Jpeg quality ${quality} must be between 0 and 1 (inclusive)`);
+    }
+
+    this.jpegImageQuality = quality;
   }
 
   /**
@@ -180,6 +198,7 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
       context?.drawImage(videoElement, 0, 0);
 
       const image = await new Promise<Blob | null>((res) => this.canvas?.toBlob(res, 'image/jpeg', this.jpegImageQuality));
+      console.log(this.jpegImageQuality)
 
       if (!image) {
         throw new Error('Image not returned from canvas');
