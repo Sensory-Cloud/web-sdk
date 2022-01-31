@@ -43,6 +43,38 @@ export namespace EnrollDeviceRequest {
   }
 }
 
+export class RenewDeviceCredentialRequest extends jspb.Message {
+  getDeviceid(): string;
+  setDeviceid(value: string): void;
+
+  getClientid(): string;
+  setClientid(value: string): void;
+
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
+  getCredential(): string;
+  setCredential(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RenewDeviceCredentialRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RenewDeviceCredentialRequest): RenewDeviceCredentialRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RenewDeviceCredentialRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RenewDeviceCredentialRequest;
+  static deserializeBinaryFromReader(message: RenewDeviceCredentialRequest, reader: jspb.BinaryReader): RenewDeviceCredentialRequest;
+}
+
+export namespace RenewDeviceCredentialRequest {
+  export type AsObject = {
+    deviceid: string,
+    clientid: string,
+    tenantid: string,
+    credential: string,
+  }
+}
+
 export class DeviceResponse extends jspb.Message {
   getName(): string;
   setName(value: string): void;

@@ -1,4 +1,5 @@
 import { grpc } from "@improbable-eng/grpc-web";
+import { EnrollmentIdentifier } from "..";
 import { Config } from "../config";
 import { CompressionConfiguration } from "../generated/common/common_pb";
 import { GetModelsResponse } from "../generated/v1/video";
@@ -46,6 +47,7 @@ export class VideoService {
    * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled). Defaults to HIGH.
+   * @param  {number=0} numLiveFramesRequired - the number of frames that need to pass the liveness check for a successful enrollment (if liveness is enabled). A value of 0 means that all frames need to pass the liveness check. Defaults to 0.
    * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
    */
   public async streamEnrollment(
@@ -54,6 +56,7 @@ export class VideoService {
     modelName: string,
     isLivenessEnabled: boolean,
     threshold: RecognitionThreshold = RecognitionThreshold.HIGH,
+    numLiveFramesRequired: number = 0,
     referenceId?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.biometricStreamingClient.createEnrollment(meta);
@@ -70,6 +73,7 @@ export class VideoService {
     config.setModelname(modelName);
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
+    config.setNumlivenessframesrequired(numLiveFramesRequired);
     config.setCompression(compressionConfig);
 
     if (referenceId) {
@@ -85,13 +89,13 @@ export class VideoService {
   }
   /**
    * Stream images to sensory cloud in order to authenticate a user against an existing enrollment.
-   * @param  {string} enrollmentId - the unique enrollment ID.
+   * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request.
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled) Defaults to HIGH.
    * @returns Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> - a bidirectional stream where AuthenticateRequests can be passed to the cloud and AuthenticateResponses are passed back.
    */
   public async streamAuthentication(
-    enrollmentId: string,
+    enrollment: EnrollmentIdentifier,
     isLivenessEnabled: boolean,
     threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -103,7 +107,12 @@ export class VideoService {
 
     compressionConfig.setCompressionsList(this.videoStreamInteractor.getVideoConfig().compressions);
 
-    config.setEnrollmentid(enrollmentId);
+    if (enrollment.enrollmentId) {
+      config.setEnrollmentid(enrollment.enrollmentId)
+    } else if (enrollment.enrollmentGroupId) {
+      config.setEnrollmentgroupid(enrollment.enrollmentGroupId)
+    }
+
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
     config.setCompression(compressionConfig);

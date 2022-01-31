@@ -2,7 +2,7 @@ import { Config } from "../config";
 import { TokenRequest } from "../generated/oauth/oauth_pb";
 import { OauthServiceClient } from "../generated/oauth/oauth_pb_service";
 import { CryptoService } from "./crypto.service";
-import { DeviceResponse, DeviceGetWhoAmIRequest, EnrollDeviceRequest } from "../generated/v1/management/device_pb";
+import { DeviceResponse, DeviceGetWhoAmIRequest, EnrollDeviceRequest, RenewDeviceCredentialRequest } from "../generated/v1/management/device_pb";
 
 import { v4 } from 'uuid';
 import { DeviceServiceClient } from "../generated/v1/management/device_pb_service";
@@ -32,6 +32,14 @@ export interface IOauthService {
    * @returns Promise
    */
   register(deviceName: string, credential: string): Promise<DeviceResponse.AsObject>;
+
+  /**
+   * Renews the credentials stored in the attached SecureCredentialStore. This should be called once the device key has expired.
+   *
+   * @param credential - The credential configured on the Sensory Cloud server
+   * @returns Promise
+   */
+  renewDeviceCredential(credential: string): Promise<DeviceResponse.AsObject>;
 }
 
 /** Holds OAuth token and expiration */
@@ -175,6 +183,35 @@ export class OauthService implements IOauthService {
 
     return new Promise<DeviceResponse.AsObject>(async (resolve, reject) => {
       this.deviceClient.enrollDevice(request, (err, res) => {
+        if (err || !res) {
+          return reject(err || Error('No response returned'));
+        }
+
+        return resolve(res.toObject());
+      });
+    });
+  }
+
+  /**
+   * Renews the credentials stored in the attached SecureCredentialStore. This should be called once the device key has expired.
+   *
+   * @param credential - The credential configured on the Sensory Cloud server
+   * @returns Promise
+   */
+  public async renewDeviceCredential(credential: string): Promise<DeviceResponse.AsObject> {
+    const clientId = await this.credentialStore.getClientId();
+    if (!clientId) {
+      throw Error('clientId not set in credential store');
+    }
+
+    const request = new RenewDeviceCredentialRequest();
+    request.setDeviceid(this.config.device.deviceId);
+    request.setClientid(clientId);
+    request.setTenantid(this.config.tenant.tenantId);
+    request.setCredential(credential);
+
+    return new Promise<DeviceResponse.AsObject>(async (resolve, reject) => {
+      this.deviceClient.renewDeviceCredential(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }

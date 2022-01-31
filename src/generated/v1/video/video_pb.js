@@ -1947,7 +1947,9 @@ proto.sensory.api.v1.video.AuthenticateResponse.toObject = function(includeInsta
     success: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
     score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
     isalive: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    token: (f = msg.getToken()) && common_common_pb.TokenResponse.toObject(includeInstance, f)
+    token: (f = msg.getToken()) && common_common_pb.TokenResponse.toObject(includeInstance, f),
+    userid: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    enrollmentid: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -2000,6 +2002,14 @@ proto.sensory.api.v1.video.AuthenticateResponse.deserializeBinaryFromReader = fu
       var value = new common_common_pb.TokenResponse;
       reader.readMessage(value,common_common_pb.TokenResponse.deserializeBinaryFromReader);
       msg.setToken(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserid(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEnrollmentid(value);
       break;
     default:
       reader.skipField();
@@ -2057,6 +2067,20 @@ proto.sensory.api.v1.video.AuthenticateResponse.serializeBinaryToWriter = functi
       4,
       f,
       common_common_pb.TokenResponse.serializeBinaryToWriter
+    );
+  }
+  f = message.getUserid();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getEnrollmentid();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
     );
   }
 };
@@ -2150,6 +2174,42 @@ proto.sensory.api.v1.video.AuthenticateResponse.prototype.clearToken = function(
  */
 proto.sensory.api.v1.video.AuthenticateResponse.prototype.hasToken = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional string userId = 5;
+ * @return {string}
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.getUserid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.setUserid = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string enrollmentId = 6;
+ * @return {string}
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.getEnrollmentid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.setEnrollmentid = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 
@@ -2352,7 +2412,8 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.toObject = function(includeIns
     islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     livenessthreshold: jspb.Message.getFieldWithDefault(msg, 6, 0),
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 8, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    numlivenessframesrequired: jspb.Message.getFieldWithDefault(msg, 9, 0)
   };
 
   if (includeInstance) {
@@ -2421,6 +2482,10 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 8:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setNumlivenessframesrequired(value);
       break;
     default:
       reader.skipField();
@@ -2505,6 +2570,13 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       8,
+      f
+    );
+  }
+  f = message.getNumlivenessframesrequired();
+  if (f !== 0) {
+    writer.writeInt32(
+      9,
       f
     );
   }
@@ -2671,6 +2743,24 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.getReferenceid = fun
  */
 proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setReferenceid = function(value) {
   return jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
+/**
+ * optional int32 numLivenessFramesRequired = 9;
+ * @return {number}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.getNumlivenessframesrequired = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setNumlivenessframesrequired = function(value) {
+  return jspb.Message.setProto3IntField(this, 9, value);
 };
 
 

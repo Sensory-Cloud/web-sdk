@@ -878,7 +878,7 @@ proto.sensory.api.v1.file.FileCompleteCatalogRequest.prototype.toObject = functi
  */
 proto.sensory.api.v1.file.FileCompleteCatalogRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-
+    tenantid: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -915,6 +915,10 @@ proto.sensory.api.v1.file.FileCompleteCatalogRequest.deserializeBinaryFromReader
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTenantid(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -944,6 +948,31 @@ proto.sensory.api.v1.file.FileCompleteCatalogRequest.prototype.serializeBinary =
  */
 proto.sensory.api.v1.file.FileCompleteCatalogRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getTenantid();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string tenantId = 1;
+ * @return {string}
+ */
+proto.sensory.api.v1.file.FileCompleteCatalogRequest.prototype.getTenantid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.file.FileCompleteCatalogRequest} returns this
+ */
+proto.sensory.api.v1.file.FileCompleteCatalogRequest.prototype.setTenantid = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1327,7 +1356,8 @@ proto.sensory.api.v1.file.FileInfo.toObject = function(includeInstance, msg) {
     absolutepath: jspb.Message.getFieldWithDefault(msg, 2, ""),
     size: jspb.Message.getFieldWithDefault(msg, 3, 0),
     contenttype: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    hash: jspb.Message.getFieldWithDefault(msg, 5, "")
+    hash: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    tenantid: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -1383,6 +1413,10 @@ proto.sensory.api.v1.file.FileInfo.deserializeBinaryFromReader = function(msg, r
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setHash(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTenantid(value);
       break;
     default:
       reader.skipField();
@@ -1445,6 +1479,13 @@ proto.sensory.api.v1.file.FileInfo.serializeBinaryToWriter = function(message, w
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getTenantid();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
       f
     );
   }
@@ -1538,6 +1579,24 @@ proto.sensory.api.v1.file.FileInfo.prototype.getHash = function() {
  */
 proto.sensory.api.v1.file.FileInfo.prototype.setHash = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string tenantId = 6;
+ * @return {string}
+ */
+proto.sensory.api.v1.file.FileInfo.prototype.getTenantid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.file.FileInfo} returns this
+ */
+proto.sensory.api.v1.file.FileInfo.prototype.setTenantid = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 

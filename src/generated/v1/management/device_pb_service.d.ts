@@ -13,6 +13,15 @@ type DeviceServiceEnrollDevice = {
   readonly responseType: typeof v1_management_device_pb.DeviceResponse;
 };
 
+type DeviceServiceRenewDeviceCredential = {
+  readonly methodName: string;
+  readonly service: typeof DeviceService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_device_pb.RenewDeviceCredentialRequest;
+  readonly responseType: typeof v1_management_device_pb.DeviceResponse;
+};
+
 type DeviceServiceGetWhoAmI = {
   readonly methodName: string;
   readonly service: typeof DeviceService;
@@ -25,6 +34,7 @@ type DeviceServiceGetWhoAmI = {
 export class DeviceService {
   static readonly serviceName: string;
   static readonly EnrollDevice: DeviceServiceEnrollDevice;
+  static readonly RenewDeviceCredential: DeviceServiceRenewDeviceCredential;
   static readonly GetWhoAmI: DeviceServiceGetWhoAmI;
 }
 
@@ -67,6 +77,15 @@ export class DeviceServiceClient {
   ): UnaryResponse;
   enrollDevice(
     requestMessage: v1_management_device_pb.EnrollDeviceRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  renewDeviceCredential(
+    requestMessage: v1_management_device_pb.RenewDeviceCredentialRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  renewDeviceCredential(
+    requestMessage: v1_management_device_pb.RenewDeviceCredentialRequest,
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
   getWhoAmI(
