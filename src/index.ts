@@ -5,6 +5,7 @@ export * from './interactors/video-stream.interactor';
 
 export * from './services/audio.service';
 export * from './services/crypto.service';
+export * from './services/health.service';
 export * from './services/management.service';
 export * from './services/oauth.service';
 export * from './services/video.service';

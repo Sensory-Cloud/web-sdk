@@ -1,9 +1,9 @@
-import { Config } from "..";
+import { Config } from "../config";
 import { ServerHealthResponse } from "../generated/common";
 import { HealthRequest } from "../generated/health";
 import { HealthServiceClient } from "../generated/health/health_pb_service";
 
-/** Service to handle all typical CRUD functions */
+/** Service to handle all server health functions */
 export class HealthService {
   constructor(
     private readonly config: Config,
