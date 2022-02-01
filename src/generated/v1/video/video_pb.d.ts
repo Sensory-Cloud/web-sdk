@@ -255,6 +255,12 @@ export class AuthenticateResponse extends jspb.Message {
   getToken(): common_common_pb.TokenResponse | undefined;
   setToken(value?: common_common_pb.TokenResponse): void;
 
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  getEnrollmentid(): string;
+  setEnrollmentid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateResponse.AsObject;
   static toObject(includeInstance: boolean, msg: AuthenticateResponse): AuthenticateResponse.AsObject;
@@ -271,6 +277,8 @@ export namespace AuthenticateResponse {
     score: number,
     isalive: boolean,
     token?: common_common_pb.TokenResponse.AsObject,
+    userid: string,
+    enrollmentid: string,
   }
 }
 
@@ -325,6 +333,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getReferenceid(): string;
   setReferenceid(value: string): void;
 
+  getNumlivenessframesrequired(): number;
+  setNumlivenessframesrequired(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentConfig): CreateEnrollmentConfig.AsObject;
@@ -345,6 +356,7 @@ export namespace CreateEnrollmentConfig {
     livenessthreshold: RecognitionThresholdMap[keyof RecognitionThresholdMap],
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     referenceid: string,
+    numlivenessframesrequired: number,
   }
 }
 

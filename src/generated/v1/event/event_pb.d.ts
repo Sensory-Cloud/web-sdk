@@ -49,6 +49,22 @@ export class UsageEvent extends jspb.Message {
   getRoute(): string;
   setRoute(value: string): void;
 
+  clearTechnologiesList(): void;
+  getTechnologiesList(): Array<common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap]>;
+  setTechnologiesList(value: Array<common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap]>): void;
+  addTechnologies(value: common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap], index?: number): common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap];
+
+  clearModelsList(): void;
+  getModelsList(): Array<string>;
+  setModelsList(value: Array<string>): void;
+  addModels(value: string, index?: number): string;
+
+  getAudiodurationms(): number;
+  setAudiodurationms(value: number): void;
+
+  getVideoframecount(): number;
+  setVideoframecount(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEvent.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEvent): UsageEvent.AsObject;
@@ -67,6 +83,10 @@ export namespace UsageEvent {
     clientid: string,
     type: common_common_pb.UsageEventTypeMap[keyof common_common_pb.UsageEventTypeMap],
     route: string,
+    technologiesList: Array<common_common_pb.TechnologyTypeMap[keyof common_common_pb.TechnologyTypeMap]>,
+    modelsList: Array<string>,
+    audiodurationms: number,
+    videoframecount: number,
   }
 }
 

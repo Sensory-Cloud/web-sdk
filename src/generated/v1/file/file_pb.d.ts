@@ -96,6 +96,9 @@ export namespace FileCatalogRequest {
 }
 
 export class FileCompleteCatalogRequest extends jspb.Message {
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): FileCompleteCatalogRequest.AsObject;
   static toObject(includeInstance: boolean, msg: FileCompleteCatalogRequest): FileCompleteCatalogRequest.AsObject;
@@ -108,6 +111,7 @@ export class FileCompleteCatalogRequest extends jspb.Message {
 
 export namespace FileCompleteCatalogRequest {
   export type AsObject = {
+    tenantid: string,
   }
 }
 
@@ -175,6 +179,9 @@ export class FileInfo extends jspb.Message {
   getHash(): string;
   setHash(value: string): void;
 
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): FileInfo.AsObject;
   static toObject(includeInstance: boolean, msg: FileInfo): FileInfo.AsObject;
@@ -192,6 +199,7 @@ export namespace FileInfo {
     size: number,
     contenttype: string,
     hash: string,
+    tenantid: string,
   }
 }
 

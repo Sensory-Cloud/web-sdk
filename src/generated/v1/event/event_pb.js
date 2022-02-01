@@ -56,7 +56,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.event.UsageEvent = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.sensory.api.v1.event.UsageEvent.repeatedFields_, null);
 };
 goog.inherits(proto.sensory.api.v1.event.UsageEvent, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -248,6 +248,13 @@ proto.sensory.api.v1.event.PublishUsageEventsRequest.prototype.clearEventsList =
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.sensory.api.v1.event.UsageEvent.repeatedFields_ = [7,8];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -284,7 +291,11 @@ proto.sensory.api.v1.event.UsageEvent.toObject = function(includeInstance, msg) 
     id: jspb.Message.getFieldWithDefault(msg, 3, ""),
     clientid: jspb.Message.getFieldWithDefault(msg, 4, ""),
     type: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    route: jspb.Message.getFieldWithDefault(msg, 6, "")
+    route: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    technologiesList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
+    modelsList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
+    audiodurationms: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    videoframecount: jspb.Message.getFieldWithDefault(msg, 10, 0)
   };
 
   if (includeInstance) {
@@ -345,6 +356,24 @@ proto.sensory.api.v1.event.UsageEvent.deserializeBinaryFromReader = function(msg
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setRoute(value);
+      break;
+    case 7:
+      var values = /** @type {!Array<!proto.sensory.api.common.TechnologyType>} */ (reader.isDelimited() ? reader.readPackedEnum() : [reader.readEnum()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addTechnologies(values[i]);
+      }
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addModels(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setAudiodurationms(value);
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setVideoframecount(value);
       break;
     default:
       reader.skipField();
@@ -415,6 +444,34 @@ proto.sensory.api.v1.event.UsageEvent.serializeBinaryToWriter = function(message
   if (f.length > 0) {
     writer.writeString(
       6,
+      f
+    );
+  }
+  f = message.getTechnologiesList();
+  if (f.length > 0) {
+    writer.writePackedEnum(
+      7,
+      f
+    );
+  }
+  f = message.getModelsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      8,
+      f
+    );
+  }
+  f = message.getAudiodurationms();
+  if (f !== 0) {
+    writer.writeInt64(
+      9,
+      f
+    );
+  }
+  f = message.getVideoframecount();
+  if (f !== 0) {
+    writer.writeInt64(
+      10,
       f
     );
   }
@@ -545,6 +602,116 @@ proto.sensory.api.v1.event.UsageEvent.prototype.getRoute = function() {
  */
 proto.sensory.api.v1.event.UsageEvent.prototype.setRoute = function(value) {
   return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * repeated sensory.api.common.TechnologyType technologies = 7;
+ * @return {!Array<!proto.sensory.api.common.TechnologyType>}
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.getTechnologiesList = function() {
+  return /** @type {!Array<!proto.sensory.api.common.TechnologyType>} */ (jspb.Message.getRepeatedField(this, 7));
+};
+
+
+/**
+ * @param {!Array<!proto.sensory.api.common.TechnologyType>} value
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.setTechnologiesList = function(value) {
+  return jspb.Message.setField(this, 7, value || []);
+};
+
+
+/**
+ * @param {!proto.sensory.api.common.TechnologyType} value
+ * @param {number=} opt_index
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.addTechnologies = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 7, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.clearTechnologiesList = function() {
+  return this.setTechnologiesList([]);
+};
+
+
+/**
+ * repeated string models = 8;
+ * @return {!Array<string>}
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.getModelsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 8));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.setModelsList = function(value) {
+  return jspb.Message.setField(this, 8, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.addModels = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.clearModelsList = function() {
+  return this.setModelsList([]);
+};
+
+
+/**
+ * optional int64 audioDurationMs = 9;
+ * @return {number}
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.getAudiodurationms = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.setAudiodurationms = function(value) {
+  return jspb.Message.setProto3IntField(this, 9, value);
+};
+
+
+/**
+ * optional int64 videoFrameCount = 10;
+ * @return {number}
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.getVideoframecount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.setVideoframecount = function(value) {
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
