@@ -64,6 +64,33 @@ EnrollmentService.DeleteEnrollmentGroup = {
   responseType: v1_management_enrollment_pb.EnrollmentGroupResponse
 };
 
+EnrollmentService.UpdateEnrollment = {
+  methodName: "UpdateEnrollment",
+  service: EnrollmentService,
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_management_enrollment_pb.UpdateEnrollmentRequest,
+  responseType: v1_management_enrollment_pb.EnrollmentResponse
+};
+
+EnrollmentService.UpdateEnrollmentGroup = {
+  methodName: "UpdateEnrollmentGroup",
+  service: EnrollmentService,
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_management_enrollment_pb.UpdateEnrollmentGroupRequest,
+  responseType: v1_management_enrollment_pb.EnrollmentGroupResponse
+};
+
+EnrollmentService.RemoveEnrollmentsFromGroup = {
+  methodName: "RemoveEnrollmentsFromGroup",
+  service: EnrollmentService,
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_management_enrollment_pb.RemoveEnrollmentsRequest,
+  responseType: v1_management_enrollment_pb.EnrollmentGroupResponse
+};
+
 exports.EnrollmentService = EnrollmentService;
 
 function EnrollmentServiceClient(serviceHost, options) {
@@ -231,6 +258,99 @@ EnrollmentServiceClient.prototype.deleteEnrollmentGroup = function deleteEnrollm
     callback = arguments[1];
   }
   var client = grpc.unary(EnrollmentService.DeleteEnrollmentGroup, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EnrollmentServiceClient.prototype.updateEnrollment = function updateEnrollment(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EnrollmentService.UpdateEnrollment, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EnrollmentServiceClient.prototype.updateEnrollmentGroup = function updateEnrollmentGroup(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EnrollmentService.UpdateEnrollmentGroup, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EnrollmentServiceClient.prototype.removeEnrollmentsFromGroup = function removeEnrollmentsFromGroup(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EnrollmentService.RemoveEnrollmentsFromGroup, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

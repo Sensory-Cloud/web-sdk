@@ -115,3 +115,47 @@ export namespace DeviceGetWhoAmIRequest {
   }
 }
 
+export class DeleteDeviceRequest extends jspb.Message {
+  getDeviceid(): string;
+  setDeviceid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteDeviceRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteDeviceRequest): DeleteDeviceRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteDeviceRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteDeviceRequest;
+  static deserializeBinaryFromReader(message: DeleteDeviceRequest, reader: jspb.BinaryReader): DeleteDeviceRequest;
+}
+
+export namespace DeleteDeviceRequest {
+  export type AsObject = {
+    deviceid: string,
+  }
+}
+
+export class UpdateDeviceRequest extends jspb.Message {
+  getDeviceid(): string;
+  setDeviceid(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateDeviceRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateDeviceRequest): UpdateDeviceRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateDeviceRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateDeviceRequest;
+  static deserializeBinaryFromReader(message: UpdateDeviceRequest, reader: jspb.BinaryReader): UpdateDeviceRequest;
+}
+
+export namespace UpdateDeviceRequest {
+  export type AsObject = {
+    deviceid: string,
+    name: string,
+  }
+}
+

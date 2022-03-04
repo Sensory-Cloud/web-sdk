@@ -58,6 +58,33 @@ type EnrollmentServiceDeleteEnrollmentGroup = {
   readonly responseType: typeof v1_management_enrollment_pb.EnrollmentGroupResponse;
 };
 
+type EnrollmentServiceUpdateEnrollment = {
+  readonly methodName: string;
+  readonly service: typeof EnrollmentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_enrollment_pb.UpdateEnrollmentRequest;
+  readonly responseType: typeof v1_management_enrollment_pb.EnrollmentResponse;
+};
+
+type EnrollmentServiceUpdateEnrollmentGroup = {
+  readonly methodName: string;
+  readonly service: typeof EnrollmentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_enrollment_pb.UpdateEnrollmentGroupRequest;
+  readonly responseType: typeof v1_management_enrollment_pb.EnrollmentGroupResponse;
+};
+
+type EnrollmentServiceRemoveEnrollmentsFromGroup = {
+  readonly methodName: string;
+  readonly service: typeof EnrollmentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_enrollment_pb.RemoveEnrollmentsRequest;
+  readonly responseType: typeof v1_management_enrollment_pb.EnrollmentGroupResponse;
+};
+
 export class EnrollmentService {
   static readonly serviceName: string;
   static readonly GetEnrollments: EnrollmentServiceGetEnrollments;
@@ -66,6 +93,9 @@ export class EnrollmentService {
   static readonly AppendEnrollmentGroup: EnrollmentServiceAppendEnrollmentGroup;
   static readonly DeleteEnrollment: EnrollmentServiceDeleteEnrollment;
   static readonly DeleteEnrollmentGroup: EnrollmentServiceDeleteEnrollmentGroup;
+  static readonly UpdateEnrollment: EnrollmentServiceUpdateEnrollment;
+  static readonly UpdateEnrollmentGroup: EnrollmentServiceUpdateEnrollmentGroup;
+  static readonly RemoveEnrollmentsFromGroup: EnrollmentServiceRemoveEnrollmentsFromGroup;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -152,6 +182,33 @@ export class EnrollmentServiceClient {
   ): UnaryResponse;
   deleteEnrollmentGroup(
     requestMessage: v1_management_enrollment_pb.DeleteEnrollmentGroupRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentGroupResponse|null) => void
+  ): UnaryResponse;
+  updateEnrollment(
+    requestMessage: v1_management_enrollment_pb.UpdateEnrollmentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentResponse|null) => void
+  ): UnaryResponse;
+  updateEnrollment(
+    requestMessage: v1_management_enrollment_pb.UpdateEnrollmentRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentResponse|null) => void
+  ): UnaryResponse;
+  updateEnrollmentGroup(
+    requestMessage: v1_management_enrollment_pb.UpdateEnrollmentGroupRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentGroupResponse|null) => void
+  ): UnaryResponse;
+  updateEnrollmentGroup(
+    requestMessage: v1_management_enrollment_pb.UpdateEnrollmentGroupRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentGroupResponse|null) => void
+  ): UnaryResponse;
+  removeEnrollmentsFromGroup(
+    requestMessage: v1_management_enrollment_pb.RemoveEnrollmentsRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentGroupResponse|null) => void
+  ): UnaryResponse;
+  removeEnrollmentsFromGroup(
+    requestMessage: v1_management_enrollment_pb.RemoveEnrollmentsRequest,
     callback: (error: ServiceError|null, responseMessage: v1_management_enrollment_pb.EnrollmentGroupResponse|null) => void
   ): UnaryResponse;
 }

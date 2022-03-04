@@ -31,11 +31,31 @@ type DeviceServiceGetWhoAmI = {
   readonly responseType: typeof v1_management_device_pb.DeviceResponse;
 };
 
+type DeviceServiceDeleteDevice = {
+  readonly methodName: string;
+  readonly service: typeof DeviceService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_device_pb.DeleteDeviceRequest;
+  readonly responseType: typeof v1_management_device_pb.DeviceResponse;
+};
+
+type DeviceServiceUpdateDevice = {
+  readonly methodName: string;
+  readonly service: typeof DeviceService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_device_pb.UpdateDeviceRequest;
+  readonly responseType: typeof v1_management_device_pb.DeviceResponse;
+};
+
 export class DeviceService {
   static readonly serviceName: string;
   static readonly EnrollDevice: DeviceServiceEnrollDevice;
   static readonly RenewDeviceCredential: DeviceServiceRenewDeviceCredential;
   static readonly GetWhoAmI: DeviceServiceGetWhoAmI;
+  static readonly DeleteDevice: DeviceServiceDeleteDevice;
+  static readonly UpdateDevice: DeviceServiceUpdateDevice;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -95,6 +115,24 @@ export class DeviceServiceClient {
   ): UnaryResponse;
   getWhoAmI(
     requestMessage: v1_management_device_pb.DeviceGetWhoAmIRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  deleteDevice(
+    requestMessage: v1_management_device_pb.DeleteDeviceRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  deleteDevice(
+    requestMessage: v1_management_device_pb.DeleteDeviceRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  updateDevice(
+    requestMessage: v1_management_device_pb.UpdateDeviceRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
+  ): UnaryResponse;
+  updateDevice(
+    requestMessage: v1_management_device_pb.UpdateDeviceRequest,
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
 }

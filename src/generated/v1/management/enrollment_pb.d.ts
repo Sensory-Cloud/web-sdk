@@ -318,3 +318,77 @@ export namespace DeleteEnrollmentGroupRequest {
   }
 }
 
+export class UpdateEnrollmentRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateEnrollmentRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateEnrollmentRequest): UpdateEnrollmentRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateEnrollmentRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateEnrollmentRequest;
+  static deserializeBinaryFromReader(message: UpdateEnrollmentRequest, reader: jspb.BinaryReader): UpdateEnrollmentRequest;
+}
+
+export namespace UpdateEnrollmentRequest {
+  export type AsObject = {
+    id: string,
+    description: string,
+  }
+}
+
+export class UpdateEnrollmentGroupRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateEnrollmentGroupRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateEnrollmentGroupRequest): UpdateEnrollmentGroupRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateEnrollmentGroupRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateEnrollmentGroupRequest;
+  static deserializeBinaryFromReader(message: UpdateEnrollmentGroupRequest, reader: jspb.BinaryReader): UpdateEnrollmentGroupRequest;
+}
+
+export namespace UpdateEnrollmentGroupRequest {
+  export type AsObject = {
+    id: string,
+    name: string,
+  }
+}
+
+export class RemoveEnrollmentsRequest extends jspb.Message {
+  getGroupid(): string;
+  setGroupid(value: string): void;
+
+  clearEnrollmentidsList(): void;
+  getEnrollmentidsList(): Array<string>;
+  setEnrollmentidsList(value: Array<string>): void;
+  addEnrollmentids(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RemoveEnrollmentsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RemoveEnrollmentsRequest): RemoveEnrollmentsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RemoveEnrollmentsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RemoveEnrollmentsRequest;
+  static deserializeBinaryFromReader(message: RemoveEnrollmentsRequest, reader: jspb.BinaryReader): RemoveEnrollmentsRequest;
+}
+
+export namespace RemoveEnrollmentsRequest {
+  export type AsObject = {
+    groupid: string,
+    enrollmentidsList: Array<string>,
+  }
+}
+
