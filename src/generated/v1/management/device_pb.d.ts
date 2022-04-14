@@ -75,30 +75,6 @@ export namespace RenewDeviceCredentialRequest {
   }
 }
 
-export class DeviceResponse extends jspb.Message {
-  getName(): string;
-  setName(value: string): void;
-
-  getDeviceid(): string;
-  setDeviceid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): DeviceResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: DeviceResponse): DeviceResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: DeviceResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): DeviceResponse;
-  static deserializeBinaryFromReader(message: DeviceResponse, reader: jspb.BinaryReader): DeviceResponse;
-}
-
-export namespace DeviceResponse {
-  export type AsObject = {
-    name: string,
-    deviceid: string,
-  }
-}
-
 export class DeviceGetWhoAmIRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeviceGetWhoAmIRequest.AsObject;
@@ -115,23 +91,33 @@ export namespace DeviceGetWhoAmIRequest {
   }
 }
 
-export class DeleteDeviceRequest extends jspb.Message {
-  getDeviceid(): string;
-  setDeviceid(value: string): void;
+export class GetDevicesRequest extends jspb.Message {
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
+  hasPagination(): boolean;
+  clearPagination(): void;
+  getPagination(): common_common_pb.PaginationOptions | undefined;
+  setPagination(value?: common_common_pb.PaginationOptions): void;
+
+  getUserid(): string;
+  setUserid(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): DeleteDeviceRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: DeleteDeviceRequest): DeleteDeviceRequest.AsObject;
+  toObject(includeInstance?: boolean): GetDevicesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetDevicesRequest): GetDevicesRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: DeleteDeviceRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): DeleteDeviceRequest;
-  static deserializeBinaryFromReader(message: DeleteDeviceRequest, reader: jspb.BinaryReader): DeleteDeviceRequest;
+  static serializeBinaryToWriter(message: GetDevicesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetDevicesRequest;
+  static deserializeBinaryFromReader(message: GetDevicesRequest, reader: jspb.BinaryReader): GetDevicesRequest;
 }
 
-export namespace DeleteDeviceRequest {
+export namespace GetDevicesRequest {
   export type AsObject = {
-    deviceid: string,
+    tenantid: string,
+    pagination?: common_common_pb.PaginationOptions.AsObject,
+    userid: string,
   }
 }
 
@@ -156,6 +142,78 @@ export namespace UpdateDeviceRequest {
   export type AsObject = {
     deviceid: string,
     name: string,
+  }
+}
+
+export class DeleteDeviceRequest extends jspb.Message {
+  getDeviceid(): string;
+  setDeviceid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteDeviceRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteDeviceRequest): DeleteDeviceRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteDeviceRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteDeviceRequest;
+  static deserializeBinaryFromReader(message: DeleteDeviceRequest, reader: jspb.BinaryReader): DeleteDeviceRequest;
+}
+
+export namespace DeleteDeviceRequest {
+  export type AsObject = {
+    deviceid: string,
+  }
+}
+
+export class DeviceResponse extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getDeviceid(): string;
+  setDeviceid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeviceResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeviceResponse): DeviceResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeviceResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeviceResponse;
+  static deserializeBinaryFromReader(message: DeviceResponse, reader: jspb.BinaryReader): DeviceResponse;
+}
+
+export namespace DeviceResponse {
+  export type AsObject = {
+    name: string,
+    deviceid: string,
+  }
+}
+
+export class DeviceListResponse extends jspb.Message {
+  clearDevicesList(): void;
+  getDevicesList(): Array<DeviceResponse>;
+  setDevicesList(value: Array<DeviceResponse>): void;
+  addDevices(value?: DeviceResponse, index?: number): DeviceResponse;
+
+  hasPagination(): boolean;
+  clearPagination(): void;
+  getPagination(): common_common_pb.PaginationResponse | undefined;
+  setPagination(value?: common_common_pb.PaginationResponse): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeviceListResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeviceListResponse): DeviceListResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeviceListResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeviceListResponse;
+  static deserializeBinaryFromReader(message: DeviceListResponse, reader: jspb.BinaryReader): DeviceListResponse;
+}
+
+export namespace DeviceListResponse {
+  export type AsObject = {
+    devicesList: Array<DeviceResponse.AsObject>,
+    pagination?: common_common_pb.PaginationResponse.AsObject,
   }
 }
 

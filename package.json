@@ -1,6 +1,6 @@
 {
   "name": "@sensory-cloud/web-sdk",
-  "version": "0.9.0",
+  "version": "0.11.0",
   "description": "Allows web browsers to make calls to Sensory Cloud.",
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",

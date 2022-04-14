@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as validate_validate_pb from "../validate/validate_pb";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class CompressionConfiguration extends jspb.Message {
   clearCompressionsList(): void;
@@ -101,6 +102,9 @@ export class ServerHealthResponse extends jspb.Message {
   setServicesList(value: Array<ServiceHealth>): void;
   addServices(value?: ServiceHealth, index?: number): ServiceHealth;
 
+  getServertype(): ServerTypeMap[keyof ServerTypeMap];
+  setServertype(value: ServerTypeMap[keyof ServerTypeMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerHealthResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ServerHealthResponse): ServerHealthResponse.AsObject;
@@ -117,6 +121,7 @@ export namespace ServerHealthResponse {
     serverversion: string,
     id: string,
     servicesList: Array<ServiceHealth.AsObject>,
+    servertype: ServerTypeMap[keyof ServerTypeMap],
   }
 }
 
@@ -256,13 +261,146 @@ export namespace GenericClient {
   }
 }
 
+export class TenantResponse extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  hasCreatedat(): boolean;
+  clearCreatedat(): void;
+  getCreatedat(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreatedat(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdatedat(): boolean;
+  clearUpdatedat(): void;
+  getUpdatedat(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdatedat(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TenantResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: TenantResponse): TenantResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TenantResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TenantResponse;
+  static deserializeBinaryFromReader(message: TenantResponse, reader: jspb.BinaryReader): TenantResponse;
+}
+
+export namespace TenantResponse {
+  export type AsObject = {
+    id: string,
+    name: string,
+    createdat?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updatedat?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class PaginationOptions extends jspb.Message {
+  getOrdering(): string;
+  setOrdering(value: string): void;
+
+  getDecending(): boolean;
+  setDecending(value: boolean): void;
+
+  getPageindex(): number;
+  setPageindex(value: number): void;
+
+  getPagesize(): number;
+  setPagesize(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PaginationOptions.AsObject;
+  static toObject(includeInstance: boolean, msg: PaginationOptions): PaginationOptions.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PaginationOptions, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PaginationOptions;
+  static deserializeBinaryFromReader(message: PaginationOptions, reader: jspb.BinaryReader): PaginationOptions;
+}
+
+export namespace PaginationOptions {
+  export type AsObject = {
+    ordering: string,
+    decending: boolean,
+    pageindex: number,
+    pagesize: number,
+  }
+}
+
+export class PaginationResponse extends jspb.Message {
+  getOrdering(): string;
+  setOrdering(value: string): void;
+
+  getDecending(): boolean;
+  setDecending(value: boolean): void;
+
+  clearPossibleorderingsList(): void;
+  getPossibleorderingsList(): Array<string>;
+  setPossibleorderingsList(value: Array<string>): void;
+  addPossibleorderings(value: string, index?: number): string;
+
+  getTotalcount(): number;
+  setTotalcount(value: number): void;
+
+  getPagesize(): number;
+  setPagesize(value: number): void;
+
+  getPrevpageindex(): number;
+  setPrevpageindex(value: number): void;
+
+  getCurrentpageindex(): number;
+  setCurrentpageindex(value: number): void;
+
+  getNextpageindex(): number;
+  setNextpageindex(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PaginationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: PaginationResponse): PaginationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PaginationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PaginationResponse;
+  static deserializeBinaryFromReader(message: PaginationResponse, reader: jspb.BinaryReader): PaginationResponse;
+}
+
+export namespace PaginationResponse {
+  export type AsObject = {
+    ordering: string,
+    decending: boolean,
+    possibleorderingsList: Array<string>,
+    totalcount: number,
+    pagesize: number,
+    prevpageindex: number,
+    currentpageindex: number,
+    nextpageindex: number,
+  }
+}
+
+export interface VoidMap {
+  VOID_VALUE: 0;
+}
+
+export const Void: VoidMap;
+
 export interface KeyTypeMap {
   PUBLIC_KEY: 0;
   PUBLIC_KEY_ED25519: 1;
   SHARED_SECRET: 3;
+  AES_256: 4;
 }
 
 export const KeyType: KeyTypeMap;
+
+export interface FeatureFlagMap {
+  TSSV_ALL: 0;
+  TS_ALL: 1;
+  TNL_ALL: 2;
+}
+
+export const FeatureFlag: FeatureFlagMap;
 
 export interface ModelTypeMap {
   VOICE_BIOMETRIC_TEXT_DEPENDENT: 0;
@@ -319,4 +457,11 @@ export interface UsageEventTypeMap {
 }
 
 export const UsageEventType: UsageEventTypeMap;
+
+export interface ServerTypeMap {
+  TITAN: 0;
+  IO: 1;
+}
+
+export const ServerType: ServerTypeMap;
 
