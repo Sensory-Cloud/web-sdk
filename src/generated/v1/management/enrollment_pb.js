@@ -655,7 +655,8 @@ proto.sensory.api.v1.management.EnrollmentResponse.toObject = function(includeIn
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
     devicename: jspb.Message.getFieldWithDefault(msg, 11, ""),
     didenrollwithliveness: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 13, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    didenrollasbiometric: jspb.Message.getBooleanFieldWithDefault(msg, 14, false)
   };
 
   if (includeInstance) {
@@ -746,6 +747,10 @@ proto.sensory.api.v1.management.EnrollmentResponse.deserializeBinaryFromReader =
     case 13:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 14:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDidenrollasbiometric(value);
       break;
     default:
       reader.skipField();
@@ -867,6 +872,13 @@ proto.sensory.api.v1.management.EnrollmentResponse.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       13,
+      f
+    );
+  }
+  f = message.getDidenrollasbiometric();
+  if (f) {
+    writer.writeBool(
+      14,
       f
     );
   }
@@ -1161,6 +1173,24 @@ proto.sensory.api.v1.management.EnrollmentResponse.prototype.getReferenceid = fu
  */
 proto.sensory.api.v1.management.EnrollmentResponse.prototype.setReferenceid = function(value) {
   return jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional bool didEnrollAsBiometric = 14;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.getDidenrollasbiometric = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 14, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.management.EnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.management.EnrollmentResponse.prototype.setDidenrollasbiometric = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 14, value);
 };
 
 

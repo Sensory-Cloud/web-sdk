@@ -31,6 +31,15 @@ type DeviceServiceGetWhoAmI = {
   readonly responseType: typeof v1_management_device_pb.DeviceResponse;
 };
 
+type DeviceServiceGetDevice = {
+  readonly methodName: string;
+  readonly service: typeof DeviceService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_management_device_pb.DeviceRequest;
+  readonly responseType: typeof v1_management_device_pb.GetDeviceResponse;
+};
+
 type DeviceServiceGetDevices = {
   readonly methodName: string;
   readonly service: typeof DeviceService;
@@ -54,7 +63,7 @@ type DeviceServiceDeleteDevice = {
   readonly service: typeof DeviceService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof v1_management_device_pb.DeleteDeviceRequest;
+  readonly requestType: typeof v1_management_device_pb.DeviceRequest;
   readonly responseType: typeof v1_management_device_pb.DeviceResponse;
 };
 
@@ -63,6 +72,7 @@ export class DeviceService {
   static readonly EnrollDevice: DeviceServiceEnrollDevice;
   static readonly RenewDeviceCredential: DeviceServiceRenewDeviceCredential;
   static readonly GetWhoAmI: DeviceServiceGetWhoAmI;
+  static readonly GetDevice: DeviceServiceGetDevice;
   static readonly GetDevices: DeviceServiceGetDevices;
   static readonly UpdateDevice: DeviceServiceUpdateDevice;
   static readonly DeleteDevice: DeviceServiceDeleteDevice;
@@ -127,6 +137,15 @@ export class DeviceServiceClient {
     requestMessage: v1_management_device_pb.DeviceGetWhoAmIRequest,
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
+  getDevice(
+    requestMessage: v1_management_device_pb.DeviceRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.GetDeviceResponse|null) => void
+  ): UnaryResponse;
+  getDevice(
+    requestMessage: v1_management_device_pb.DeviceRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.GetDeviceResponse|null) => void
+  ): UnaryResponse;
   getDevices(
     requestMessage: v1_management_device_pb.GetDevicesRequest,
     metadata: grpc.Metadata,
@@ -146,12 +165,12 @@ export class DeviceServiceClient {
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
   deleteDevice(
-    requestMessage: v1_management_device_pb.DeleteDeviceRequest,
+    requestMessage: v1_management_device_pb.DeviceRequest,
     metadata: grpc.Metadata,
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
   deleteDevice(
-    requestMessage: v1_management_device_pb.DeleteDeviceRequest,
+    requestMessage: v1_management_device_pb.DeviceRequest,
     callback: (error: ServiceError|null, responseMessage: v1_management_device_pb.DeviceResponse|null) => void
   ): UnaryResponse;
 }

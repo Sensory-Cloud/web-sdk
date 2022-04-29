@@ -37,6 +37,15 @@ DeviceService.GetWhoAmI = {
   responseType: v1_management_device_pb.DeviceResponse
 };
 
+DeviceService.GetDevice = {
+  methodName: "GetDevice",
+  service: DeviceService,
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_management_device_pb.DeviceRequest,
+  responseType: v1_management_device_pb.GetDeviceResponse
+};
+
 DeviceService.GetDevices = {
   methodName: "GetDevices",
   service: DeviceService,
@@ -60,7 +69,7 @@ DeviceService.DeleteDevice = {
   service: DeviceService,
   requestStream: false,
   responseStream: false,
-  requestType: v1_management_device_pb.DeleteDeviceRequest,
+  requestType: v1_management_device_pb.DeviceRequest,
   responseType: v1_management_device_pb.DeviceResponse
 };
 
@@ -138,6 +147,37 @@ DeviceServiceClient.prototype.getWhoAmI = function getWhoAmI(requestMessage, met
     callback = arguments[1];
   }
   var client = grpc.unary(DeviceService.GetWhoAmI, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+DeviceServiceClient.prototype.getDevice = function getDevice(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(DeviceService.GetDevice, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

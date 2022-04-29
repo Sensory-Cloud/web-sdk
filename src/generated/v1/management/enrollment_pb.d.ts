@@ -98,6 +98,9 @@ export class EnrollmentResponse extends jspb.Message {
   getReferenceid(): string;
   setReferenceid(value: string): void;
 
+  getDidenrollasbiometric(): boolean;
+  setDidenrollasbiometric(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: EnrollmentResponse): EnrollmentResponse.AsObject;
@@ -123,6 +126,7 @@ export namespace EnrollmentResponse {
     devicename: string,
     didenrollwithliveness: boolean,
     referenceid: string,
+    didenrollasbiometric: boolean,
   }
 }
 
