@@ -6728,7 +6728,8 @@ proto.sensory.api.v1.audio.AudioConfig.prototype.setLanguagecode = function(valu
 proto.sensory.api.v1.audio.AudioPostProcessingAction = {
   NOT_SET: 0,
   FLUSH: 1,
-  RESET: 2
+  RESET: 2,
+  FINAL: 3
 };
 
 /**

@@ -912,6 +912,7 @@ export interface AudioPostProcessingActionMap {
   NOT_SET: 0;
   FLUSH: 1;
   RESET: 2;
+  FINAL: 3;
 }
 
 export const AudioPostProcessingAction: AudioPostProcessingActionMap;
