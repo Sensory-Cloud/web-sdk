@@ -375,6 +375,32 @@ export namespace TranscribeRequest {
   }
 }
 
+export class SynthesizeSpeechRequest extends jspb.Message {
+  getPhrase(): string;
+  setPhrase(value: string): void;
+
+  hasConfig(): boolean;
+  clearConfig(): void;
+  getConfig(): VoiceSynthesisConfig | undefined;
+  setConfig(value?: VoiceSynthesisConfig): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SynthesizeSpeechRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SynthesizeSpeechRequest): SynthesizeSpeechRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SynthesizeSpeechRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SynthesizeSpeechRequest;
+  static deserializeBinaryFromReader(message: SynthesizeSpeechRequest, reader: jspb.BinaryReader): SynthesizeSpeechRequest;
+}
+
+export namespace SynthesizeSpeechRequest {
+  export type AsObject = {
+    phrase: string,
+    config?: VoiceSynthesisConfig.AsObject,
+  }
+}
+
 export class CreateEnrollmentResponse extends jspb.Message {
   getPercentcomplete(): number;
   setPercentcomplete(value: number): void;
@@ -570,6 +596,43 @@ export namespace TranscribeResponse {
     transcript: string,
     ispartialresult: boolean,
     postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
+  }
+}
+
+export class SynthesizeSpeechResponse extends jspb.Message {
+  hasConfig(): boolean;
+  clearConfig(): void;
+  getConfig(): AudioConfig | undefined;
+  setConfig(value?: AudioConfig): void;
+
+  hasAudiocontent(): boolean;
+  clearAudiocontent(): void;
+  getAudiocontent(): Uint8Array | string;
+  getAudiocontent_asU8(): Uint8Array;
+  getAudiocontent_asB64(): string;
+  setAudiocontent(value: Uint8Array | string): void;
+
+  getStreamingresponseCase(): SynthesizeSpeechResponse.StreamingresponseCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SynthesizeSpeechResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: SynthesizeSpeechResponse): SynthesizeSpeechResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SynthesizeSpeechResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SynthesizeSpeechResponse;
+  static deserializeBinaryFromReader(message: SynthesizeSpeechResponse, reader: jspb.BinaryReader): SynthesizeSpeechResponse;
+}
+
+export namespace SynthesizeSpeechResponse {
+  export type AsObject = {
+    config?: AudioConfig.AsObject,
+    audiocontent: Uint8Array | string,
+  }
+
+  export enum StreamingresponseCase {
+    STREAMINGRESPONSE_NOT_SET = 0,
+    CONFIG = 1,
+    AUDIOCONTENT = 2,
   }
 }
 
@@ -908,10 +971,37 @@ export namespace AudioConfig {
   export const AudioEncoding: AudioEncodingMap;
 }
 
+export class VoiceSynthesisConfig extends jspb.Message {
+  hasAudio(): boolean;
+  clearAudio(): void;
+  getAudio(): AudioConfig | undefined;
+  setAudio(value?: AudioConfig): void;
+
+  getVoice(): string;
+  setVoice(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): VoiceSynthesisConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: VoiceSynthesisConfig): VoiceSynthesisConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: VoiceSynthesisConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): VoiceSynthesisConfig;
+  static deserializeBinaryFromReader(message: VoiceSynthesisConfig, reader: jspb.BinaryReader): VoiceSynthesisConfig;
+}
+
+export namespace VoiceSynthesisConfig {
+  export type AsObject = {
+    audio?: AudioConfig.AsObject,
+    voice: string,
+  }
+}
+
 export interface AudioPostProcessingActionMap {
   NOT_SET: 0;
   FLUSH: 1;
   RESET: 2;
+  FINAL: 3;
 }
 
 export const AudioPostProcessingAction: AudioPostProcessingActionMap;

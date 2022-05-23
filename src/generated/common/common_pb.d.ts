@@ -431,6 +431,7 @@ export interface TechnologyTypeMap {
   TS: 2;
   TNL: 3;
   STT: 4;
+  TTS: 5;
 }
 
 export const TechnologyType: TechnologyTypeMap;
@@ -454,6 +455,7 @@ export interface UsageEventTypeMap {
   AUTHENTICATION: 0;
   RECOGNITION: 1;
   ENROLLMENT: 2;
+  SYNTHESIS: 3;
 }
 
 export const UsageEventType: UsageEventTypeMap;

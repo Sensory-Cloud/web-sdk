@@ -73,10 +73,15 @@ build() {
 }
 
 # --- Environment --------------------------------------------------
-
 IMAGE=ph
 CONTAINER=ph_web
 CURRENT_BRANCH=${CI_COMMIT_BRANCH:-$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)}
+
+# --- Options processing -------------------------------------------
+if [ $# == 0 ] ; then
+    print_helper
+    exit 1;
+fi
 
 while getopts ":h" optname
   do

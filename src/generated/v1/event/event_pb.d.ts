@@ -65,6 +65,9 @@ export class UsageEvent extends jspb.Message {
   getVideoframecount(): number;
   setVideoframecount(value: number): void;
 
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEvent.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEvent): UsageEvent.AsObject;
@@ -87,6 +90,7 @@ export namespace UsageEvent {
     modelsList: Array<string>,
     audiodurationms: number,
     videoframecount: number,
+    tenantid: string,
   }
 }
 

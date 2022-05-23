@@ -428,3 +428,66 @@ AudioTranscriptionsClient.prototype.transcribe = function transcribe(metadata) {
 
 exports.AudioTranscriptionsClient = AudioTranscriptionsClient;
 
+var AudioSynthesis = (function () {
+  function AudioSynthesis() {}
+  AudioSynthesis.serviceName = "sensory.api.v1.audio.AudioSynthesis";
+  return AudioSynthesis;
+}());
+
+AudioSynthesis.SynthesizeSpeech = {
+  methodName: "SynthesizeSpeech",
+  service: AudioSynthesis,
+  requestStream: false,
+  responseStream: true,
+  requestType: v1_audio_audio_pb.SynthesizeSpeechRequest,
+  responseType: v1_audio_audio_pb.SynthesizeSpeechResponse
+};
+
+exports.AudioSynthesis = AudioSynthesis;
+
+function AudioSynthesisClient(serviceHost, options) {
+  this.serviceHost = serviceHost;
+  this.options = options || {};
+}
+
+AudioSynthesisClient.prototype.synthesizeSpeech = function synthesizeSpeech(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(AudioSynthesis.SynthesizeSpeech, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+exports.AudioSynthesisClient = AudioSynthesisClient;
+

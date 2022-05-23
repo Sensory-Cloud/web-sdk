@@ -301,7 +301,8 @@ proto.sensory.api.v1.event.UsageEvent.toObject = function(includeInstance, msg) 
     technologiesList: (f = jspb.Message.getRepeatedField(msg, 7)) == null ? undefined : f,
     modelsList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
     audiodurationms: jspb.Message.getFieldWithDefault(msg, 9, 0),
-    videoframecount: jspb.Message.getFieldWithDefault(msg, 10, 0)
+    videoframecount: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    tenantid: jspb.Message.getFieldWithDefault(msg, 11, "")
   };
 
   if (includeInstance) {
@@ -380,6 +381,10 @@ proto.sensory.api.v1.event.UsageEvent.deserializeBinaryFromReader = function(msg
     case 10:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setVideoframecount(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTenantid(value);
       break;
     default:
       reader.skipField();
@@ -478,6 +483,13 @@ proto.sensory.api.v1.event.UsageEvent.serializeBinaryToWriter = function(message
   if (f !== 0) {
     writer.writeInt64(
       10,
+      f
+    );
+  }
+  f = message.getTenantid();
+  if (f.length > 0) {
+    writer.writeString(
+      11,
       f
     );
   }
@@ -718,6 +730,24 @@ proto.sensory.api.v1.event.UsageEvent.prototype.getVideoframecount = function() 
  */
 proto.sensory.api.v1.event.UsageEvent.prototype.setVideoframecount = function(value) {
   return jspb.Message.setProto3IntField(this, 10, value);
+};
+
+
+/**
+ * optional string tenantId = 11;
+ * @return {string}
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.getTenantid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.sensory.api.v1.event.UsageEvent} returns this
+ */
+proto.sensory.api.v1.event.UsageEvent.prototype.setTenantid = function(value) {
+  return jspb.Message.setProto3StringField(this, 11, value);
 };
 
 

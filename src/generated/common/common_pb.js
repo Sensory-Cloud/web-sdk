@@ -2982,7 +2982,8 @@ proto.sensory.api.common.TechnologyType = {
   TSSV: 1,
   TS: 2,
   TNL: 3,
-  STT: 4
+  STT: 4,
+  TTS: 5
 };
 
 /**
@@ -3008,7 +3009,8 @@ proto.sensory.api.common.ClientType = {
 proto.sensory.api.common.UsageEventType = {
   AUTHENTICATION: 0,
   RECOGNITION: 1,
-  ENROLLMENT: 2
+  ENROLLMENT: 2,
+  SYNTHESIS: 3
 };
 
 /**
