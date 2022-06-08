@@ -201,14 +201,17 @@ export class AudioStreamInteractor implements IAudioStreamInteractor {
       this.isRegistered = true;
     }
 
-    return navigator.mediaDevices.getUserMedia({
-      audio: {
-        channelCount: this.channelCount,
-        echoCancellation: true,
-        sampleRate: this.sampleRate,
-        deviceId: this.preferredDeviceId
-      }
-    });
+    const audio: MediaTrackConstraints = {
+      channelCount: this.channelCount,
+      echoCancellation: true,
+      sampleRate: this.sampleRate
+    };
+
+    if (this.preferredDeviceId) {
+      audio.deviceId = {exact: this.preferredDeviceId}
+    }
+
+    return navigator.mediaDevices.getUserMedia({audio});
   }
 
   private parseWavHeader(buffer: ArrayBuffer): WavHeader {

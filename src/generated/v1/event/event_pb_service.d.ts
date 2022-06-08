@@ -13,9 +13,29 @@ type EventServicePublishUsageEvents = {
   readonly responseType: typeof v1_event_event_pb.PublishUsageEventsResponse;
 };
 
+type EventServiceGetUsageEventList = {
+  readonly methodName: string;
+  readonly service: typeof EventService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_event_event_pb.UsageEventListRequest;
+  readonly responseType: typeof v1_event_event_pb.UsageEventListResponse;
+};
+
+type EventServiceGetUsageEventSummary = {
+  readonly methodName: string;
+  readonly service: typeof EventService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_event_event_pb.UsageEventListRequest;
+  readonly responseType: typeof v1_event_event_pb.UsageEventSummary;
+};
+
 export class EventService {
   static readonly serviceName: string;
   static readonly PublishUsageEvents: EventServicePublishUsageEvents;
+  static readonly GetUsageEventList: EventServiceGetUsageEventList;
+  static readonly GetUsageEventSummary: EventServiceGetUsageEventSummary;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -58,6 +78,24 @@ export class EventServiceClient {
   publishUsageEvents(
     requestMessage: v1_event_event_pb.PublishUsageEventsRequest,
     callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.PublishUsageEventsResponse|null) => void
+  ): UnaryResponse;
+  getUsageEventList(
+    requestMessage: v1_event_event_pb.UsageEventListRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventListResponse|null) => void
+  ): UnaryResponse;
+  getUsageEventList(
+    requestMessage: v1_event_event_pb.UsageEventListRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventListResponse|null) => void
+  ): UnaryResponse;
+  getUsageEventSummary(
+    requestMessage: v1_event_event_pb.UsageEventListRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventSummary|null) => void
+  ): UnaryResponse;
+  getUsageEventSummary(
+    requestMessage: v1_event_event_pb.UsageEventListRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventSummary|null) => void
   ): UnaryResponse;
 }
 

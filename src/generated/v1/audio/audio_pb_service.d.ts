@@ -90,6 +90,20 @@ export class AudioTranscriptions {
   static readonly Transcribe: AudioTranscriptionsTranscribe;
 }
 
+type AudioSynthesisSynthesizeSpeech = {
+  readonly methodName: string;
+  readonly service: typeof AudioSynthesis;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof v1_audio_audio_pb.SynthesizeSpeechRequest;
+  readonly responseType: typeof v1_audio_audio_pb.SynthesizeSpeechResponse;
+};
+
+export class AudioSynthesis {
+  static readonly serviceName: string;
+  static readonly SynthesizeSpeech: AudioSynthesisSynthesizeSpeech;
+}
+
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
 export type Status = { details: string, code: number; metadata: grpc.Metadata }
 
@@ -155,5 +169,12 @@ export class AudioTranscriptionsClient {
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
   transcribe(metadata?: grpc.Metadata): BidirectionalStream<v1_audio_audio_pb.TranscribeRequest, v1_audio_audio_pb.TranscribeResponse>;
+}
+
+export class AudioSynthesisClient {
+  readonly serviceHost: string;
+
+  constructor(serviceHost: string, options?: grpc.RpcOptions);
+  synthesizeSpeech(requestMessage: v1_audio_audio_pb.SynthesizeSpeechRequest, metadata?: grpc.Metadata): ResponseStream<v1_audio_audio_pb.SynthesizeSpeechResponse>;
 }
 

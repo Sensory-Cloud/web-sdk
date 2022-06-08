@@ -232,12 +232,15 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
   }
 
   private async getVideoStream(): Promise<MediaStream> {
-    return navigator.mediaDevices.getUserMedia({
-      video: {
-        width: this.width,
-        height: this.height,
-        deviceId: this.preferredDeviceId
-      }
-    });
+    const video: MediaTrackConstraints = {
+      width: this.width,
+      height: this.height
+    };
+
+    if (this.preferredDeviceId) {
+      video.deviceId = {exact: this.preferredDeviceId}
+    }
+
+    return navigator.mediaDevices.getUserMedia({video});
   }
 }
