@@ -2954,7 +2954,7 @@ proto.sensory.api.common.FeatureFlag = {
  * @enum {number}
  */
 proto.sensory.api.common.ModelType = {
-  VOICE_BIOMETRIC_TEXT_DEPENDENT: 0,
+  UNKNOWN: 0,
   VOICE_BIOMETRIC_TEXT_INDEPENDENT: 1,
   VOICE_BIOMETRIC_WAKEWORD: 2,
   VOICE_EVENT_WAKEWORD: 3,
@@ -2963,6 +2963,8 @@ proto.sensory.api.common.ModelType = {
   VOICE_RECOGNITION_ACTIVITY_DETECTION: 6,
   VOICE_FEATURE_EXTRACTOR: 7,
   VOICE_BIOMETRIC_LIVENESS_DIGIT: 8,
+  VOICE_BIOMETRIC_TEXT_DEPENDENT: 9,
+  VOICE_SYNTHESIS: 10,
   SOUND_EVENT_ENROLLABLE: 100,
   SOUND_EVENT_REVALIDATION: 101,
   SOUND_EVENT_FIXED: 102,
@@ -2970,8 +2972,7 @@ proto.sensory.api.common.ModelType = {
   FACE_BIOMETRIC: 201,
   FACE_RECOGNITION: 202,
   OBJECT_RECOGNITION: 203,
-  IMAGE_TRANSFORM: 204,
-  UNKNOWN: 1000
+  IMAGE_TRANSFORM: 204
 };
 
 /**
@@ -3000,7 +3001,9 @@ proto.sensory.api.common.ClientType = {
   ROOT: 0,
   DEVICE: 1,
   CLUSTER: 2,
-  USER: 3
+  USER: 3,
+  SUPER_USER: 4,
+  BILLING_USER: 5
 };
 
 /**
@@ -3010,7 +3013,8 @@ proto.sensory.api.common.UsageEventType = {
   AUTHENTICATION: 0,
   RECOGNITION: 1,
   ENROLLMENT: 2,
-  SYNTHESIS: 3
+  SYNTHESIS: 3,
+  TRANSCRIPTION: 4
 };
 
 /**
