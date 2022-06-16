@@ -1,10 +1,11 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse } from "../generated/v1/audio/audio_pb";
-import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig } from "../generated/v1/audio/audio_pb";
+import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioSynthesisClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
 import { IAudioStreamInteractor } from "../interactors/audio-stream.interactor";
+import { ResponseStream } from "../generated/oauth/oauth_pb_service";
 
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
@@ -19,7 +20,8 @@ export class AudioService {
     private readonly modelsClient = new AudioModelsClient(config.cloud.host),
     private readonly biometricsClient = new AudioBiometricsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
     private readonly eventClient = new AudioEventsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
-    private readonly transcribeClient = new AudioTranscriptionsClient(config.cloud.host, {transport: grpc.WebsocketTransport()})
+    private readonly transcribeClient = new AudioTranscriptionsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
+    private readonly synthesisClient = new AudioSynthesisClient(config.cloud.host, {transport: grpc.WebsocketTransport()})
   ) {}
 
   /**
@@ -274,10 +276,10 @@ export class AudioService {
   /**
    * Stream audio to Sensory Cloud in order to transcribe spoken words
    *
-   * @param  {string} modelName - the exact name of the model you intend use for transcription. This model name can be retrieved from the getModels() call.
+   * @param  {string} modelName - the exact name of the model you intend to use for transcription. This model name can be retrieved from the getModels() call.
    * @param  {string} userId - the unique userId for the user requesting this event
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
-   * @returns Promise<TranscribeRequest<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
+   * @returns Promise<BidirectionalStream<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
    */
   public async streamTranscription(modelName: string, userId: string, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
@@ -301,5 +303,39 @@ export class AudioService {
     transcriptionStream.write(request);
 
     return transcriptionStream;
+  }
+
+  /**
+   * Sends a request to Sensory Cloud to synthesize speech
+   *
+   * @param {string} phrase - The text phrase to synthesize a voice saying
+   * @param {string} voiceName - The name of the voice to use during speech synthesis
+   * @param {AudioConfig} audioConfig? - Optional configuration for how the synthesized audio should be formatted
+   * @returns Promise<ResponseStream<SynthesizeSpeechResponse>> - a stream of audio data with the synthesized voice.
+   *          The first response will contain audio config information, all subsequent responses will contain audio data
+   */
+  public async synthesizeSpeech(phrase: string, voiceName: string, audioConfig?: AudioConfig): Promise<ResponseStream<SynthesizeSpeechResponse>> {
+    const meta = await this.tokenManager.getAuthorizationMetadata();
+
+    const voiceConfig = new VoiceSynthesisConfig();
+    voiceConfig.setVoice(voiceName);
+    if (audioConfig) {
+      voiceConfig.setAudio(audioConfig);
+    } else {
+      const audio = new AudioConfig();
+      audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
+      audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
+      audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
+      audio.setLanguagecode(this.config.device.defaultLanguageCode);
+      voiceConfig.setAudio(audio);
+    }
+
+    const request = new SynthesizeSpeechRequest();
+    request.setPhrase(phrase);
+    request.setConfig(voiceConfig);
+
+    const synthesisStream = this.synthesisClient.synthesizeSpeech(request, meta);
+
+    return synthesisStream;
   }
 }

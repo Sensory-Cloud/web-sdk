@@ -2,6 +2,7 @@ export * from './config';
 
 export * from './interactors/audio-stream.interactor';
 export * from './interactors/video-stream.interactor';
+export * from './interactors/audio-output.interactor';
 
 export * from './services/audio.service';
 export * from './services/crypto.service';
