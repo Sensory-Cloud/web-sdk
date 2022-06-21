@@ -423,6 +423,11 @@ export class CreateEnrollmentResponse extends jspb.Message {
   getPercentsegmentcomplete(): number;
   setPercentsegmentcomplete(value: number): void;
 
+  hasEnrollmenttoken(): boolean;
+  clearEnrollmenttoken(): void;
+  getEnrollmenttoken(): common_common_pb.EnrollmentToken | undefined;
+  setEnrollmenttoken(value?: common_common_pb.EnrollmentToken): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentResponse): CreateEnrollmentResponse.AsObject;
@@ -442,6 +447,7 @@ export namespace CreateEnrollmentResponse {
     modelversion: string,
     modelprompt: string,
     percentsegmentcomplete: number,
+    enrollmenttoken?: common_common_pb.EnrollmentToken.AsObject,
   }
 }
 
@@ -729,6 +735,11 @@ export class AuthenticateConfig extends jspb.Message {
   getIslivenessenabled(): boolean;
   setIslivenessenabled(value: boolean): void;
 
+  getEnrollmenttoken(): Uint8Array | string;
+  getEnrollmenttoken_asU8(): Uint8Array;
+  getEnrollmenttoken_asB64(): string;
+  setEnrollmenttoken(value: Uint8Array | string): void;
+
   getAuthidCase(): AuthenticateConfig.AuthidCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateConfig.AsObject;
@@ -749,6 +760,7 @@ export namespace AuthenticateConfig {
     sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
     security: AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap],
     islivenessenabled: boolean,
+    enrollmenttoken: Uint8Array | string,
   }
 
   export interface ThresholdSecurityMap {
@@ -875,6 +887,11 @@ export class ValidateEnrolledEventConfig extends jspb.Message {
   getSensitivity(): ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
   setSensitivity(value: ThresholdSensitivityMap[keyof ThresholdSensitivityMap]): void;
 
+  getEnrollmenttoken(): Uint8Array | string;
+  getEnrollmenttoken_asU8(): Uint8Array;
+  getEnrollmenttoken_asB64(): string;
+  setEnrollmenttoken(value: Uint8Array | string): void;
+
   getAuthidCase(): ValidateEnrolledEventConfig.AuthidCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ValidateEnrolledEventConfig.AsObject;
@@ -892,6 +909,7 @@ export namespace ValidateEnrolledEventConfig {
     enrollmentid: string,
     enrollmentgroupid: string,
     sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+    enrollmenttoken: Uint8Array | string,
   }
 
   export enum AuthidCase {
