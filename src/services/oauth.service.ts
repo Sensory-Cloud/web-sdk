@@ -1,4 +1,4 @@
-import { Config } from "../config";
+import { Config, SDKInitConfig } from "../config";
 import { TokenRequest } from "../generated/oauth/oauth_pb";
 import { OauthServiceClient } from "../generated/oauth/oauth_pb_service";
 import { CryptoService } from "./crypto.service";
@@ -11,6 +11,12 @@ import { grpc } from "@improbable-eng/grpc-web";
 
 /** Manages OAuth interactions with Sensory Cloud */
 export interface IOauthService {
+
+  /**
+   * @returns the underlying credential store used by the service
+   */
+  getCredentialStore(): ISecureCredentialStore;
+
   /**
    * Creates a new cryptographically random OAuth client
    * @returns OauthClient
@@ -56,25 +62,24 @@ export type OauthClient = {
 
 /** Securely serves credentials */
 export interface ISecureCredentialStore {
+  saveCredentials(clientId: string, clientSecret: string): void
   getClientId(): Promise<string>
   getClientSecret(): Promise<string>
 }
 
 /** Service to manage all OAuth-related functions */
 export class OauthService implements IOauthService {
+
   constructor(
-    private readonly config: Config,
     private readonly credentialStore: ISecureCredentialStore,
-    private readonly oauthClient = new OauthServiceClient(config.cloud.host),
-    private readonly deviceClient = new DeviceServiceClient(config.cloud.host)) {
+    private oauthClient: OauthServiceClient | undefined = undefined,
+    private deviceClient: DeviceServiceClient | undefined = undefined) { }
 
-    if (!config.device.deviceId) {
-      throw Error('DeviceID missing in configuration');
-    }
-
-    if (!config.tenant.tenantId) {
-      throw Error('TenantID missing in configuration');
-    }
+  /**
+   * @returns the underlying credential store used by the service
+   */
+  getCredentialStore(): ISecureCredentialStore {
+    return this.credentialStore;
   }
 
   /**
@@ -105,7 +110,7 @@ export class OauthService implements IOauthService {
     return new Promise<DeviceResponse.AsObject>((resolve, reject) => {
       const request = new DeviceGetWhoAmIRequest();
 
-      this.deviceClient.getWhoAmI(request, meta, async (err, res) => {
+      this.getDeviceClient().getWhoAmI(request, meta, async (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -136,7 +141,7 @@ export class OauthService implements IOauthService {
       request.setClientid(clientId.trim());
       request.setSecret(clientSecret);
 
-      this.oauthClient.getToken(request, (err, res) => {
+      this.getOauthClient().getToken(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -156,6 +161,7 @@ export class OauthService implements IOauthService {
    * @returns Promise
    */
   public async register(deviceName: string, credential: string): Promise<DeviceResponse.AsObject> {
+    const config = Config.getSharedConfig();
     const clientId = await this.credentialStore.getClientId();
     if (!clientId) {
       throw Error('clientId not set in credential store');
@@ -166,14 +172,14 @@ export class OauthService implements IOauthService {
       throw Error('client secret not set in credential store');
     }
 
-    const deviceId = this.config.device.deviceId;
+    const deviceId = config.deviceId;
 
     const request = new EnrollDeviceRequest()
     request.setDeviceid(deviceId);
     request.setName(deviceName);
 
     request.setCredential(credential);
-    request.setTenantid(this.config.tenant.tenantId);
+    request.setTenantid(config.tenantId);
 
     const client = new GenericClient()
     client.setClientid(clientId);
@@ -182,7 +188,7 @@ export class OauthService implements IOauthService {
     request.setClient(client);
 
     return new Promise<DeviceResponse.AsObject>(async (resolve, reject) => {
-      this.deviceClient.enrollDevice(request, (err, res) => {
+      this.getDeviceClient().enrollDevice(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -199,19 +205,21 @@ export class OauthService implements IOauthService {
    * @returns Promise
    */
   public async renewDeviceCredential(credential: string): Promise<DeviceResponse.AsObject> {
+    const config = Config.getSharedConfig();
+
     const clientId = await this.credentialStore.getClientId();
     if (!clientId) {
       throw Error('clientId not set in credential store');
     }
 
     const request = new RenewDeviceCredentialRequest();
-    request.setDeviceid(this.config.device.deviceId);
+    request.setDeviceid(config.deviceId);
     request.setClientid(clientId);
-    request.setTenantid(this.config.tenant.tenantId);
+    request.setTenantid(config.tenantId);
     request.setCredential(credential);
 
     return new Promise<DeviceResponse.AsObject>(async (resolve, reject) => {
-      this.deviceClient.renewDeviceCredential(request, (err, res) => {
+      this.getDeviceClient().renewDeviceCredential(request, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -219,5 +227,19 @@ export class OauthService implements IOauthService {
         return resolve(res.toObject());
       });
     });
+  }
+
+  private getOauthClient(): OauthServiceClient {
+    if (this.oauthClient == undefined) {
+      this.oauthClient = new OauthServiceClient(Config.getHost())
+    }
+    return this.oauthClient;
+  }
+
+  private getDeviceClient(): DeviceServiceClient {
+    if (this.deviceClient == undefined) {
+      this.deviceClient = new DeviceServiceClient(Config.getHost());
+    }
+    return this.deviceClient;
   }
 }

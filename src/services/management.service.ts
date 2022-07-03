@@ -6,9 +6,8 @@ import { ITokenManager } from "../token-manager/token.manager";
 /** Service to handle all typical CRUD functions */
 export class ManagementService {
   constructor(
-    private readonly config: Config,
     private readonly tokenManager: ITokenManager,
-    private readonly enrollmentClient = new EnrollmentServiceClient(config.cloud.host)) {
+    private enrollmentClient: EnrollmentServiceClient | undefined = undefined) {
   }
 
   /**
@@ -23,7 +22,7 @@ export class ManagementService {
       const request = new GetEnrollmentsRequest();
       request.setUserid(userId);
 
-      this.enrollmentClient.getEnrollments(request, meta, async (err, res) => {
+      this.getEnrollmentClient().getEnrollments(request, meta, async (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -44,7 +43,7 @@ export class ManagementService {
       const request = new GetEnrollmentsRequest();
       request.setUserid(userId);
 
-      this.enrollmentClient.getEnrollmentGroups(request, meta, async (err, res) => {
+      this.getEnrollmentClient().getEnrollmentGroups(request, meta, async (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -75,7 +74,7 @@ export class ManagementService {
       request.setUserid(userId);
       request.setEnrollmentidsList(enrollmentIds);
 
-      this.enrollmentClient.createEnrollmentGroup(request, meta, async (err, res) => {
+      this.getEnrollmentClient().createEnrollmentGroup(request, meta, async (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -98,7 +97,7 @@ export class ManagementService {
       request.setGroupid(groupId);
       request.setEnrollmentidsList(enrollmentIds);
 
-      this.enrollmentClient.appendEnrollmentGroup(request, meta, async (err, res) => {
+      this.getEnrollmentClient().appendEnrollmentGroup(request, meta, async (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -119,7 +118,7 @@ export class ManagementService {
       const request = new DeleteEnrollmentRequest();
       request.setId(id);
 
-      this.enrollmentClient.deleteEnrollment(request, meta, (err, res) => {
+      this.getEnrollmentClient().deleteEnrollment(request, meta, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -140,12 +139,19 @@ export class ManagementService {
       const request = new DeleteEnrollmentGroupRequest();
       request.setId(groupId);
 
-      this.enrollmentClient.deleteEnrollmentGroup(request, meta, (err, res) => {
+      this.getEnrollmentClient().deleteEnrollmentGroup(request, meta, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
         return resolve(res.toObject());
       });
     });
+  }
+
+  private getEnrollmentClient(): EnrollmentServiceClient {
+    if (this.enrollmentClient == undefined) {
+      this.enrollmentClient = new EnrollmentServiceClient(Config.getHost());
+    }
+    return this.enrollmentClient;
   }
 }

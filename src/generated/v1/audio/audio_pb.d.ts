@@ -676,6 +676,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getReferenceid(): string;
   setReferenceid(value: string): void;
 
+  getDisableserverenrollmenttemplatestorage(): boolean;
+  setDisableserverenrollmenttemplatestorage(value: boolean): void;
+
   getEnrolllengthCase(): CreateEnrollmentConfig.EnrolllengthCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
@@ -698,6 +701,7 @@ export namespace CreateEnrollmentConfig {
     enrollmentnumutterances: number,
     enrollmentduration: number,
     referenceid: string,
+    disableserverenrollmenttemplatestorage: boolean,
   }
 
   export enum EnrolllengthCase {
@@ -839,6 +843,9 @@ export class CreateEnrollmentEventConfig extends jspb.Message {
   getReferenceid(): string;
   setReferenceid(value: string): void;
 
+  getDisableserverenrollmenttemplatestorage(): boolean;
+  setDisableserverenrollmenttemplatestorage(value: boolean): void;
+
   getEnrolllengthCase(): CreateEnrollmentEventConfig.EnrolllengthCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentEventConfig.AsObject;
@@ -859,6 +866,7 @@ export namespace CreateEnrollmentEventConfig {
     enrollmentnumutterances: number,
     enrollmentduration: number,
     referenceid: string,
+    disableserverenrollmenttemplatestorage: boolean,
   }
 
   export enum EnrolllengthCase {

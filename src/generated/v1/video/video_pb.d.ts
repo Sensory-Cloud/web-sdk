@@ -342,6 +342,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getNumlivenessframesrequired(): number;
   setNumlivenessframesrequired(value: number): void;
 
+  getDisableserverenrollmenttemplatestorage(): boolean;
+  setDisableserverenrollmenttemplatestorage(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentConfig): CreateEnrollmentConfig.AsObject;
@@ -363,6 +366,7 @@ export namespace CreateEnrollmentConfig {
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     referenceid: string,
     numlivenessframesrequired: number,
+    disableserverenrollmenttemplatestorage: boolean,
   }
 }
 

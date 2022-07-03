@@ -2470,7 +2470,8 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.toObject = function(includeIns
     livenessthreshold: jspb.Message.getFieldWithDefault(msg, 6, 0),
     compression: (f = msg.getCompression()) && common_common_pb.CompressionConfiguration.toObject(includeInstance, f),
     referenceid: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    numlivenessframesrequired: jspb.Message.getFieldWithDefault(msg, 9, 0)
+    numlivenessframesrequired: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    disableserverenrollmenttemplatestorage: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
   };
 
   if (includeInstance) {
@@ -2543,6 +2544,10 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 9:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setNumlivenessframesrequired(value);
+      break;
+    case 10:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableserverenrollmenttemplatestorage(value);
       break;
     default:
       reader.skipField();
@@ -2634,6 +2639,13 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f !== 0) {
     writer.writeInt32(
       9,
+      f
+    );
+  }
+  f = message.getDisableserverenrollmenttemplatestorage();
+  if (f) {
+    writer.writeBool(
+      10,
       f
     );
   }
@@ -2818,6 +2830,24 @@ proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.getNumlivenessframes
  */
 proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setNumlivenessframesrequired = function(value) {
   return jspb.Message.setProto3IntField(this, 9, value);
+};
+
+
+/**
+ * optional bool disableServerEnrollmentTemplateStorage = 10;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.getDisableserverenrollmenttemplatestorage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 10, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentConfig.prototype.setDisableserverenrollmenttemplatestorage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 10, value);
 };
 
 

@@ -1,5 +1,5 @@
 import { grpc } from "@improbable-eng/grpc-web";
-import { Config } from "../config";
+import { Config, SDKInitConfig } from "../config";
 import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioSynthesisClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
@@ -13,16 +13,15 @@ export type EnrollmentIdentifier = {enrollmentId: string, enrollmentGroupId?: ne
 
 /** Handles all audio requests to Sensory Cloud */
 export class AudioService {
+
   constructor(
-    private readonly config: Config,
     private readonly tokenManager: ITokenManager,
     private readonly audioStreamInteractor :IAudioStreamInteractor,
-    private readonly modelsClient = new AudioModelsClient(config.cloud.host),
-    private readonly biometricsClient = new AudioBiometricsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
-    private readonly eventClient = new AudioEventsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
-    private readonly transcribeClient = new AudioTranscriptionsClient(config.cloud.host, {transport: grpc.WebsocketTransport()}),
-    private readonly synthesisClient = new AudioSynthesisClient(config.cloud.host, {transport: grpc.WebsocketTransport()})
-  ) {}
+    private modelsClient: AudioModelsClient | undefined = undefined,
+    private biometricsClient: AudioBiometricsClient | undefined = undefined,
+    private eventClient: AudioEventsClient | undefined = undefined,
+    private transcribeClient: AudioTranscriptionsClient | undefined = undefined,
+    private synthesisClient: AudioSynthesisClient | undefined = undefined) { }
 
   /**
    * Fetch all the audio models supported by your instance of Sensory Cloud.
@@ -34,7 +33,7 @@ export class AudioService {
     return new Promise((resolve, reject) => {
       const request = new GetModelsRequest();
 
-      this.modelsClient.getModels(request, meta, (err, res) => {
+      this.getModelsClient().getModels(request, meta, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -53,6 +52,7 @@ export class AudioService {
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @param  {string} referenceId? - the external referenceId for this enrollment. Can be used by you in any way.
+   * @param  {boolean} disableServerEnrollmentStorage? - If true, this will prevent the server from storing enrollment tokens locally and force the server to always return a token upon successful enrollment
    * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
    */
   public async streamEnrollment(
@@ -61,9 +61,12 @@ export class AudioService {
     modelName: string,
     isLivenessEnabled: boolean,
     languageCode?: string,
-    referenceId?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+    referenceId?: string,
+    disableServerEnrollmentStorage?: boolean): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+
+    const sdkConfig = Config.getSharedConfig();
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const enrollmentStream = this.biometricsClient.createEnrollment(meta);
+    const enrollmentStream = this.getBioClient().createEnrollment(meta);
 
     const request = new CreateEnrollmentRequest();
     const config = new CreateEnrollmentConfig();
@@ -71,9 +74,12 @@ export class AudioService {
 
     config.setDescription(description);
     config.setUserid(userId);
-    config.setDeviceid(this.config.device.deviceId);
+    config.setDeviceid(sdkConfig.deviceId);
     config.setModelname(modelName);
     config.setIslivenessenabled(isLivenessEnabled);
+    if (disableServerEnrollmentStorage != undefined) {
+      config.setDisableserverenrollmenttemplatestorage(disableServerEnrollmentStorage);
+    }
 
     if (referenceId) {
       config.setReferenceid(referenceId);
@@ -82,7 +88,7 @@ export class AudioService {
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio)
     request.setConfig(config);
@@ -102,6 +108,7 @@ export class AudioService {
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
    * @param  {AudioSecurityThreshold=AuthenticateConfig.ThresholdSecurity.HIGH} security - the security threshold enforced by the recognition engine. Defaults to high.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @param  {Uint8Array} enrollmentToken? - Encrypted enrollment token that was provided on enrollment, pass undefined if no token was provided
    * @returns Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> - a bidirectional stream where AuthenticateRequests can be passed to the cloud and AuthenticateResponses are passed back
    */
   public async streamAuthentication(
@@ -109,9 +116,10 @@ export class AudioService {
     isLivenessEnabled: boolean,
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
     security: AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurity.HIGH,
-    languageCode?: string): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
+    languageCode?: string,
+    enrollmentToken?: Uint8Array): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const authenticationStream = this.biometricsClient.authenticate(meta);
+    const authenticationStream = this.getBioClient().authenticate(meta);
 
     const request = new AuthenticateRequest();
     const config = new AuthenticateConfig();
@@ -128,11 +136,14 @@ export class AudioService {
     config.setSensitivity(sensitivity);
     config.setSecurity(security);
     config.setIslivenessenabled(isLivenessEnabled);
+    if (enrollmentToken != undefined) {
+      config.setEnrollmenttoken(enrollmentToken);
+    }
 
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio)
     request.setConfig(config);
@@ -158,7 +169,7 @@ export class AudioService {
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
     languageCode?: string): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const eventStream = this.eventClient.validateEvent(meta);
+    const eventStream = this.getEventClient().validateEvent(meta);
 
     const request = new ValidateEventRequest();
     const config = new ValidateEventConfig();
@@ -170,7 +181,7 @@ export class AudioService {
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio);
     request.setConfig(config);
@@ -191,6 +202,7 @@ export class AudioService {
    * @param  {string} modelName - the exact name of the model you intend to enroll into. This model name can be retrieved from the getModels() call.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @param  {string} referenceId? - the external referenceId for this enrollment. Can be used by you in any way.
+   * @param  {boolean} disableServerEnrollmentStorage? - If true, this will prevent the server from storing enrollment tokens locally and force the server to always return a token upon successful enrollment
    * @returns Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrolledEventRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
    */
   public async streamCreateEnrolledEvent(
@@ -198,9 +210,10 @@ export class AudioService {
     userId: string,
     modelName: string,
     languageCode?: string,
-    referenceId?: string): Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> {
+    referenceId?: string,
+    disableServerEnrollmentStorage?: boolean): Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const enrollmentStream = this.eventClient.createEnrolledEvent(meta);
+    const enrollmentStream = this.getEventClient().createEnrolledEvent(meta);
 
     const request = new CreateEnrolledEventRequest();
     const config = new CreateEnrollmentEventConfig();
@@ -213,11 +226,14 @@ export class AudioService {
     if (referenceId) {
       config.setReferenceid(referenceId);
     }
+    if (disableServerEnrollmentStorage != undefined) {
+      config.setDisableserverenrollmenttemplatestorage(disableServerEnrollmentStorage);
+    }
 
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio)
     request.setConfig(config);
@@ -236,14 +252,16 @@ export class AudioService {
    * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @param  {Uint8Array} enrollmentToken? - Encrypted enrollment token that was provided on enrollment, pass undefined if no token was provided
    * @returns Promise<BidirectionalStream<ValidateEnrolledEventRequest, ValidateEnrolledEventResponse>> - a bidirectional stream where ValidateEnrolledEventRequests can be passed to the cloud and ValidateEnrolledEventResponses are passed back
    */
   public async streamValidateEnrolledEvent(
     enrollment: EnrollmentIdentifier,
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
-    languageCode?: string): Promise<BidirectionalStream<ValidateEnrolledEventRequest, ValidateEnrolledEventResponse>> {
+    languageCode?: string,
+    enrollmentToken?: Uint8Array): Promise<BidirectionalStream<ValidateEnrolledEventRequest, ValidateEnrolledEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const authenticationStream = this.eventClient.validateEnrolledEvent(meta);
+    const authenticationStream = this.getEventClient().validateEnrolledEvent(meta);
 
     const request = new ValidateEnrolledEventRequest();
     const config = new ValidateEnrolledEventConfig();
@@ -259,10 +277,14 @@ export class AudioService {
 
     config.setSensitivity(sensitivity);
 
+    if (enrollmentToken != undefined) {
+      config.setEnrollmenttoken(enrollmentToken);
+    }
+
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio)
     request.setConfig(config);
@@ -283,7 +305,7 @@ export class AudioService {
    */
   public async streamTranscription(modelName: string, userId: string, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const transcriptionStream = this.transcribeClient.transcribe(meta);
+    const transcriptionStream = this.getTranscribeClient().transcribe(meta);
 
     const request = new TranscribeRequest();
     const config = new TranscribeConfig();
@@ -294,7 +316,7 @@ export class AudioService {
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || this.config.device.defaultLanguageCode);
+    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio);
     request.setConfig(config);
@@ -326,7 +348,7 @@ export class AudioService {
       audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
       audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
       audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-      audio.setLanguagecode(this.config.device.defaultLanguageCode);
+      audio.setLanguagecode(Config.defaultLanguageCode);
       voiceConfig.setAudio(audio);
     }
 
@@ -334,8 +356,43 @@ export class AudioService {
     request.setPhrase(phrase);
     request.setConfig(voiceConfig);
 
-    const synthesisStream = this.synthesisClient.synthesizeSpeech(request, meta);
+    const synthesisStream = this.getSynthesisClient().synthesizeSpeech(request, meta);
 
     return synthesisStream;
+  }
+
+  private getModelsClient(): AudioModelsClient {
+    if (this.modelsClient == undefined) {
+      this.modelsClient = new AudioModelsClient(Config.getHost());
+    }
+    return this.modelsClient;
+  }
+
+  private getBioClient(): AudioBiometricsClient {
+    if (this.biometricsClient == undefined) {
+      this.biometricsClient = new AudioBiometricsClient(Config.getHost(), {transport: grpc.WebsocketTransport()});
+    }
+    return this.biometricsClient;
+  }
+
+  private getEventClient(): AudioEventsClient {
+    if (this.eventClient == undefined) {
+      this.eventClient = new AudioEventsClient(Config.getHost(), {transport: grpc.WebsocketTransport()});
+    }
+    return this.eventClient;
+  }
+
+  private getTranscribeClient(): AudioTranscriptionsClient {
+    if (this.transcribeClient == undefined) {
+      this.transcribeClient = new AudioTranscriptionsClient(Config.getHost(), {transport: grpc.WebsocketTransport()});
+    }
+    return this.transcribeClient;
+  }
+
+  private getSynthesisClient(): AudioSynthesisClient {
+    if (this.synthesisClient == undefined) {
+      this.synthesisClient = new AudioSynthesisClient(Config.getHost(), {transport: grpc.WebsocketTransport()});
+    }
+    return this.synthesisClient;
   }
 }

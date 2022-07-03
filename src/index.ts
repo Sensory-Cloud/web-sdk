@@ -1,4 +1,5 @@
 export * from './config';
+export * from './initializer';
 
 export * from './interactors/audio-stream.interactor';
 export * from './interactors/video-stream.interactor';

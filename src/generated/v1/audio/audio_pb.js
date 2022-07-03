@@ -5105,7 +5105,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.toObject = function(includeIns
     islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
     enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 7, 0),
     enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 9, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    disableserverenrollmenttemplatestorage: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
   };
 
   if (includeInstance) {
@@ -5178,6 +5179,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 9:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 10:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableserverenrollmenttemplatestorage(value);
       break;
     default:
       reader.skipField();
@@ -5269,6 +5274,13 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       9,
+      f
+    );
+  }
+  f = message.getDisableserverenrollmenttemplatestorage();
+  if (f) {
+    writer.writeBool(
+      10,
       f
     );
   }
@@ -5489,6 +5501,24 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getReferenceid = fun
  */
 proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setReferenceid = function(value) {
   return jspb.Message.setProto3StringField(this, 9, value);
+};
+
+
+/**
+ * optional bool disableServerEnrollmentTemplateStorage = 10;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getDisableserverenrollmenttemplatestorage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 10, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setDisableserverenrollmenttemplatestorage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 10, value);
 };
 
 
@@ -6252,7 +6282,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.toObject = function(inclu
     description: jspb.Message.getFieldWithDefault(msg, 4, ""),
     enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 5, 0),
     enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 7, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    disableserverenrollmenttemplatestorage: jspb.Message.getBooleanFieldWithDefault(msg, 8, false)
   };
 
   if (includeInstance) {
@@ -6317,6 +6348,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.deserializeBinaryFromRead
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableserverenrollmenttemplatestorage(value);
       break;
     default:
       reader.skipField();
@@ -6394,6 +6429,13 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.serializeBinaryToWriter =
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getDisableserverenrollmenttemplatestorage();
+  if (f) {
+    writer.writeBool(
+      8,
       f
     );
   }
@@ -6578,6 +6620,24 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.getReferenceid 
  */
 proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.setReferenceid = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional bool disableServerEnrollmentTemplateStorage = 8;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.getDisableserverenrollmenttemplatestorage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 8, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentEventConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.setDisableserverenrollmenttemplatestorage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 8, value);
 };
 
 
