@@ -9,11 +9,11 @@ export class SecureCredentialStoreExample implements ISecureCredentialStore
 
   async getClientId(): Promise<string> {
     const clientId = localStorage.getItem('clientId')
-    return clientId ?? 'not-set';
+    return clientId ?? '';
   }
 
   async getClientSecret(): Promise<string> {
     const clientSecret = localStorage.getItem('clientSecret')
-    return clientSecret ?? 'not-set';
+    return clientSecret ?? '';
   }
 }

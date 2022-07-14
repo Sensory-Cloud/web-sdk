@@ -379,6 +379,32 @@ export namespace PaginationResponse {
   }
 }
 
+export class EnrollmentToken extends jspb.Message {
+  getToken(): Uint8Array | string;
+  getToken_asU8(): Uint8Array;
+  getToken_asB64(): string;
+  setToken(value: Uint8Array | string): void;
+
+  getExpiration(): number;
+  setExpiration(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): EnrollmentToken.AsObject;
+  static toObject(includeInstance: boolean, msg: EnrollmentToken): EnrollmentToken.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: EnrollmentToken, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): EnrollmentToken;
+  static deserializeBinaryFromReader(message: EnrollmentToken, reader: jspb.BinaryReader): EnrollmentToken;
+}
+
+export namespace EnrollmentToken {
+  export type AsObject = {
+    token: Uint8Array | string,
+    expiration: number,
+  }
+}
+
 export interface VoidMap {
   VOID_VALUE: 0;
 }

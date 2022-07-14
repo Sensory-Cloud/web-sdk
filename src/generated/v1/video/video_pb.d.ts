@@ -219,6 +219,11 @@ export class CreateEnrollmentResponse extends jspb.Message {
   getScore(): number;
   setScore(value: number): void;
 
+  hasEnrollmenttoken(): boolean;
+  clearEnrollmenttoken(): void;
+  getEnrollmenttoken(): common_common_pb.EnrollmentToken | undefined;
+  setEnrollmenttoken(value?: common_common_pb.EnrollmentToken): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentResponse): CreateEnrollmentResponse.AsObject;
@@ -237,6 +242,7 @@ export namespace CreateEnrollmentResponse {
     modelname: string,
     modelversion: string,
     score: number,
+    enrollmenttoken?: common_common_pb.EnrollmentToken.AsObject,
   }
 }
 
@@ -336,6 +342,9 @@ export class CreateEnrollmentConfig extends jspb.Message {
   getNumlivenessframesrequired(): number;
   setNumlivenessframesrequired(value: number): void;
 
+  getDisableserverenrollmenttemplatestorage(): boolean;
+  setDisableserverenrollmenttemplatestorage(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentConfig.AsObject;
   static toObject(includeInstance: boolean, msg: CreateEnrollmentConfig): CreateEnrollmentConfig.AsObject;
@@ -357,6 +366,7 @@ export namespace CreateEnrollmentConfig {
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     referenceid: string,
     numlivenessframesrequired: number,
+    disableserverenrollmenttemplatestorage: boolean,
   }
 }
 
@@ -385,6 +395,11 @@ export class AuthenticateConfig extends jspb.Message {
   getDoincludetoken(): boolean;
   setDoincludetoken(value: boolean): void;
 
+  getEnrollmenttoken(): Uint8Array | string;
+  getEnrollmenttoken_asU8(): Uint8Array;
+  getEnrollmenttoken_asB64(): string;
+  setEnrollmenttoken(value: Uint8Array | string): void;
+
   getAuthidCase(): AuthenticateConfig.AuthidCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateConfig.AsObject;
@@ -404,6 +419,7 @@ export namespace AuthenticateConfig {
     livenessthreshold: RecognitionThresholdMap[keyof RecognitionThresholdMap],
     compression?: common_common_pb.CompressionConfiguration.AsObject,
     doincludetoken: boolean,
+    enrollmenttoken: Uint8Array | string,
   }
 
   export enum AuthidCase {

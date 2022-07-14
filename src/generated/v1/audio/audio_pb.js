@@ -3374,7 +3374,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.toObject = function(includeI
     modelname: jspb.Message.getFieldWithDefault(msg, 4, ""),
     modelversion: jspb.Message.getFieldWithDefault(msg, 5, ""),
     modelprompt: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    percentsegmentcomplete: jspb.Message.getFieldWithDefault(msg, 7, 0)
+    percentsegmentcomplete: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    enrollmenttoken: (f = msg.getEnrollmenttoken()) && common_common_pb.EnrollmentToken.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -3438,6 +3439,11 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.deserializeBinaryFromReader 
     case 7:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setPercentsegmentcomplete(value);
+      break;
+    case 8:
+      var value = new common_common_pb.EnrollmentToken;
+      reader.readMessage(value,common_common_pb.EnrollmentToken.deserializeBinaryFromReader);
+      msg.setEnrollmenttoken(value);
       break;
     default:
       reader.skipField();
@@ -3515,6 +3521,14 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.serializeBinaryToWriter = fu
     writer.writeInt64(
       7,
       f
+    );
+  }
+  f = message.getEnrollmenttoken();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      common_common_pb.EnrollmentToken.serializeBinaryToWriter
     );
   }
 };
@@ -3643,6 +3657,43 @@ proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.getPercentsegmentc
  */
 proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.setPercentsegmentcomplete = function(value) {
   return jspb.Message.setProto3IntField(this, 7, value);
+};
+
+
+/**
+ * optional sensory.api.common.EnrollmentToken enrollmentToken = 8;
+ * @return {?proto.sensory.api.common.EnrollmentToken}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.getEnrollmenttoken = function() {
+  return /** @type{?proto.sensory.api.common.EnrollmentToken} */ (
+    jspb.Message.getWrapperField(this, common_common_pb.EnrollmentToken, 8));
+};
+
+
+/**
+ * @param {?proto.sensory.api.common.EnrollmentToken|undefined} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentResponse} returns this
+*/
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.setEnrollmenttoken = function(value) {
+  return jspb.Message.setWrapperField(this, 8, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.clearEnrollmenttoken = function() {
+  return this.setEnrollmenttoken(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentResponse.prototype.hasEnrollmenttoken = function() {
+  return jspb.Message.getField(this, 8) != null;
 };
 
 
@@ -5054,7 +5105,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.toObject = function(includeIns
     islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
     enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 7, 0),
     enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 9, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    disableserverenrollmenttemplatestorage: jspb.Message.getBooleanFieldWithDefault(msg, 10, false)
   };
 
   if (includeInstance) {
@@ -5127,6 +5179,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.deserializeBinaryFromReader = 
     case 9:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 10:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableserverenrollmenttemplatestorage(value);
       break;
     default:
       reader.skipField();
@@ -5218,6 +5274,13 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       9,
+      f
+    );
+  }
+  f = message.getDisableserverenrollmenttemplatestorage();
+  if (f) {
+    writer.writeBool(
+      10,
       f
     );
   }
@@ -5441,6 +5504,24 @@ proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setReferenceid = fun
 };
 
 
+/**
+ * optional bool disableServerEnrollmentTemplateStorage = 10;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.getDisableserverenrollmenttemplatestorage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 10, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentConfig.prototype.setDisableserverenrollmenttemplatestorage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 10, value);
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -5505,7 +5586,8 @@ proto.sensory.api.v1.audio.AuthenticateConfig.toObject = function(includeInstanc
     doincludetoken: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
     sensitivity: jspb.Message.getFieldWithDefault(msg, 5, 0),
     security: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 7, false)
+    islivenessenabled: jspb.Message.getBooleanFieldWithDefault(msg, 7, false),
+    enrollmenttoken: msg.getEnrollmenttoken_asB64()
   };
 
   if (includeInstance) {
@@ -5570,6 +5652,10 @@ proto.sensory.api.v1.audio.AuthenticateConfig.deserializeBinaryFromReader = func
     case 7:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIslivenessenabled(value);
+      break;
+    case 8:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setEnrollmenttoken(value);
       break;
     default:
       reader.skipField();
@@ -5647,6 +5733,13 @@ proto.sensory.api.v1.audio.AuthenticateConfig.serializeBinaryToWriter = function
   if (f) {
     writer.writeBool(
       7,
+      f
+    );
+  }
+  f = message.getEnrollmenttoken_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      8,
       f
     );
   }
@@ -5839,6 +5932,48 @@ proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getIslivenessenabled = f
  */
 proto.sensory.api.v1.audio.AuthenticateConfig.prototype.setIslivenessenabled = function(value) {
   return jspb.Message.setProto3BooleanField(this, 7, value);
+};
+
+
+/**
+ * optional bytes enrollmentToken = 8;
+ * @return {!(string|Uint8Array)}
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getEnrollmenttoken = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * optional bytes enrollmentToken = 8;
+ * This is a type-conversion wrapper around `getEnrollmenttoken()`
+ * @return {string}
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getEnrollmenttoken_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getEnrollmenttoken()));
+};
+
+
+/**
+ * optional bytes enrollmentToken = 8;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getEnrollmenttoken()`
+ * @return {!Uint8Array}
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.getEnrollmenttoken_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getEnrollmenttoken()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.sensory.api.v1.audio.AuthenticateConfig} returns this
+ */
+proto.sensory.api.v1.audio.AuthenticateConfig.prototype.setEnrollmenttoken = function(value) {
+  return jspb.Message.setProto3BytesField(this, 8, value);
 };
 
 
@@ -6147,7 +6282,8 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.toObject = function(inclu
     description: jspb.Message.getFieldWithDefault(msg, 4, ""),
     enrollmentnumutterances: jspb.Message.getFieldWithDefault(msg, 5, 0),
     enrollmentduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
-    referenceid: jspb.Message.getFieldWithDefault(msg, 7, "")
+    referenceid: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    disableserverenrollmenttemplatestorage: jspb.Message.getBooleanFieldWithDefault(msg, 8, false)
   };
 
   if (includeInstance) {
@@ -6212,6 +6348,10 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.deserializeBinaryFromRead
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setReferenceid(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableserverenrollmenttemplatestorage(value);
       break;
     default:
       reader.skipField();
@@ -6289,6 +6429,13 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.serializeBinaryToWriter =
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getDisableserverenrollmenttemplatestorage();
+  if (f) {
+    writer.writeBool(
+      8,
       f
     );
   }
@@ -6476,6 +6623,24 @@ proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.setReferenceid 
 };
 
 
+/**
+ * optional bool disableServerEnrollmentTemplateStorage = 8;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.getDisableserverenrollmenttemplatestorage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 8, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.CreateEnrollmentEventConfig} returns this
+ */
+proto.sensory.api.v1.audio.CreateEnrollmentEventConfig.prototype.setDisableserverenrollmenttemplatestorage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 8, value);
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -6537,7 +6702,8 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.toObject = function(inclu
     audio: (f = msg.getAudio()) && proto.sensory.api.v1.audio.AudioConfig.toObject(includeInstance, f),
     enrollmentid: jspb.Message.getFieldWithDefault(msg, 2, ""),
     enrollmentgroupid: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    sensitivity: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    sensitivity: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    enrollmenttoken: msg.getEnrollmenttoken_asB64()
   };
 
   if (includeInstance) {
@@ -6590,6 +6756,10 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.deserializeBinaryFromRead
     case 4:
       var value = /** @type {!proto.sensory.api.v1.audio.ThresholdSensitivity} */ (reader.readEnum());
       msg.setSensitivity(value);
+      break;
+    case 5:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setEnrollmenttoken(value);
       break;
     default:
       reader.skipField();
@@ -6646,6 +6816,13 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.serializeBinaryToWriter =
   if (f !== 0.0) {
     writer.writeEnum(
       4,
+      f
+    );
+  }
+  f = message.getEnrollmenttoken_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      5,
       f
     );
   }
@@ -6776,6 +6953,48 @@ proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.getSensitivity 
  */
 proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.setSensitivity = function(value) {
   return jspb.Message.setProto3EnumField(this, 4, value);
+};
+
+
+/**
+ * optional bytes enrollmentToken = 5;
+ * @return {!(string|Uint8Array)}
+ */
+proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.getEnrollmenttoken = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * optional bytes enrollmentToken = 5;
+ * This is a type-conversion wrapper around `getEnrollmenttoken()`
+ * @return {string}
+ */
+proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.getEnrollmenttoken_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getEnrollmenttoken()));
+};
+
+
+/**
+ * optional bytes enrollmentToken = 5;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getEnrollmenttoken()`
+ * @return {!Uint8Array}
+ */
+proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.getEnrollmenttoken_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getEnrollmenttoken()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.sensory.api.v1.audio.ValidateEnrolledEventConfig} returns this
+ */
+proto.sensory.api.v1.audio.ValidateEnrolledEventConfig.prototype.setEnrollmenttoken = function(value) {
+  return jspb.Message.setProto3BytesField(this, 5, value);
 };
 
 

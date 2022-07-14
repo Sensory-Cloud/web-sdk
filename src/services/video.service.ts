@@ -1,6 +1,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { EnrollmentIdentifier } from "..";
-import { Config } from "../config";
+import { Config, SDKInitConfig } from "../config";
 import { CompressionConfiguration } from "../generated/common/common_pb";
 import { GetModelsResponse } from "../generated/v1/video";
 import { AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, LivenessRecognitionResponse, RecognitionThreshold, RecognitionThresholdMap, ValidateRecognitionConfig, ValidateRecognitionRequest } from "../generated/v1/video/video_pb";
@@ -12,14 +12,13 @@ export type RecognitionThreshold = RecognitionThresholdMap[keyof RecognitionThre
 
 /** Handles all image and video requests to Sensory Cloud */
 export class VideoService {
+
   constructor(
-    private readonly config: Config,
     private readonly tokenManager: ITokenManager,
     private readonly videoStreamInteractor :IVideoStreamInteractor,
-    private modelsClient = new VideoModelsClient(config.cloud.host),
-    private biometricStreamingClient = new VideoBiometricsClient(config.cloud.host, { transport: grpc.WebsocketTransport()}),
-    private recognitionStreamingClient = new VideoRecognitionClient(config.cloud.host, { transport: grpc.WebsocketTransport()}),
-  ) {}
+    private modelsClient: VideoModelsClient | undefined = undefined,
+    private biometricStreamingClient: VideoBiometricsClient | undefined = undefined,
+    private recognitionStreamingClient: VideoRecognitionClient | undefined = undefined) { }
 
   /**
    * Fetch all video the models supported by your instance of Sensory Cloud.
@@ -31,7 +30,7 @@ export class VideoService {
     return new Promise<GetModelsResponse.AsObject>((resolve, reject) => {
       const request = new GetModelsRequest();
 
-      this.modelsClient.getModels(request, meta, (err, res) => {
+      this.getModelsClient().getModels(request, meta, (err, res) => {
         if (err || !res) {
           return reject(err || Error('No response returned'));
         }
@@ -48,6 +47,7 @@ export class VideoService {
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled). Defaults to HIGH.
    * @param  {number=0} numLiveFramesRequired - the number of frames that need to pass the liveness check for a successful enrollment (if liveness is enabled). A value of 0 means that all frames need to pass the liveness check. Defaults to 0.
+   * @param  {boolean} disableServerEnrollmentStorage - If true, this will prevent the server from storing enrollment tokens locally and force the server to always return a token upon successful enrollment
    * @returns Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> - a bidirectional stream where CreateEnrollmentRequests can be passed to the cloud and CreateEnrollmentResponses are passed back
    */
   public async streamEnrollment(
@@ -57,9 +57,12 @@ export class VideoService {
     isLivenessEnabled: boolean,
     threshold: RecognitionThreshold = RecognitionThreshold.HIGH,
     numLiveFramesRequired: number = 0,
-    referenceId?: string): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+    referenceId?: string,
+    disableServerEnrollmentStorage?: boolean): Promise<BidirectionalStream<CreateEnrollmentRequest, CreateEnrollmentResponse>> {
+
+    const sdkConfig = Config.getSharedConfig();
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const enrollmentStream = this.biometricStreamingClient.createEnrollment(meta);
+    const enrollmentStream = this.getBioStreamingClient().createEnrollment(meta);
 
     const request = new CreateEnrollmentRequest();
     const config = new CreateEnrollmentConfig();
@@ -69,7 +72,7 @@ export class VideoService {
 
     config.setDescription(description);
     config.setUserid(userId);
-    config.setDeviceid(this.config.device.deviceId);
+    config.setDeviceid(sdkConfig.deviceId);
     config.setModelname(modelName);
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
@@ -78,6 +81,10 @@ export class VideoService {
 
     if (referenceId) {
       config.setReferenceid(referenceId);
+    }
+
+    if (disableServerEnrollmentStorage != undefined) {
+      config.setDisableserverenrollmenttemplatestorage(disableServerEnrollmentStorage);
     }
 
     request.setConfig(config);
@@ -92,14 +99,16 @@ export class VideoService {
    * @param  {EnrollmentIdentifier} enrollment - the enrollmentId or groupId
    * @param  {boolean} isLivenessEnabled - indicates if liveness is enabled for this request.
    * @param  {RecognitionThreshold=RecognitionThreshold.HIGH} threshold - the liveness threshold (if liveness is enabled) Defaults to HIGH.
+   * @param  {Uint8Array} enrollmentToken? - Encrypted enrollment token that was provided on enrollment, pass undefined if no token was provided
    * @returns Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> - a bidirectional stream where AuthenticateRequests can be passed to the cloud and AuthenticateResponses are passed back.
    */
   public async streamAuthentication(
     enrollment: EnrollmentIdentifier,
     isLivenessEnabled: boolean,
-    threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
+    threshold: RecognitionThreshold = RecognitionThreshold.HIGH,
+    enrollmentToken?: Uint8Array): Promise<BidirectionalStream<AuthenticateRequest, AuthenticateResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const authenticateStream = this.biometricStreamingClient.authenticate(meta);
+    const authenticateStream = this.getBioStreamingClient().authenticate(meta);
 
     const request = new AuthenticateRequest();
     const config = new AuthenticateConfig();
@@ -116,6 +125,9 @@ export class VideoService {
     config.setIslivenessenabled(isLivenessEnabled);
     config.setLivenessthreshold(threshold);
     config.setCompression(compressionConfig);
+    if (enrollmentToken != undefined) {
+      config.setEnrollmenttoken(enrollmentToken);
+    }
     request.setConfig(config);
 
     authenticateStream.write(request);
@@ -135,7 +147,7 @@ export class VideoService {
     modelName: string,
     threshold: RecognitionThreshold = RecognitionThreshold.HIGH): Promise<BidirectionalStream<ValidateRecognitionRequest, LivenessRecognitionResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
-    const recognitionStream = this.recognitionStreamingClient.validateLiveness(meta);
+    const recognitionStream = this.getRecogStreamingClient().validateLiveness(meta);
 
     const request = new ValidateRecognitionRequest();
     const config = new ValidateRecognitionConfig();
@@ -148,5 +160,26 @@ export class VideoService {
     recognitionStream.write(request);
 
     return recognitionStream;
+  }
+
+  private getModelsClient(): VideoModelsClient {
+    if (this.modelsClient == undefined) {
+      this.modelsClient = new VideoModelsClient(Config.getHost())
+    }
+    return this.modelsClient;
+  }
+
+  private getBioStreamingClient(): VideoBiometricsClient {
+    if (this.biometricStreamingClient == undefined) {
+      this.biometricStreamingClient = new VideoBiometricsClient(Config.getHost(), { transport: grpc.WebsocketTransport()});
+    }
+    return this.biometricStreamingClient;
+  }
+
+  private getRecogStreamingClient(): VideoRecognitionClient {
+    if (this.recognitionStreamingClient == undefined) {
+      this.recognitionStreamingClient = new VideoRecognitionClient(Config.getHost(), { transport: grpc.WebsocketTransport()});
+    }
+    return this.recognitionStreamingClient;
   }
 }
