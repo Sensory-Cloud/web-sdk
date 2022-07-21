@@ -198,7 +198,6 @@ export class VideoStreamInteractor implements IVideoStreamInteractor {
       context?.drawImage(videoElement, 0, 0);
 
       const image = await new Promise<Blob | null>((res) => this.canvas?.toBlob(res, 'image/jpeg', this.jpegImageQuality));
-      console.log(this.jpegImageQuality)
 
       if (!image) {
         throw new Error('Image not returned from canvas');

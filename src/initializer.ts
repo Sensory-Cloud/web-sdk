@@ -41,7 +41,6 @@ export class Initializer {
     let oauthCredentials = oauthService.generateCredentials();
 
     // Construct the enrollment credential
-    console.log('loading credential');
     let credential = '';
     switch (config.enrollmentType) {
       case EnrollmentType.none:
@@ -59,11 +58,8 @@ export class Initializer {
 
     // Enroll device
     credentialStore.saveCredentials(oauthCredentials.clientId, oauthCredentials.clientSecret);
-    console.log('oauth request');
     try {
       let response = await oauthService.register(config.deviceName, credential);
-      console.log('oauth response');
-      console.log(response);
       return response;
     } catch(error) {
       // unset credentials if enrollment fails
