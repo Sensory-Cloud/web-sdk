@@ -424,7 +424,7 @@ export class FullTranscriptAggregator {
     }
 
     // Check if the transcript is smaller than our currentWordList
-    if (response.getLastwordindex() < this.currentWordList.length) {
+    if (response.getLastwordindex() < this.currentWordList.length - 1) {
       // Remove trailing elements from the array
       this.currentWordList.splice(response.getLastwordindex() - 1);
     }
