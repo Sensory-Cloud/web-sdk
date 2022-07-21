@@ -910,7 +910,8 @@ proto.sensory.api.common.ServerHealthResponse.toObject = function(includeInstanc
     id: jspb.Message.getFieldWithDefault(msg, 3, ""),
     servicesList: jspb.Message.toObjectList(msg.getServicesList(),
     proto.sensory.api.common.ServiceHealth.toObject, includeInstance),
-    servertype: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    servertype: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    isleader: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
   };
 
   if (includeInstance) {
@@ -967,6 +968,10 @@ proto.sensory.api.common.ServerHealthResponse.deserializeBinaryFromReader = func
     case 5:
       var value = /** @type {!proto.sensory.api.common.ServerType} */ (reader.readEnum());
       msg.setServertype(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsleader(value);
       break;
     default:
       reader.skipField();
@@ -1030,6 +1035,13 @@ proto.sensory.api.common.ServerHealthResponse.serializeBinaryToWriter = function
   if (f !== 0.0) {
     writer.writeEnum(
       5,
+      f
+    );
+  }
+  f = message.getIsleader();
+  if (f) {
+    writer.writeBool(
+      6,
       f
     );
   }
@@ -1143,6 +1155,24 @@ proto.sensory.api.common.ServerHealthResponse.prototype.getServertype = function
  */
 proto.sensory.api.common.ServerHealthResponse.prototype.setServertype = function(value) {
   return jspb.Message.setProto3EnumField(this, 5, value);
+};
+
+
+/**
+ * optional bool isLeader = 6;
+ * @return {boolean}
+ */
+proto.sensory.api.common.ServerHealthResponse.prototype.getIsleader = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.common.ServerHealthResponse} returns this
+ */
+proto.sensory.api.common.ServerHealthResponse.prototype.setIsleader = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
 

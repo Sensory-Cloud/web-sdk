@@ -210,8 +210,7 @@ export class AudioService {
     userId: string,
     modelName: string,
     languageCode?: string,
-    referenceId?: string,
-    disableServerEnrollmentStorage?: boolean): Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> {
+    referenceId?: string): Promise<BidirectionalStream<CreateEnrolledEventRequest, CreateEnrollmentResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const enrollmentStream = this.getEventClient().createEnrolledEvent(meta);
 
@@ -225,9 +224,6 @@ export class AudioService {
 
     if (referenceId) {
       config.setReferenceid(referenceId);
-    }
-    if (disableServerEnrollmentStorage != undefined) {
-      config.setDisableserverenrollmenttemplatestorage(disableServerEnrollmentStorage);
     }
 
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);

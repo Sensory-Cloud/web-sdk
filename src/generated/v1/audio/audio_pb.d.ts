@@ -571,6 +571,76 @@ export namespace ValidateEnrolledEventResponse {
   }
 }
 
+export class TranscribeWord extends jspb.Message {
+  getBegintimems(): number;
+  setBegintimems(value: number): void;
+
+  getEndtimems(): number;
+  setEndtimems(value: number): void;
+
+  getConfidence(): number;
+  setConfidence(value: number): void;
+
+  getWordstate(): WordStateMap[keyof WordStateMap];
+  setWordstate(value: WordStateMap[keyof WordStateMap]): void;
+
+  getWordindex(): number;
+  setWordindex(value: number): void;
+
+  getWord(): string;
+  setWord(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TranscribeWord.AsObject;
+  static toObject(includeInstance: boolean, msg: TranscribeWord): TranscribeWord.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TranscribeWord, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TranscribeWord;
+  static deserializeBinaryFromReader(message: TranscribeWord, reader: jspb.BinaryReader): TranscribeWord;
+}
+
+export namespace TranscribeWord {
+  export type AsObject = {
+    begintimems: number,
+    endtimems: number,
+    confidence: number,
+    wordstate: WordStateMap[keyof WordStateMap],
+    wordindex: number,
+    word: string,
+  }
+}
+
+export class TranscribeWordResponse extends jspb.Message {
+  clearWordsList(): void;
+  getWordsList(): Array<TranscribeWord>;
+  setWordsList(value: Array<TranscribeWord>): void;
+  addWords(value?: TranscribeWord, index?: number): TranscribeWord;
+
+  getFirstwordindex(): number;
+  setFirstwordindex(value: number): void;
+
+  getLastwordindex(): number;
+  setLastwordindex(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TranscribeWordResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: TranscribeWordResponse): TranscribeWordResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TranscribeWordResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TranscribeWordResponse;
+  static deserializeBinaryFromReader(message: TranscribeWordResponse, reader: jspb.BinaryReader): TranscribeWordResponse;
+}
+
+export namespace TranscribeWordResponse {
+  export type AsObject = {
+    wordsList: Array<TranscribeWord.AsObject>,
+    firstwordindex: number,
+    lastwordindex: number,
+  }
+}
+
 export class TranscribeResponse extends jspb.Message {
   getAudioenergy(): number;
   setAudioenergy(value: number): void;
@@ -580,6 +650,11 @@ export class TranscribeResponse extends jspb.Message {
 
   getIspartialresult(): boolean;
   setIspartialresult(value: boolean): void;
+
+  hasWordlist(): boolean;
+  clearWordlist(): void;
+  getWordlist(): TranscribeWordResponse | undefined;
+  setWordlist(value?: TranscribeWordResponse): void;
 
   hasPostprocessingaction(): boolean;
   clearPostprocessingaction(): void;
@@ -601,6 +676,7 @@ export namespace TranscribeResponse {
     audioenergy: number,
     transcript: string,
     ispartialresult: boolean,
+    wordlist?: TranscribeWordResponse.AsObject,
     postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
   }
 }
@@ -843,9 +919,6 @@ export class CreateEnrollmentEventConfig extends jspb.Message {
   getReferenceid(): string;
   setReferenceid(value: string): void;
 
-  getDisableserverenrollmenttemplatestorage(): boolean;
-  setDisableserverenrollmenttemplatestorage(value: boolean): void;
-
   getEnrolllengthCase(): CreateEnrollmentEventConfig.EnrolllengthCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateEnrollmentEventConfig.AsObject;
@@ -866,7 +939,6 @@ export namespace CreateEnrollmentEventConfig {
     enrollmentnumutterances: number,
     enrollmentduration: number,
     referenceid: string,
-    disableserverenrollmenttemplatestorage: boolean,
   }
 
   export enum EnrolllengthCase {
@@ -1031,6 +1103,13 @@ export interface AudioPostProcessingActionMap {
 }
 
 export const AudioPostProcessingAction: AudioPostProcessingActionMap;
+
+export interface WordStateMap {
+  WORDSTATE_PENDING: 0;
+  WORDSTATE_FINAL: 1;
+}
+
+export const WordState: WordStateMap;
 
 export interface ThresholdSensitivityMap {
   LOWEST: 0;

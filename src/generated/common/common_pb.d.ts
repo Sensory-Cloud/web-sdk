@@ -105,6 +105,9 @@ export class ServerHealthResponse extends jspb.Message {
   getServertype(): ServerTypeMap[keyof ServerTypeMap];
   setServertype(value: ServerTypeMap[keyof ServerTypeMap]): void;
 
+  getIsleader(): boolean;
+  setIsleader(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerHealthResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ServerHealthResponse): ServerHealthResponse.AsObject;
@@ -122,6 +125,7 @@ export namespace ServerHealthResponse {
     id: string,
     servicesList: Array<ServiceHealth.AsObject>,
     servertype: ServerTypeMap[keyof ServerTypeMap],
+    isleader: boolean,
   }
 }
 

@@ -141,6 +141,9 @@ export class UsageEventResponse extends jspb.Message {
   getBillablefunction(): common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap];
   setBillablefunction(value: common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap]): void;
 
+  getCredits(): number;
+  setCredits(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEventResponse.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEventResponse): UsageEventResponse.AsObject;
@@ -165,6 +168,7 @@ export namespace UsageEventResponse {
     billableunits: string,
     tenantid: string,
     billablefunction: common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap],
+    credits: number,
   }
 }
 
@@ -275,6 +279,9 @@ export class UsageEventModelSummary extends jspb.Message {
   getCount(): number;
   setCount(value: number): void;
 
+  getCredits(): number;
+  setCredits(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEventModelSummary.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEventModelSummary): UsageEventModelSummary.AsObject;
@@ -291,6 +298,7 @@ export namespace UsageEventModelSummary {
     units: string,
     value: number,
     count: number,
+    credits: number,
   }
 }
 

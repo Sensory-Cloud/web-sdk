@@ -941,7 +941,8 @@ proto.sensory.api.v1.event.UsageEventResponse.toObject = function(includeInstanc
     billablevalue: jspb.Message.getFieldWithDefault(msg, 9, 0),
     billableunits: jspb.Message.getFieldWithDefault(msg, 10, ""),
     tenantid: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    billablefunction: jspb.Message.getFieldWithDefault(msg, 12, 0)
+    billablefunction: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    credits: jspb.Message.getFloatingPointFieldWithDefault(msg, 13, 0.0)
   };
 
   if (includeInstance) {
@@ -1028,6 +1029,10 @@ proto.sensory.api.v1.event.UsageEventResponse.deserializeBinaryFromReader = func
     case 12:
       var value = /** @type {!proto.sensory.api.common.ModelType} */ (reader.readEnum());
       msg.setBillablefunction(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setCredits(value);
       break;
     default:
       reader.skipField();
@@ -1140,6 +1145,13 @@ proto.sensory.api.v1.event.UsageEventResponse.serializeBinaryToWriter = function
   if (f !== 0.0) {
     writer.writeEnum(
       12,
+      f
+    );
+  }
+  f = message.getCredits();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      13,
       f
     );
   }
@@ -1416,6 +1428,24 @@ proto.sensory.api.v1.event.UsageEventResponse.prototype.getBillablefunction = fu
  */
 proto.sensory.api.v1.event.UsageEventResponse.prototype.setBillablefunction = function(value) {
   return jspb.Message.setProto3EnumField(this, 12, value);
+};
+
+
+/**
+ * optional double credits = 13;
+ * @return {number}
+ */
+proto.sensory.api.v1.event.UsageEventResponse.prototype.getCredits = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 13, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.event.UsageEventResponse} returns this
+ */
+proto.sensory.api.v1.event.UsageEventResponse.prototype.setCredits = function(value) {
+  return jspb.Message.setProto3FloatField(this, 13, value);
 };
 
 
@@ -2166,7 +2196,8 @@ proto.sensory.api.v1.event.UsageEventModelSummary.toObject = function(includeIns
     billablefunction: jspb.Message.getFieldWithDefault(msg, 1, 0),
     units: jspb.Message.getFieldWithDefault(msg, 2, ""),
     value: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    count: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    count: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    credits: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
   };
 
   if (includeInstance) {
@@ -2218,6 +2249,10 @@ proto.sensory.api.v1.event.UsageEventModelSummary.deserializeBinaryFromReader = 
     case 4:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setCount(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setCredits(value);
       break;
     default:
       reader.skipField();
@@ -2273,6 +2308,13 @@ proto.sensory.api.v1.event.UsageEventModelSummary.serializeBinaryToWriter = func
   if (f !== 0) {
     writer.writeInt64(
       4,
+      f
+    );
+  }
+  f = message.getCredits();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      5,
       f
     );
   }
@@ -2348,6 +2390,24 @@ proto.sensory.api.v1.event.UsageEventModelSummary.prototype.getCount = function(
  */
 proto.sensory.api.v1.event.UsageEventModelSummary.prototype.setCount = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional double credits = 5;
+ * @return {number}
+ */
+proto.sensory.api.v1.event.UsageEventModelSummary.prototype.getCredits = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.event.UsageEventModelSummary} returns this
+ */
+proto.sensory.api.v1.event.UsageEventModelSummary.prototype.setCredits = function(value) {
+  return jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
