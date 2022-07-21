@@ -1,6 +1,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config, SDKInitConfig } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig } from "../generated/v1/audio/audio_pb";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig, TranscribeWord, TranscribeWordResponse } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioSynthesisClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
@@ -390,5 +390,53 @@ export class AudioService {
       this.synthesisClient = new AudioSynthesisClient(Config.getHost(), {transport: grpc.WebsocketTransport()});
     }
     return this.synthesisClient;
+  }
+}
+
+// FullTranscriptAggregator aggregates and stores transcription responses.
+// This class can be used to maintain the full transcript returned from the server.
+export class FullTranscriptAggregator {
+  // Hold onto the entire transcript as an array of words
+  private currentWordList: TranscribeWord.AsObject[] = [];
+
+  // Process a single, sliding-window response from the server
+  public processResponse(response?: TranscribeWordResponse) {
+    // If nothing is returned, do nothing
+    if (!response || !response.getWordsList().length) {
+      return
+    }
+
+    // Check if the transcript is larger than our currentWordList
+    if (response.getLastwordindex() > this.currentWordList.length) {
+
+      // Compute size difference
+      const cacheSizeDifference = this.currentWordList.length - response.getLastwordindex();
+
+      // Expand the cached word list by the number of incoming items by adding empty records
+      for (let i = 0; i < cacheSizeDifference; i++) {
+        this.currentWordList.push(new TranscribeWord().toObject());
+      }
+    }
+
+    // Loop through returned words and set the returned value at the specified index in currentWordList
+    for (let word of response.getWordsList()) {
+      this.currentWordList[word.getWordindex()] = word.toObject();
+    }
+
+    // Check if the transcript is smaller than our currentWordList
+    if (response.getLastwordindex() < this.currentWordList.length) {
+      // Remove trailing elements from the array
+      this.currentWordList.splice(response.getLastwordindex() - 1);
+    }
+  }
+
+  // Returns the cache of words returned from the server
+  public getCurrentWordList(): TranscribeWord.AsObject[] {
+    return this.currentWordList;
+  }
+
+  // Returns the full transcript as computed from the current word list
+  public getCurrentTranscript(): string {
+    return this.currentWordList.map((word) => word.word).join(' ');
   }
 }

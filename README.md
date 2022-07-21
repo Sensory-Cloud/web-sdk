@@ -439,7 +439,7 @@ const exampleRecognizeWithAudio = async () => {
 }
 ```
 
-### Transcription
+### Transcription (Sliding Window Transcript)
 
 Transcription is used to convert audio into text.
 
@@ -448,6 +448,7 @@ const exampleTranscribeWithAudio = async () => {
   const userId = "72f286b8-173f-436a-8869-6f7887789ee9";
   const modelName = "wakeword-16kHz-open_sesame.ubm";
   const uploadInterval = 100; // Upload audio every 100ms
+  let transcript = '';
 
   // Unlike enrollment and authentication, it is up to you, the implementer
   // to determine when to close the connection the server.
@@ -461,7 +462,8 @@ const exampleTranscribeWithAudio = async () => {
     // Response contains information about the audio such as:
     // * audioEnergy
 
-    // Transcript contains the current running transcript of the data
+    // Transcript contains the current running transcript of the data on a 7-second sliding window
+    // If you want to keep a list of the current transcript, see the below example
     const transcript = response.getTranscript();
   });
 
@@ -487,6 +489,72 @@ const exampleTranscribeWithAudio = async () => {
 
   // Handle end of stream. This promise can be used to block for as long as you'd like.
   // It's up to you, the SDk implementer to decide when to end this request.
+  return new Promise<void>((resolve, reject) => {
+    transcribeStream.on('end', (status) => {
+      audioEvent.removeListener(onData);
+      audioStreamInteractor.stopCapturing();
+
+      if (status?.code !== 0 ) {
+        reject(`Transcription failed due to reason: ${status?.details || 'no response was returned'}`);
+      } else {
+        // Transcription success!
+        resolve();
+      }
+    });
+  });
+}
+```
+
+### Transcription (Full Transcript)
+
+```typescript
+const exampleTranscribeWithAudio = async () => {
+  const userId = "72f286b8-173f-436a-8869-6f7887789ee9";
+  const modelName = "wakeword-16kHz-open_sesame.ubm";
+  const uploadInterval = 100; // Upload audio every 100ms
+  const aggregator = new FullTranscriptAggregator(); // FullTranscriptAggregator is provided by the audio service
+  let transcript = '';
+
+  // Unlike enrollment and authentication, it is up to you, the implementer
+  // to determine when to close the connection the server.
+  const transcribeStream = await audioService.streamTranscription(userId, modelName);
+
+  // As an example, set a timeout for 10 seconds and then close the stream
+  setTimeout(transcribeStream.end, 10000);
+
+  // Handle responses from the server
+  transcribeStream.on('data', (response) => {
+    // Response contains information about the audio such as:
+    // * audioEnergy
+
+    // Transcript contains the current running transcript of the data on a 7-second sliding window
+    // If you want to keep a list of the current transcript, see the below example
+    aggregator.processResponse(response.getWordlist());
+    transcript = aggregator.getCurrentTranscript();
+  });
+
+  // Start microphone recording
+  const audioEvent = await audioStreamInteractor.startCapturing(uploadInterval);
+
+  // Register onData callback for the microphone audio
+  const onData = (evt: CustomEvent<AudioEvent>) => {
+
+    // Pack and send bytes to the server
+    const request = new ValidateEventRequest();
+    request.setAudiocontent(evt.detail.bytes);
+
+    try {
+      transcribeStream.write(request);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Register callback
+  audioEvent.addListener(onData);
+
+  // Handle end of stream. This promise can be used to block for as long as you'd like.
+  // It's up to you, the SDK implementer to decide when to end this request.
   return new Promise<void>((resolve, reject) => {
     transcribeStream.on('end', (status) => {
       audioEvent.removeListener(onData);
