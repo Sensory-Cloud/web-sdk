@@ -406,11 +406,14 @@ export class FullTranscriptAggregator {
       return
     }
 
-    // Check if the transcript is larger than our currentWordList
-    if (response.getLastwordindex() > this.currentWordList.length) {
+    // Get the expected transcript size from the index of the last word.
+    const responseSize = response.getLastwordindex() + 1;
+
+    // Grow the word buffer if the incoming transcript is larger.
+    if (responseSize > this.currentWordList.length) {
 
       // Compute size difference
-      const cacheSizeDifference = this.currentWordList.length - response.getLastwordindex();
+      const cacheSizeDifference = this.currentWordList.length - responseSize;
 
       // Expand the cached word list by the number of incoming items by adding empty records
       for (let i = 0; i < cacheSizeDifference; i++) {
@@ -424,7 +427,7 @@ export class FullTranscriptAggregator {
     }
 
     // Check if the transcript is smaller than our currentWordList
-    if (response.getLastwordindex() < this.currentWordList.length - 1) {
+    if (responseSize < this.currentWordList.length) {
       // Remove trailing elements from the array
       this.currentWordList.splice(response.getLastwordindex() - 1);
     }
@@ -436,7 +439,11 @@ export class FullTranscriptAggregator {
   }
 
   // Returns the full transcript as computed from the current word list
-  public getCurrentTranscript(): string {
-    return this.currentWordList.map((word) => word.word).join(' ');
+  public getCurrentTranscript(delimiter=' '): string {
+    if (!this.currentWordList.length) {
+      return '';
+    }
+
+    return this.currentWordList.map((word) => word.word.trim()).join(delimiter);
   }
 }
