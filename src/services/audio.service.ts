@@ -409,18 +409,6 @@ export class FullTranscriptAggregator {
     // Get the expected transcript size from the index of the last word.
     const responseSize = response.getLastwordindex() + 1;
 
-    // Grow the word buffer if the incoming transcript is larger.
-    if (responseSize > this.currentWordList.length) {
-
-      // Compute size difference
-      const cacheSizeDifference = this.currentWordList.length - responseSize;
-
-      // Expand the cached word list by the number of incoming items by adding empty records
-      for (let i = 0; i < cacheSizeDifference; i++) {
-        this.currentWordList.push(new TranscribeWord().toObject());
-      }
-    }
-
     // Loop through returned words and set the returned value at the specified index in currentWordList
     for (let word of response.getWordsList()) {
       this.currentWordList[word.getWordindex()] = word.toObject();
