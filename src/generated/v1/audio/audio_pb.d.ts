@@ -1011,6 +1011,9 @@ export class TranscribeConfig extends jspb.Message {
   getUserid(): string;
   setUserid(value: string): void;
 
+  getEnablepunctuationcapitalization(): boolean;
+  setEnablepunctuationcapitalization(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeConfig.AsObject;
   static toObject(includeInstance: boolean, msg: TranscribeConfig): TranscribeConfig.AsObject;
@@ -1026,6 +1029,7 @@ export namespace TranscribeConfig {
     audio?: AudioConfig.AsObject,
     modelname: string,
     userid: string,
+    enablepunctuationcapitalization: boolean,
   }
 }
 

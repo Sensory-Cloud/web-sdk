@@ -299,7 +299,7 @@ export class AudioService {
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @returns Promise<BidirectionalStream<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
    */
-  public async streamTranscription(modelName: string, userId: string, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
+  public async streamTranscription(modelName: string, userId: string, enablePunctuationCapitalization: boolean, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const transcriptionStream = this.getTranscribeClient().transcribe(meta);
 
@@ -309,6 +309,7 @@ export class AudioService {
 
     config.setModelname(modelName);
     config.setUserid(userId);
+    config.setEnablepunctuationcapitalization(enablePunctuationCapitalization);
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);

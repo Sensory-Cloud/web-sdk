@@ -409,6 +409,78 @@ export namespace EnrollmentToken {
   }
 }
 
+export class CreateKeyRequest extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getKeytype(): KeyTypeMap[keyof KeyTypeMap];
+  setKeytype(value: KeyTypeMap[keyof KeyTypeMap]): void;
+
+  getValue(): string;
+  setValue(value: string): void;
+
+  getExpiration(): number;
+  setExpiration(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateKeyRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateKeyRequest): CreateKeyRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateKeyRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateKeyRequest;
+  static deserializeBinaryFromReader(message: CreateKeyRequest, reader: jspb.BinaryReader): CreateKeyRequest;
+}
+
+export namespace CreateKeyRequest {
+  export type AsObject = {
+    name: string,
+    keytype: KeyTypeMap[keyof KeyTypeMap],
+    value: string,
+    expiration: number,
+  }
+}
+
+export class KeyResponse extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getKeytype(): KeyTypeMap[keyof KeyTypeMap];
+  setKeytype(value: KeyTypeMap[keyof KeyTypeMap]): void;
+
+  getExpiration(): number;
+  setExpiration(value: number): void;
+
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
+  getDisabled(): boolean;
+  setDisabled(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): KeyResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: KeyResponse): KeyResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: KeyResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): KeyResponse;
+  static deserializeBinaryFromReader(message: KeyResponse, reader: jspb.BinaryReader): KeyResponse;
+}
+
+export namespace KeyResponse {
+  export type AsObject = {
+    id: string,
+    name: string,
+    keytype: KeyTypeMap[keyof KeyTypeMap],
+    expiration: number,
+    tenantid: string,
+    disabled: boolean,
+  }
+}
+
 export interface VoidMap {
   VOID_VALUE: 0;
 }
@@ -474,12 +546,14 @@ export interface CompressionTypeMap {
 export const CompressionType: CompressionTypeMap;
 
 export interface ClientTypeMap {
-  ROOT: 0;
+  INVALID: 0;
   DEVICE: 1;
   CLUSTER: 2;
   USER: 3;
   SUPER_USER: 4;
   BILLING_USER: 5;
+  READ_ONLY_USER: 6;
+  ROOT: 100;
 }
 
 export const ClientType: ClientTypeMap;

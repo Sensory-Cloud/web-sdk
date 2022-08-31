@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
-  return Function('return this')();
-}.call(null));
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 var validate_validate_pb = require('../../validate/validate_pb.js');
 goog.object.extend(proto, validate_validate_pb);
@@ -7598,7 +7592,8 @@ proto.sensory.api.v1.audio.TranscribeConfig.toObject = function(includeInstance,
   var f, obj = {
     audio: (f = msg.getAudio()) && proto.sensory.api.v1.audio.AudioConfig.toObject(includeInstance, f),
     modelname: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    userid: jspb.Message.getFieldWithDefault(msg, 3, "")
+    userid: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    enablepunctuationcapitalization: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -7648,6 +7643,10 @@ proto.sensory.api.v1.audio.TranscribeConfig.deserializeBinaryFromReader = functi
       var value = /** @type {string} */ (reader.readString());
       msg.setUserid(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setEnablepunctuationcapitalization(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -7696,6 +7695,13 @@ proto.sensory.api.v1.audio.TranscribeConfig.serializeBinaryToWriter = function(m
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getEnablepunctuationcapitalization();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -7772,6 +7778,24 @@ proto.sensory.api.v1.audio.TranscribeConfig.prototype.getUserid = function() {
  */
 proto.sensory.api.v1.audio.TranscribeConfig.prototype.setUserid = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool enablePunctuationCapitalization = 4;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.getEnablepunctuationcapitalization = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeConfig} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.setEnablepunctuationcapitalization = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
