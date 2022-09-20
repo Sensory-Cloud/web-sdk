@@ -15,6 +15,7 @@ COMMANDS="
     Commands:\n
     lint | l\t\t Lint Source Files\n
     build | b\t\t Build Tsc Package\n
+    publish | p\t\t Publish Tsc Package\n
     test | t\t\t Run Unit Tests\n
     genproto | gp\t\t Generate Proto Files\n
     help | h\t\t Display a Help Message\n
