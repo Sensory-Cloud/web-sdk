@@ -1,11 +1,11 @@
 {
   "name": "@sensory-cloud/web-sdk",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "Allows web browsers to make calls to Sensory Cloud.",
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
     "extendable-media-recorder": "^6.6.10",
-    "extendable-media-recorder-wav-encoder": "^7.0.74",
+    "extendable-media-recorder-wav-encoder": "^7.0.76",
     "google-protobuf": "^3.21.0",
     "uuid": "^8.3.2"
   },
@@ -17,7 +17,7 @@
     "ts-jest": "^27.1.5",
     "ts-protoc-gen": "^0.15.0",
     "tslint": "~6.1.0",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.3"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
