@@ -656,6 +656,9 @@ export class TranscribeResponse extends jspb.Message {
   getWordlist(): TranscribeWordResponse | undefined;
   setWordlist(value?: TranscribeWordResponse): void;
 
+  getHasvoiceactivity(): boolean;
+  setHasvoiceactivity(value: boolean): void;
+
   hasPostprocessingaction(): boolean;
   clearPostprocessingaction(): void;
   getPostprocessingaction(): AudioResponsePostProcessingAction | undefined;
@@ -677,6 +680,7 @@ export namespace TranscribeResponse {
     transcript: string,
     ispartialresult: boolean,
     wordlist?: TranscribeWordResponse.AsObject,
+    hasvoiceactivity: boolean,
     postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
   }
 }

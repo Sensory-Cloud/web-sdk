@@ -5124,6 +5124,7 @@ proto.sensory.api.v1.audio.TranscribeResponse.toObject = function(includeInstanc
     transcript: jspb.Message.getFieldWithDefault(msg, 2, ""),
     ispartialresult: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
     wordlist: (f = msg.getWordlist()) && proto.sensory.api.v1.audio.TranscribeWordResponse.toObject(includeInstance, f),
+    hasvoiceactivity: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     postprocessingaction: (f = msg.getPostprocessingaction()) && proto.sensory.api.v1.audio.AudioResponsePostProcessingAction.toObject(includeInstance, f)
   };
 
@@ -5177,6 +5178,10 @@ proto.sensory.api.v1.audio.TranscribeResponse.deserializeBinaryFromReader = func
       var value = new proto.sensory.api.v1.audio.TranscribeWordResponse;
       reader.readMessage(value,proto.sensory.api.v1.audio.TranscribeWordResponse.deserializeBinaryFromReader);
       msg.setWordlist(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setHasvoiceactivity(value);
       break;
     case 10:
       var value = new proto.sensory.api.v1.audio.AudioResponsePostProcessingAction;
@@ -5239,6 +5244,13 @@ proto.sensory.api.v1.audio.TranscribeResponse.serializeBinaryToWriter = function
       4,
       f,
       proto.sensory.api.v1.audio.TranscribeWordResponse.serializeBinaryToWriter
+    );
+  }
+  f = message.getHasvoiceactivity();
+  if (f) {
+    writer.writeBool(
+      5,
+      f
     );
   }
   f = message.getPostprocessingaction();
@@ -5340,6 +5352,24 @@ proto.sensory.api.v1.audio.TranscribeResponse.prototype.clearWordlist = function
  */
 proto.sensory.api.v1.audio.TranscribeResponse.prototype.hasWordlist = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional bool hasVoiceActivity = 5;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.TranscribeResponse.prototype.getHasvoiceactivity = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeResponse} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeResponse.prototype.setHasvoiceactivity = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 
