@@ -296,10 +296,21 @@ export class AudioService {
    *
    * @param  {string} modelName - the exact name of the model you intend to use for transcription. This model name can be retrieved from the getModels() call.
    * @param  {string} userId - the unique userId for the user requesting this event
+   * @param  {boolean} enablePunctuationCapitalization - if true, the resulting transcript will include punctuation and capitalization.
+   * @param  {boolean} doSingleUtterance - if true, the server will automatically close the stream once the user stops talking.
+   * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.LOW} vadSensitivity - the sensitivity of the voice activity detector. Defaults to LOW.
+   * @param  {number} vadDuration - the duration of silence to detect before automatically closing the stream as a number of seconds. Defaults to 1 second.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
    * @returns Promise<BidirectionalStream<TranscribeResponse, TranscribeResponse>> - a bidirectional stream where TranscribeRequests can be passed to the cloud and TranscribeResponses are passed back
    */
-  public async streamTranscription(modelName: string, userId: string, enablePunctuationCapitalization: boolean, languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
+  public async streamTranscription(
+    modelName: string,
+    userId: string,
+    enablePunctuationCapitalization: boolean,
+    doSingleUtterance: boolean,
+    vadSensitivity: AudioRecognitionSensitivity=ThresholdSensitivity.LOW,
+    vadDuration: number=0,
+    languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const transcriptionStream = this.getTranscribeClient().transcribe(meta);
 
@@ -310,6 +321,9 @@ export class AudioService {
     config.setModelname(modelName);
     config.setUserid(userId);
     config.setEnablepunctuationcapitalization(enablePunctuationCapitalization);
+    config.setDosingleutterance(doSingleUtterance);
+    config.setVadsensitivity(vadSensitivity);
+    config.setVadduration(vadDuration);
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);

@@ -7593,7 +7593,10 @@ proto.sensory.api.v1.audio.TranscribeConfig.toObject = function(includeInstance,
     audio: (f = msg.getAudio()) && proto.sensory.api.v1.audio.AudioConfig.toObject(includeInstance, f),
     modelname: jspb.Message.getFieldWithDefault(msg, 2, ""),
     userid: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    enablepunctuationcapitalization: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
+    enablepunctuationcapitalization: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    dosingleutterance: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+    vadsensitivity: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    vadduration: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0)
   };
 
   if (includeInstance) {
@@ -7646,6 +7649,18 @@ proto.sensory.api.v1.audio.TranscribeConfig.deserializeBinaryFromReader = functi
     case 4:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setEnablepunctuationcapitalization(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDosingleutterance(value);
+      break;
+    case 6:
+      var value = /** @type {!proto.sensory.api.v1.audio.ThresholdSensitivity} */ (reader.readEnum());
+      msg.setVadsensitivity(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setVadduration(value);
       break;
     default:
       reader.skipField();
@@ -7702,6 +7717,27 @@ proto.sensory.api.v1.audio.TranscribeConfig.serializeBinaryToWriter = function(m
   if (f) {
     writer.writeBool(
       4,
+      f
+    );
+  }
+  f = message.getDosingleutterance();
+  if (f) {
+    writer.writeBool(
+      5,
+      f
+    );
+  }
+  f = message.getVadsensitivity();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      6,
+      f
+    );
+  }
+  f = message.getVadduration();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      7,
       f
     );
   }
@@ -7796,6 +7832,60 @@ proto.sensory.api.v1.audio.TranscribeConfig.prototype.getEnablepunctuationcapita
  */
 proto.sensory.api.v1.audio.TranscribeConfig.prototype.setEnablepunctuationcapitalization = function(value) {
   return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional bool doSingleUtterance = 5;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.getDosingleutterance = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeConfig} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.setDosingleutterance = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
+};
+
+
+/**
+ * optional ThresholdSensitivity vadSensitivity = 6;
+ * @return {!proto.sensory.api.v1.audio.ThresholdSensitivity}
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.getVadsensitivity = function() {
+  return /** @type {!proto.sensory.api.v1.audio.ThresholdSensitivity} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/**
+ * @param {!proto.sensory.api.v1.audio.ThresholdSensitivity} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeConfig} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.setVadsensitivity = function(value) {
+  return jspb.Message.setProto3EnumField(this, 6, value);
+};
+
+
+/**
+ * optional float vadDuration = 7;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.getVadduration = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 7, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.TranscribeConfig} returns this
+ */
+proto.sensory.api.v1.audio.TranscribeConfig.prototype.setVadduration = function(value) {
+  return jspb.Message.setProto3FloatField(this, 7, value);
 };
 
 

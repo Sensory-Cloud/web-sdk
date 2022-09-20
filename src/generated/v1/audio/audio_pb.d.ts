@@ -1014,6 +1014,15 @@ export class TranscribeConfig extends jspb.Message {
   getEnablepunctuationcapitalization(): boolean;
   setEnablepunctuationcapitalization(value: boolean): void;
 
+  getDosingleutterance(): boolean;
+  setDosingleutterance(value: boolean): void;
+
+  getVadsensitivity(): ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+  setVadsensitivity(value: ThresholdSensitivityMap[keyof ThresholdSensitivityMap]): void;
+
+  getVadduration(): number;
+  setVadduration(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeConfig.AsObject;
   static toObject(includeInstance: boolean, msg: TranscribeConfig): TranscribeConfig.AsObject;
@@ -1030,6 +1039,9 @@ export namespace TranscribeConfig {
     modelname: string,
     userid: string,
     enablepunctuationcapitalization: boolean,
+    dosingleutterance: boolean,
+    vadsensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+    vadduration: number,
   }
 }
 
