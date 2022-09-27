@@ -1003,6 +1003,28 @@ export namespace ValidateEnrolledEventConfig {
   }
 }
 
+export class CustomVocabularyWords extends jspb.Message {
+  clearWordsList(): void;
+  getWordsList(): Array<string>;
+  setWordsList(value: Array<string>): void;
+  addWords(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CustomVocabularyWords.AsObject;
+  static toObject(includeInstance: boolean, msg: CustomVocabularyWords): CustomVocabularyWords.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CustomVocabularyWords, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CustomVocabularyWords;
+  static deserializeBinaryFromReader(message: CustomVocabularyWords, reader: jspb.BinaryReader): CustomVocabularyWords;
+}
+
+export namespace CustomVocabularyWords {
+  export type AsObject = {
+    wordsList: Array<string>,
+  }
+}
+
 export class TranscribeConfig extends jspb.Message {
   hasAudio(): boolean;
   clearAudio(): void;
@@ -1027,6 +1049,17 @@ export class TranscribeConfig extends jspb.Message {
   getVadduration(): number;
   setVadduration(value: number): void;
 
+  getCustomvocabrewardthreshold(): ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+  setCustomvocabrewardthreshold(value: ThresholdSensitivityMap[keyof ThresholdSensitivityMap]): void;
+
+  getCustomvocabularyid(): string;
+  setCustomvocabularyid(value: string): void;
+
+  hasCustomwordlist(): boolean;
+  clearCustomwordlist(): void;
+  getCustomwordlist(): CustomVocabularyWords | undefined;
+  setCustomwordlist(value?: CustomVocabularyWords): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeConfig.AsObject;
   static toObject(includeInstance: boolean, msg: TranscribeConfig): TranscribeConfig.AsObject;
@@ -1046,6 +1079,9 @@ export namespace TranscribeConfig {
     dosingleutterance: boolean,
     vadsensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
     vadduration: number,
+    customvocabrewardthreshold: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+    customvocabularyid: string,
+    customwordlist?: CustomVocabularyWords.AsObject,
   }
 }
 
@@ -1137,6 +1173,7 @@ export interface ThresholdSensitivityMap {
   MEDIUM: 2;
   HIGH: 3;
   HIGHEST: 4;
+  OFF: 5;
 }
 
 export const ThresholdSensitivity: ThresholdSensitivityMap;
