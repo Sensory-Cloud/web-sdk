@@ -5143,8 +5143,6 @@ proto.sensory.api.v1.audio.TranscribeResponse.prototype.toObject = function(opt_
 proto.sensory.api.v1.audio.TranscribeResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     audioenergy: jspb.Message.getFloatingPointFieldWithDefault(msg, 1, 0.0),
-    transcript: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    ispartialresult: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
     wordlist: (f = msg.getWordlist()) && proto.sensory.api.v1.audio.TranscribeWordResponse.toObject(includeInstance, f),
     hasvoiceactivity: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     postprocessingaction: (f = msg.getPostprocessingaction()) && proto.sensory.api.v1.audio.AudioResponsePostProcessingAction.toObject(includeInstance, f)
@@ -5187,14 +5185,6 @@ proto.sensory.api.v1.audio.TranscribeResponse.deserializeBinaryFromReader = func
     case 1:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setAudioenergy(value);
-      break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setTranscript(value);
-      break;
-    case 3:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIspartialresult(value);
       break;
     case 4:
       var value = new proto.sensory.api.v1.audio.TranscribeWordResponse;
@@ -5246,20 +5236,6 @@ proto.sensory.api.v1.audio.TranscribeResponse.serializeBinaryToWriter = function
       f
     );
   }
-  f = message.getTranscript();
-  if (f.length > 0) {
-    writer.writeString(
-      2,
-      f
-    );
-  }
-  f = message.getIspartialresult();
-  if (f) {
-    writer.writeBool(
-      3,
-      f
-    );
-  }
   f = message.getWordlist();
   if (f != null) {
     writer.writeMessage(
@@ -5301,42 +5277,6 @@ proto.sensory.api.v1.audio.TranscribeResponse.prototype.getAudioenergy = functio
  */
 proto.sensory.api.v1.audio.TranscribeResponse.prototype.setAudioenergy = function(value) {
   return jspb.Message.setProto3FloatField(this, 1, value);
-};
-
-
-/**
- * optional string transcript = 2;
- * @return {string}
- */
-proto.sensory.api.v1.audio.TranscribeResponse.prototype.getTranscript = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.sensory.api.v1.audio.TranscribeResponse} returns this
- */
-proto.sensory.api.v1.audio.TranscribeResponse.prototype.setTranscript = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional bool isPartialResult = 3;
- * @return {boolean}
- */
-proto.sensory.api.v1.audio.TranscribeResponse.prototype.getIspartialresult = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.sensory.api.v1.audio.TranscribeResponse} returns this
- */
-proto.sensory.api.v1.audio.TranscribeResponse.prototype.setIspartialresult = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
@@ -8469,8 +8409,8 @@ proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.toObject = function(op
  */
 proto.sensory.api.v1.audio.VoiceSynthesisConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
-    audio: (f = msg.getAudio()) && proto.sensory.api.v1.audio.AudioConfig.toObject(includeInstance, f),
-    voice: jspb.Message.getFieldWithDefault(msg, 2, "")
+    modelname: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    sampleratehertz: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -8507,14 +8447,13 @@ proto.sensory.api.v1.audio.VoiceSynthesisConfig.deserializeBinaryFromReader = fu
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = new proto.sensory.api.v1.audio.AudioConfig;
-      reader.readMessage(value,proto.sensory.api.v1.audio.AudioConfig.deserializeBinaryFromReader);
-      msg.setAudio(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setVoice(value);
+      msg.setModelname(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setSampleratehertz(value);
       break;
     default:
       reader.skipField();
@@ -8545,18 +8484,17 @@ proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.serializeBinary = func
  */
 proto.sensory.api.v1.audio.VoiceSynthesisConfig.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getAudio();
-  if (f != null) {
-    writer.writeMessage(
-      1,
-      f,
-      proto.sensory.api.v1.audio.AudioConfig.serializeBinaryToWriter
-    );
-  }
-  f = message.getVoice();
+  f = message.getModelname();
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getSampleratehertz();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
       f
     );
   }
@@ -8564,47 +8502,10 @@ proto.sensory.api.v1.audio.VoiceSynthesisConfig.serializeBinaryToWriter = functi
 
 
 /**
- * optional AudioConfig audio = 1;
- * @return {?proto.sensory.api.v1.audio.AudioConfig}
- */
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.getAudio = function() {
-  return /** @type{?proto.sensory.api.v1.audio.AudioConfig} */ (
-    jspb.Message.getWrapperField(this, proto.sensory.api.v1.audio.AudioConfig, 1));
-};
-
-
-/**
- * @param {?proto.sensory.api.v1.audio.AudioConfig|undefined} value
- * @return {!proto.sensory.api.v1.audio.VoiceSynthesisConfig} returns this
-*/
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.setAudio = function(value) {
-  return jspb.Message.setWrapperField(this, 1, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.sensory.api.v1.audio.VoiceSynthesisConfig} returns this
- */
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.clearAudio = function() {
-  return this.setAudio(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.hasAudio = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * optional string voice = 2;
+ * optional string modelName = 2;
  * @return {string}
  */
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.getVoice = function() {
+proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.getModelname = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -8613,8 +8514,26 @@ proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.getVoice = function() 
  * @param {string} value
  * @return {!proto.sensory.api.v1.audio.VoiceSynthesisConfig} returns this
  */
-proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.setVoice = function(value) {
+proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.setModelname = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional int32 sampleRateHertz = 3;
+ * @return {number}
+ */
+proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.getSampleratehertz = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.audio.VoiceSynthesisConfig} returns this
+ */
+proto.sensory.api.v1.audio.VoiceSynthesisConfig.prototype.setSampleratehertz = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
@@ -8644,8 +8563,7 @@ proto.sensory.api.v1.audio.ThresholdSensitivity = {
   LOW: 1,
   MEDIUM: 2,
   HIGH: 3,
-  HIGHEST: 4,
-  OFF: 5
+  HIGHEST: 4
 };
 
 goog.object.extend(exports, proto.sensory.api.v1.audio);

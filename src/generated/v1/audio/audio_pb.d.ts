@@ -645,12 +645,6 @@ export class TranscribeResponse extends jspb.Message {
   getAudioenergy(): number;
   setAudioenergy(value: number): void;
 
-  getTranscript(): string;
-  setTranscript(value: string): void;
-
-  getIspartialresult(): boolean;
-  setIspartialresult(value: boolean): void;
-
   hasWordlist(): boolean;
   clearWordlist(): void;
   getWordlist(): TranscribeWordResponse | undefined;
@@ -677,8 +671,6 @@ export class TranscribeResponse extends jspb.Message {
 export namespace TranscribeResponse {
   export type AsObject = {
     audioenergy: number,
-    transcript: string,
-    ispartialresult: boolean,
     wordlist?: TranscribeWordResponse.AsObject,
     hasvoiceactivity: boolean,
     postprocessingaction?: AudioResponsePostProcessingAction.AsObject,
@@ -1126,13 +1118,11 @@ export namespace AudioConfig {
 }
 
 export class VoiceSynthesisConfig extends jspb.Message {
-  hasAudio(): boolean;
-  clearAudio(): void;
-  getAudio(): AudioConfig | undefined;
-  setAudio(value?: AudioConfig): void;
+  getModelname(): string;
+  setModelname(value: string): void;
 
-  getVoice(): string;
-  setVoice(value: string): void;
+  getSampleratehertz(): number;
+  setSampleratehertz(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): VoiceSynthesisConfig.AsObject;
@@ -1146,8 +1136,8 @@ export class VoiceSynthesisConfig extends jspb.Message {
 
 export namespace VoiceSynthesisConfig {
   export type AsObject = {
-    audio?: AudioConfig.AsObject,
-    voice: string,
+    modelname: string,
+    sampleratehertz: number,
   }
 }
 
@@ -1173,7 +1163,6 @@ export interface ThresholdSensitivityMap {
   MEDIUM: 2;
   HIGH: 3;
   HIGHEST: 4;
-  OFF: 5;
 }
 
 export const ThresholdSensitivity: ThresholdSensitivityMap;

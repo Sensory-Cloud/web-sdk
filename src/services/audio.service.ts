@@ -365,26 +365,17 @@ export class AudioService {
    * Sends a request to Sensory Cloud to synthesize speech
    *
    * @param {string} phrase - The text phrase to synthesize a voice saying
-   * @param {string} voiceName - The name of the voice to use during speech synthesis
-   * @param {AudioConfig} audioConfig? - Optional configuration for how the synthesized audio should be formatted
+   * @param {string} modelName - The name of the voice to use during speech synthesis
+   * @param {number} sampleRateHertz? - Optional, the sample rate for the synthesized audio, if undefined audio will be 16kHz
    * @returns Promise<ResponseStream<SynthesizeSpeechResponse>> - a stream of audio data with the synthesized voice.
    *          The first response will contain audio config information, all subsequent responses will contain audio data
    */
-  public async synthesizeSpeech(phrase: string, voiceName: string, audioConfig?: AudioConfig): Promise<ResponseStream<SynthesizeSpeechResponse>> {
+  public async synthesizeSpeech(phrase: string, modelName: string, sampleRateHertz?: number): Promise<ResponseStream<SynthesizeSpeechResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
 
     const voiceConfig = new VoiceSynthesisConfig();
-    voiceConfig.setVoice(voiceName);
-    if (audioConfig) {
-      voiceConfig.setAudio(audioConfig);
-    } else {
-      const audio = new AudioConfig();
-      audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
-      audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
-      audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-      audio.setLanguagecode(Config.defaultLanguageCode);
-      voiceConfig.setAudio(audio);
-    }
+    voiceConfig.setModelname(modelName);
+    voiceConfig.setSampleratehertz(sampleRateHertz ?? 16000)
 
     const request = new SynthesizeSpeechRequest();
     request.setPhrase(phrase);
