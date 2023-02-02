@@ -443,7 +443,8 @@ proto.sensory.api.oauth.SignTokenRequest.TokenScope = {
   USER: 0,
   SUPER_ADMIN: 1,
   BILLING_ADMIN: 2,
-  READ_ONLY_ADMIN: 3
+  READ_ONLY_ADMIN: 3,
+  EMAIL_SELF_VERIFY: 4
 };
 
 /**

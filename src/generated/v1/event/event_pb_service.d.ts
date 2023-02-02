@@ -31,11 +31,21 @@ type EventServiceGetUsageEventSummary = {
   readonly responseType: typeof v1_event_event_pb.UsageEventSummary;
 };
 
+type EventServiceGetGlobalUsageSummary = {
+  readonly methodName: string;
+  readonly service: typeof EventService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_event_event_pb.GlobalEventSummaryRequest;
+  readonly responseType: typeof v1_event_event_pb.UsageEventSummary;
+};
+
 export class EventService {
   static readonly serviceName: string;
   static readonly PublishUsageEvents: EventServicePublishUsageEvents;
   static readonly GetUsageEventList: EventServiceGetUsageEventList;
   static readonly GetUsageEventSummary: EventServiceGetUsageEventSummary;
+  static readonly GetGlobalUsageSummary: EventServiceGetGlobalUsageSummary;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -95,6 +105,15 @@ export class EventServiceClient {
   ): UnaryResponse;
   getUsageEventSummary(
     requestMessage: v1_event_event_pb.UsageEventListRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventSummary|null) => void
+  ): UnaryResponse;
+  getGlobalUsageSummary(
+    requestMessage: v1_event_event_pb.GlobalEventSummaryRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventSummary|null) => void
+  ): UnaryResponse;
+  getGlobalUsageSummary(
+    requestMessage: v1_event_event_pb.GlobalEventSummaryRequest,
     callback: (error: ServiceError|null, responseMessage: v1_event_event_pb.UsageEventSummary|null) => void
   ): UnaryResponse;
 }

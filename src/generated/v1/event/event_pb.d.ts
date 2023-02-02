@@ -244,6 +244,46 @@ export namespace UsageEventListResponse {
   }
 }
 
+export class GlobalEventSummaryRequest extends jspb.Message {
+  clearTenantsList(): void;
+  getTenantsList(): Array<string>;
+  setTenantsList(value: Array<string>): void;
+  addTenants(value: string, index?: number): string;
+
+  hasAfter(): boolean;
+  clearAfter(): void;
+  getAfter(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setAfter(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasBefore(): boolean;
+  clearBefore(): void;
+  getBefore(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setBefore(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  clearBillablefunctionsList(): void;
+  getBillablefunctionsList(): Array<common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap]>;
+  setBillablefunctionsList(value: Array<common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap]>): void;
+  addBillablefunctions(value: common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap], index?: number): common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap];
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GlobalEventSummaryRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GlobalEventSummaryRequest): GlobalEventSummaryRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GlobalEventSummaryRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GlobalEventSummaryRequest;
+  static deserializeBinaryFromReader(message: GlobalEventSummaryRequest, reader: jspb.BinaryReader): GlobalEventSummaryRequest;
+}
+
+export namespace GlobalEventSummaryRequest {
+  export type AsObject = {
+    tenantsList: Array<string>,
+    after?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    before?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    billablefunctionsList: Array<common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap]>,
+  }
+}
+
 export class UsageEventSummary extends jspb.Message {
   clearSummariesList(): void;
   getSummariesList(): Array<UsageEventModelSummary>;
@@ -282,6 +322,9 @@ export class UsageEventModelSummary extends jspb.Message {
   getCredits(): number;
   setCredits(value: number): void;
 
+  getTenantid(): string;
+  setTenantid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEventModelSummary.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEventModelSummary): UsageEventModelSummary.AsObject;
@@ -299,6 +342,7 @@ export namespace UsageEventModelSummary {
     value: number,
     count: number,
     credits: number,
+    tenantid: string,
   }
 }
 

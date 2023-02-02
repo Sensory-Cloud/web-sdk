@@ -257,7 +257,7 @@ export namespace VersionedFileCategory {
 
 export interface FileCategoryMap {
   TSSV_MODEL: 0;
-  FENRIR_MODEL: 1;
+  ATLAS_MODEL: 1;
   TNL_MODEL: 2;
   UNKNOWN: 100;
 }

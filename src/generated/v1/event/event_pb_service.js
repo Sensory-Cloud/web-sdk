@@ -37,6 +37,15 @@ EventService.GetUsageEventSummary = {
   responseType: v1_event_event_pb.UsageEventSummary
 };
 
+EventService.GetGlobalUsageSummary = {
+  methodName: "GetGlobalUsageSummary",
+  service: EventService,
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_event_event_pb.GlobalEventSummaryRequest,
+  responseType: v1_event_event_pb.UsageEventSummary
+};
+
 exports.EventService = EventService;
 
 function EventServiceClient(serviceHost, options) {
@@ -111,6 +120,37 @@ EventServiceClient.prototype.getUsageEventSummary = function getUsageEventSummar
     callback = arguments[1];
   }
   var client = grpc.unary(EventService.GetUsageEventSummary, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EventServiceClient.prototype.getGlobalUsageSummary = function getGlobalUsageSummary(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EventService.GetGlobalUsageSummary, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
