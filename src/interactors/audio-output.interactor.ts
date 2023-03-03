@@ -11,6 +11,12 @@ export interface IAudioOutputInteractor {
   play(wavData: Uint8Array): Promise<void>;
 
   /**
+   * Stop the currently playing audio and clear the audio buffer.
+   * @returns Promise
+   */
+  stop(): Promise<void>;
+
+  /**
    * Pauses the currently playing audio
    * @returns Promise
    */
@@ -83,6 +89,12 @@ export class AudioOutputInteractor implements IAudioOutputInteractor {
     });
   }
 
+  async stop(): Promise<void> {
+    await this.context.suspend();
+    await this.context.close();
+    this.context = new AudioContext();
+  }
+
   /**
    * Pauses the currently playing audio
    * @returns Promise
@@ -107,7 +119,7 @@ export class AudioOutputInteractor implements IAudioOutputInteractor {
     return this.context.close();
   }
 
-  hasWavHeader(wavData: Uint8Array): boolean {
+  public hasWavHeader(wavData: Uint8Array): boolean {
     // Check data is long enough to contain a header
     if (wavData.length < this.wavHeaderSize) {
       return false;
