@@ -10,13 +10,13 @@ var AssistantService = (function () {
   return AssistantService;
 }());
 
-AssistantService.ProcessMessage = {
-  methodName: "ProcessMessage",
+AssistantService.TextChat = {
+  methodName: "TextChat",
   service: AssistantService,
-  requestStream: true,
-  responseStream: true,
-  requestType: v1_assistant_assistant_pb.AssistantMessageRequest,
-  responseType: v1_assistant_assistant_pb.AssistantMessageResponse
+  requestStream: false,
+  responseStream: false,
+  requestType: v1_assistant_assistant_pb.TextChatRequest,
+  responseType: v1_assistant_assistant_pb.TextChatResponse
 };
 
 exports.AssistantService = AssistantService;
@@ -26,46 +26,32 @@ function AssistantServiceClient(serviceHost, options) {
   this.options = options || {};
 }
 
-AssistantServiceClient.prototype.processMessage = function processMessage(metadata) {
-  var listeners = {
-    data: [],
-    end: [],
-    status: []
-  };
-  var client = grpc.client(AssistantService.ProcessMessage, {
+AssistantServiceClient.prototype.textChat = function textChat(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.TextChat, {
+    request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
   });
-  client.onEnd(function (status, statusMessage, trailers) {
-    listeners.status.forEach(function (handler) {
-      handler({ code: status, details: statusMessage, metadata: trailers });
-    });
-    listeners.end.forEach(function (handler) {
-      handler({ code: status, details: statusMessage, metadata: trailers });
-    });
-    listeners = null;
-  });
-  client.onMessage(function (message) {
-    listeners.data.forEach(function (handler) {
-      handler(message);
-    })
-  });
-  client.start(metadata);
   return {
-    on: function (type, handler) {
-      listeners[type].push(handler);
-      return this;
-    },
-    write: function (requestMessage) {
-      client.send(requestMessage);
-      return this;
-    },
-    end: function () {
-      client.finishSend();
-    },
     cancel: function () {
-      listeners = null;
+      callback = null;
       client.close();
     }
   };

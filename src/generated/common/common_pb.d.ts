@@ -524,6 +524,7 @@ export interface ModelTypeMap {
   FACE_RECOGNITION: 202;
   OBJECT_RECOGNITION: 203;
   IMAGE_TRANSFORM: 204;
+  FACE_EMBEDDING: 205;
 }
 
 export const ModelType: ModelTypeMap;

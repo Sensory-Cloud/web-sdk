@@ -173,7 +173,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.video.CreateEnrollmentResponse = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.sensory.api.v1.video.CreateEnrollmentResponse.repeatedFields_, null);
 };
 goog.inherits(proto.sensory.api.v1.video.CreateEnrollmentResponse, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -194,7 +194,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.video.AuthenticateResponse = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.sensory.api.v1.video.AuthenticateResponse.repeatedFields_, null);
 };
 goog.inherits(proto.sensory.api.v1.video.AuthenticateResponse, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -215,7 +215,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.sensory.api.v1.video.LivenessRecognitionResponse = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.sensory.api.v1.video.LivenessRecognitionResponse.repeatedFields_, null);
 };
 goog.inherits(proto.sensory.api.v1.video.LivenessRecognitionResponse, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1633,6 +1633,13 @@ proto.sensory.api.v1.video.ValidateRecognitionRequest.prototype.hasImagecontent 
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.repeatedFields_ = [9];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1670,7 +1677,10 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.toObject = function(includeI
     modelname: jspb.Message.getFieldWithDefault(msg, 4, ""),
     modelversion: jspb.Message.getFieldWithDefault(msg, 5, ""),
     score: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
-    enrollmenttoken: (f = msg.getEnrollmenttoken()) && common_common_pb.EnrollmentToken.toObject(includeInstance, f)
+    enrollmenttoken: (f = msg.getEnrollmenttoken()) && common_common_pb.EnrollmentToken.toObject(includeInstance, f),
+    didfindface: jspb.Message.getBooleanFieldWithDefault(msg, 8, false),
+    boundingboxList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f,
+    probabilityface: jspb.Message.getFloatingPointFieldWithDefault(msg, 10, 0.0)
   };
 
   if (includeInstance) {
@@ -1735,6 +1745,20 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.deserializeBinaryFromReader 
       var value = new common_common_pb.EnrollmentToken;
       reader.readMessage(value,common_common_pb.EnrollmentToken.deserializeBinaryFromReader);
       msg.setEnrollmenttoken(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDidfindface(value);
+      break;
+    case 9:
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addBoundingbox(values[i]);
+      }
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setProbabilityface(value);
       break;
     default:
       reader.skipField();
@@ -1813,6 +1837,27 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.serializeBinaryToWriter = fu
       7,
       f,
       common_common_pb.EnrollmentToken.serializeBinaryToWriter
+    );
+  }
+  f = message.getDidfindface();
+  if (f) {
+    writer.writeBool(
+      8,
+      f
+    );
+  }
+  f = message.getBoundingboxList();
+  if (f.length > 0) {
+    writer.writePackedInt64(
+      9,
+      f
+    );
+  }
+  f = message.getProbabilityface();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      10,
+      f
     );
   }
 };
@@ -1963,6 +2008,86 @@ proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.hasEnrollmenttoken
 };
 
 
+/**
+ * optional bool didFindFace = 8;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.getDidfindface = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 8, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.setDidfindface = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 8, value);
+};
+
+
+/**
+ * repeated int64 boundingBox = 9;
+ * @return {!Array<number>}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.getBoundingboxList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 9));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.setBoundingboxList = function(value) {
+  return jspb.Message.setField(this, 9, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.addBoundingbox = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 9, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.clearBoundingboxList = function() {
+  return this.setBoundingboxList([]);
+};
+
+
+/**
+ * optional float probabilityFace = 10;
+ * @return {number}
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.getProbabilityface = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 10, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.video.CreateEnrollmentResponse} returns this
+ */
+proto.sensory.api.v1.video.CreateEnrollmentResponse.prototype.setProbabilityface = function(value) {
+  return jspb.Message.setProto3FloatField(this, 10, value);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.repeatedFields_ = [8];
 
 
 
@@ -2000,7 +2125,10 @@ proto.sensory.api.v1.video.AuthenticateResponse.toObject = function(includeInsta
     isalive: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
     token: (f = msg.getToken()) && common_common_pb.TokenResponse.toObject(includeInstance, f),
     userid: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    enrollmentid: jspb.Message.getFieldWithDefault(msg, 6, "")
+    enrollmentid: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    didfindface: jspb.Message.getBooleanFieldWithDefault(msg, 7, false),
+    boundingboxList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
+    probabilityface: jspb.Message.getFloatingPointFieldWithDefault(msg, 9, 0.0)
   };
 
   if (includeInstance) {
@@ -2061,6 +2189,20 @@ proto.sensory.api.v1.video.AuthenticateResponse.deserializeBinaryFromReader = fu
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setEnrollmentid(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDidfindface(value);
+      break;
+    case 8:
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addBoundingbox(values[i]);
+      }
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setProbabilityface(value);
       break;
     default:
       reader.skipField();
@@ -2131,6 +2273,27 @@ proto.sensory.api.v1.video.AuthenticateResponse.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       6,
+      f
+    );
+  }
+  f = message.getDidfindface();
+  if (f) {
+    writer.writeBool(
+      7,
+      f
+    );
+  }
+  f = message.getBoundingboxList();
+  if (f.length > 0) {
+    writer.writePackedInt64(
+      8,
+      f
+    );
+  }
+  f = message.getProbabilityface();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      9,
       f
     );
   }
@@ -2264,6 +2427,86 @@ proto.sensory.api.v1.video.AuthenticateResponse.prototype.setEnrollmentid = func
 };
 
 
+/**
+ * optional bool didFindFace = 7;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.getDidfindface = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 7, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.setDidfindface = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 7, value);
+};
+
+
+/**
+ * repeated int64 boundingBox = 8;
+ * @return {!Array<number>}
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.getBoundingboxList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 8));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.setBoundingboxList = function(value) {
+  return jspb.Message.setField(this, 8, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.addBoundingbox = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.clearBoundingboxList = function() {
+  return this.setBoundingboxList([]);
+};
+
+
+/**
+ * optional float probabilityFace = 9;
+ * @return {number}
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.getProbabilityface = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 9, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.video.AuthenticateResponse} returns this
+ */
+proto.sensory.api.v1.video.AuthenticateResponse.prototype.setProbabilityface = function(value) {
+  return jspb.Message.setProto3FloatField(this, 9, value);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.repeatedFields_ = [4];
 
 
 
@@ -2297,7 +2540,10 @@ proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.toObject = func
 proto.sensory.api.v1.video.LivenessRecognitionResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     isalive: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0)
+    score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    didfindface: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    boundingboxList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
+    probabilityface: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
   };
 
   if (includeInstance) {
@@ -2342,6 +2588,20 @@ proto.sensory.api.v1.video.LivenessRecognitionResponse.deserializeBinaryFromRead
       var value = /** @type {number} */ (reader.readFloat());
       msg.setScore(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDidfindface(value);
+      break;
+    case 4:
+      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt64() : [reader.readInt64()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addBoundingbox(values[i]);
+      }
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setProbabilityface(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2385,6 +2645,27 @@ proto.sensory.api.v1.video.LivenessRecognitionResponse.serializeBinaryToWriter =
       f
     );
   }
+  f = message.getDidfindface();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
+  f = message.getBoundingboxList();
+  if (f.length > 0) {
+    writer.writePackedInt64(
+      4,
+      f
+    );
+  }
+  f = message.getProbabilityface();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      5,
+      f
+    );
+  }
 };
 
 
@@ -2421,6 +2702,79 @@ proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.getScore = func
  */
 proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.setScore = function(value) {
   return jspb.Message.setProto3FloatField(this, 2, value);
+};
+
+
+/**
+ * optional bool didFindFace = 3;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.getDidfindface = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.video.LivenessRecognitionResponse} returns this
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.setDidfindface = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * repeated int64 boundingBox = 4;
+ * @return {!Array<number>}
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.getBoundingboxList = function() {
+  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 4));
+};
+
+
+/**
+ * @param {!Array<number>} value
+ * @return {!proto.sensory.api.v1.video.LivenessRecognitionResponse} returns this
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.setBoundingboxList = function(value) {
+  return jspb.Message.setField(this, 4, value || []);
+};
+
+
+/**
+ * @param {number} value
+ * @param {number=} opt_index
+ * @return {!proto.sensory.api.v1.video.LivenessRecognitionResponse} returns this
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.addBoundingbox = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 4, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.sensory.api.v1.video.LivenessRecognitionResponse} returns this
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.clearBoundingboxList = function() {
+  return this.setBoundingboxList([]);
+};
+
+
+/**
+ * optional float probabilityFace = 5;
+ * @return {number}
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.getProbabilityface = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.sensory.api.v1.video.LivenessRecognitionResponse} returns this
+ */
+proto.sensory.api.v1.video.LivenessRecognitionResponse.prototype.setProbabilityface = function(value) {
+  return jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 

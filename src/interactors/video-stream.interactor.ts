@@ -75,7 +75,7 @@ export type PreferredVideoDimension = {
 
 /** Interactor provided by the Sensory Cloud SDK to access web browser video using best practices */
 export class VideoStreamInteractor implements IVideoStreamInteractor {
-  private jpegImageQuality = 0.30;
+  private jpegImageQuality = 0.90;
   private width: PreferredVideoDimension =  { min: 480, ideal: 480 };
   private height: PreferredVideoDimension = { min: 720, ideal: 720 };
   private videoElementId = `video-${v4()}`;

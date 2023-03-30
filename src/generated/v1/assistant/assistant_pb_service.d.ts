@@ -4,18 +4,18 @@
 import * as v1_assistant_assistant_pb from "../../v1/assistant/assistant_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
-type AssistantServiceProcessMessage = {
+type AssistantServiceTextChat = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
-  readonly requestStream: true;
-  readonly responseStream: true;
-  readonly requestType: typeof v1_assistant_assistant_pb.AssistantMessageRequest;
-  readonly responseType: typeof v1_assistant_assistant_pb.AssistantMessageResponse;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof v1_assistant_assistant_pb.TextChatRequest;
+  readonly responseType: typeof v1_assistant_assistant_pb.TextChatResponse;
 };
 
 export class AssistantService {
   static readonly serviceName: string;
-  static readonly ProcessMessage: AssistantServiceProcessMessage;
+  static readonly TextChat: AssistantServiceTextChat;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -50,6 +50,14 @@ export class AssistantServiceClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
-  processMessage(metadata?: grpc.Metadata): BidirectionalStream<v1_assistant_assistant_pb.AssistantMessageRequest, v1_assistant_assistant_pb.AssistantMessageResponse>;
+  textChat(
+    requestMessage: v1_assistant_assistant_pb.TextChatRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: v1_assistant_assistant_pb.TextChatResponse|null) => void
+  ): UnaryResponse;
+  textChat(
+    requestMessage: v1_assistant_assistant_pb.TextChatRequest,
+    callback: (error: ServiceError|null, responseMessage: v1_assistant_assistant_pb.TextChatResponse|null) => void
+  ): UnaryResponse;
 }
 
