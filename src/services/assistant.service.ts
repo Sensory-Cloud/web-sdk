@@ -15,7 +15,7 @@ export class AssistantService {
    * @param  {TextChatRequest} request - the full chat transcript
    * @returns Promise<TextChatResponse.AsObject> - a list of user assistants
    */
-  public async getEnrollments(request: TextChatRequest): Promise<TextChatResponse.AsObject> {
+  public async textChat(request: TextChatRequest): Promise<TextChatResponse.AsObject> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
 
     return new Promise<TextChatResponse.AsObject>((resolve, reject) => {
