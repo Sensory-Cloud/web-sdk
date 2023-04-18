@@ -536,6 +536,7 @@ export interface TechnologyTypeMap {
   TNL: 3;
   STT: 4;
   TTS: 5;
+  SOUND_ID: 6;
 }
 
 export const TechnologyType: TechnologyTypeMap;

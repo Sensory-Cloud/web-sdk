@@ -1,6 +1,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config, SDKInitConfig } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig, TranscribeWord, TranscribeWordResponse, CustomVocabularyWords } from "../generated/v1/audio/audio_pb";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig, TranscribeWord, TranscribeWordResponse, CustomVocabularyWords, TranscribeEventConfig } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioSynthesisClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
@@ -10,8 +10,19 @@ import { NIL } from "uuid";
 
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type CustomVocabularySensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+export type ThresholdSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
 export type EnrollmentIdentifier = {enrollmentId: string, enrollmentGroupId?: never} | {enrollmentId?: never, enrollmentGroupId: string};
+export type TranscriptionConfig = {
+  vadSensitivity?: AudioRecognitionSensitivity,
+  vadDuration?: number,
+  customVocabThreshold?: CustomVocabularySensitivity,
+  customVocabID?: string,
+  customVocabWords?: Array<string>,
+  languageCode?: string,
+  wakeWord?: string,
+  wakeWordSensitivity?: ThresholdSensitivity,
+}
 
 /** Handles all audio requests to Sensory Cloud */
 export class AudioService {
@@ -310,12 +321,7 @@ export class AudioService {
     userId: string,
     enablePunctuationCapitalization: boolean,
     doSingleUtterance: boolean,
-    vadSensitivity: AudioRecognitionSensitivity=ThresholdSensitivity.LOW,
-    vadDuration: number=0,
-    customVocabThreshold: CustomVocabularySensitivity=ThresholdSensitivity.MEDIUM,
-    customVocabID:string = "",
-    customVocabWords:Array<string>=[],
-    languageCode?: string): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
+    additionalConfig?: TranscriptionConfig): Promise<BidirectionalStream<TranscribeRequest, TranscribeResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const transcriptionStream = this.getTranscribeClient().transcribe(meta);
 
@@ -323,34 +329,41 @@ export class AudioService {
     const config = new TranscribeConfig();
     const audio = new AudioConfig();
 
+    if (additionalConfig) {
+      config.setVadsensitivity(additionalConfig.vadSensitivity ?? ThresholdSensitivity.LOW);
+      config.setVadduration(additionalConfig.vadDuration ?? 0);
+      audio.setLanguagecode(additionalConfig.languageCode || Config.defaultLanguageCode);
+
+      if (additionalConfig.customVocabID?.length) {
+        config.setCustomvocabularyid(additionalConfig.customVocabID);
+      }
+
+      if (additionalConfig.customVocabWords?.length) {
+        var cvWords = new CustomVocabularyWords()
+        additionalConfig.customVocabWords.forEach(element => {
+          cvWords.addWords(element);
+        });
+        config.setCustomwordlist(cvWords);
+      }
+
+      config.setCustomvocabrewardthreshold(additionalConfig.customVocabThreshold ?? ThresholdSensitivity.MEDIUM)
+
+      if (additionalConfig.wakeWord?.length) {
+        const wakeWordConfig = new TranscribeEventConfig()
+        wakeWordConfig.setModelname(additionalConfig.wakeWord);
+        wakeWordConfig.setSensitivity(additionalConfig.wakeWordSensitivity ?? ThresholdSensitivity.MEDIUM);
+
+        config.setWakewordconfig(wakeWordConfig);
+      }
+    }
+
     config.setModelname(modelName);
     config.setUserid(userId);
     config.setEnablepunctuationcapitalization(enablePunctuationCapitalization);
     config.setDosingleutterance(doSingleUtterance);
-    config.setVadsensitivity(vadSensitivity);
-    config.setVadduration(vadDuration);
     audio.setEncoding(this.audioStreamInteractor.getAudioConfig().encoding);
     audio.setSampleratehertz(this.audioStreamInteractor.getAudioConfig().sampleratehertz);
     audio.setAudiochannelcount(this.audioStreamInteractor.getAudioConfig().audiochannelcount);
-    audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
-
-    //Note that if the user specifies both a custom vocab ID and a list of custom words
-    //They will be merged server side into a single custom vocab lexical tree.
-    if (customVocabID != "") {
-      //If the user specified a specific custom vocab ID that is stored server side
-      //add it to the custom vocab field in the config packet
-      config.setCustomvocabularyid(customVocabID);
-    }
-
-    if (customVocabWords.length > 0) {
-      var cvWords = new CustomVocabularyWords()
-      customVocabWords.forEach(element => {
-        cvWords.addWords(element);
-      });
-      config.setCustomwordlist(cvWords);
-    }
-
-    config.setCustomvocabrewardthreshold(customVocabThreshold)
 
     config.setAudio(audio);
     request.setConfig(config);

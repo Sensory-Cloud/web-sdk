@@ -3759,7 +3759,8 @@ proto.sensory.api.common.TechnologyType = {
   TS: 2,
   TNL: 3,
   STT: 4,
-  TTS: 5
+  TTS: 5,
+  SOUND_ID: 6
 };
 
 /**

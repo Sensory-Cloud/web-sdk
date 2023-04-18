@@ -1017,6 +1017,30 @@ export namespace CustomVocabularyWords {
   }
 }
 
+export class TranscribeEventConfig extends jspb.Message {
+  getModelname(): string;
+  setModelname(value: string): void;
+
+  getSensitivity(): ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+  setSensitivity(value: ThresholdSensitivityMap[keyof ThresholdSensitivityMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TranscribeEventConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: TranscribeEventConfig): TranscribeEventConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TranscribeEventConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TranscribeEventConfig;
+  static deserializeBinaryFromReader(message: TranscribeEventConfig, reader: jspb.BinaryReader): TranscribeEventConfig;
+}
+
+export namespace TranscribeEventConfig {
+  export type AsObject = {
+    modelname: string,
+    sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
+  }
+}
+
 export class TranscribeConfig extends jspb.Message {
   hasAudio(): boolean;
   clearAudio(): void;
@@ -1052,6 +1076,11 @@ export class TranscribeConfig extends jspb.Message {
   getCustomwordlist(): CustomVocabularyWords | undefined;
   setCustomwordlist(value?: CustomVocabularyWords): void;
 
+  hasWakewordconfig(): boolean;
+  clearWakewordconfig(): void;
+  getWakewordconfig(): TranscribeEventConfig | undefined;
+  setWakewordconfig(value?: TranscribeEventConfig): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TranscribeConfig.AsObject;
   static toObject(includeInstance: boolean, msg: TranscribeConfig): TranscribeConfig.AsObject;
@@ -1074,6 +1103,7 @@ export namespace TranscribeConfig {
     customvocabrewardthreshold: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
     customvocabularyid: string,
     customwordlist?: CustomVocabularyWords.AsObject,
+    wakewordconfig?: TranscribeEventConfig.AsObject,
   }
 }
 
