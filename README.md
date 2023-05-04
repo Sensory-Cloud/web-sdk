@@ -446,7 +446,7 @@ Transcription is used to convert audio into text.
 ```typescript
 const exampleTranscribeWithAudio = async () => {
   const userId = "72f286b8-173f-436a-8869-6f7887789ee9";
-  const modelName = "wakeword-16kHz-open_sesame.ubm";
+  const modelName = "speech_recognition_en";
   const uploadInterval = 100; // Upload audio every 100ms
   let transcript = '';
 
@@ -510,7 +510,7 @@ const exampleTranscribeWithAudio = async () => {
 ```typescript
 const exampleTranscribeWithAudio = async () => {
   const userId = "72f286b8-173f-436a-8869-6f7887789ee9";
-  const modelName = "wakeword-16kHz-open_sesame.ubm";
+  const modelName = "speech_recognition_en";
   const uploadInterval = 100; // Upload audio every 100ms
   const aggregator = new FullTranscriptAggregator(); // FullTranscriptAggregator is provided by the audio service
   let transcript = '';
