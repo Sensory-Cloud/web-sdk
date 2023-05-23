@@ -525,6 +525,7 @@ export interface ModelTypeMap {
   OBJECT_RECOGNITION: 203;
   IMAGE_TRANSFORM: 204;
   FACE_EMBEDDING: 205;
+  LLM_GPT_3_5: 301;
 }
 
 export const ModelType: ModelTypeMap;
@@ -566,6 +567,7 @@ export interface UsageEventTypeMap {
   ENROLLMENT: 2;
   SYNTHESIS: 3;
   TRANSCRIPTION: 4;
+  LLM: 5;
 }
 
 export const UsageEventType: UsageEventTypeMap;

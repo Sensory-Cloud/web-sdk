@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var validate_validate_pb = require('../validate/validate_pb.js');
 goog.object.extend(proto, validate_validate_pb);
@@ -3747,7 +3753,8 @@ proto.sensory.api.common.ModelType = {
   FACE_RECOGNITION: 202,
   OBJECT_RECOGNITION: 203,
   IMAGE_TRANSFORM: 204,
-  FACE_EMBEDDING: 205
+  FACE_EMBEDDING: 205,
+  LLM_GPT_3_5: 301
 };
 
 /**
@@ -3792,7 +3799,8 @@ proto.sensory.api.common.UsageEventType = {
   RECOGNITION: 1,
   ENROLLMENT: 2,
   SYNTHESIS: 3,
-  TRANSCRIPTION: 4
+  TRANSCRIPTION: 4,
+  LLM: 5
 };
 
 /**

@@ -71,6 +71,9 @@ export class UsageEvent extends jspb.Message {
   getBillablefunction(): common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap];
   setBillablefunction(value: common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap]): void;
 
+  getTokencount(): number;
+  setTokencount(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UsageEvent.AsObject;
   static toObject(includeInstance: boolean, msg: UsageEvent): UsageEvent.AsObject;
@@ -95,6 +98,7 @@ export namespace UsageEvent {
     videoframecount: number,
     tenantid: string,
     billablefunction: common_common_pb.ModelTypeMap[keyof common_common_pb.ModelTypeMap],
+    tokencount: number,
   }
 }
 

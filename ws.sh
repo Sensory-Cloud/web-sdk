@@ -39,7 +39,7 @@ throw_not_implemented_error() {
 }
 
 generate_proto_files() {
-  echo "Generating proto files"
+  echo "Generating proto files - if this command fails due to protoc-gen-js not being found run 'npm i -g protoc-gen-js'"
   cd proto/
 
   PROTOC_GEN_TS_PATH="../node_modules/.bin/protoc-gen-ts"
