@@ -174,13 +174,15 @@ export class AudioService {
    * @param  {string} userId - the unique userId for the user requesting this event
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
+   * @param  {number} topN? - the number of most likely sounds to return when using the sound_id_topn model.
    * @returns Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> - a bidirectional stream where ValidateEventRequests can be passed to the cloud and ValidateEventResponses are passed back
    */
   public async streamEvent(
     userId: string,
     modelName: string,
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
-    languageCode?: string): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
+    languageCode?: string,
+    topN: number = 10): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const eventStream = this.getEventClient().validateEvent(meta);
 
@@ -197,6 +199,7 @@ export class AudioService {
     audio.setLanguagecode(languageCode || Config.defaultLanguageCode);
 
     config.setAudio(audio);
+    config.setTopn(topN);
     request.setConfig(config);
 
     // Send config

@@ -1,12 +1,13 @@
 {
   "name": "@sensory-cloud/web-sdk",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Allows web browsers to make calls to Sensory Cloud.",
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
     "extendable-media-recorder": "^6.6.10",
     "extendable-media-recorder-wav-encoder": "^7.0.76",
     "google-protobuf": "^3.21.0",
+    "protoc-gen-ts": "^0.8.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
