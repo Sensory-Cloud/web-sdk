@@ -507,6 +507,9 @@ export class SoundIdTopNResponse extends jspb.Message {
   getProbabilityscore(): number;
   setProbabilityscore(value: number): void;
 
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SoundIdTopNResponse.AsObject;
   static toObject(includeInstance: boolean, msg: SoundIdTopNResponse): SoundIdTopNResponse.AsObject;
@@ -522,6 +525,7 @@ export namespace SoundIdTopNResponse {
     resultid: string,
     logitscore: number,
     probabilityscore: number,
+    success: boolean,
   }
 }
 
@@ -913,6 +917,12 @@ export class ValidateEventConfig extends jspb.Message {
   getTopn(): number;
   setTopn(value: number): void;
 
+  getClearbufferatendofutterance(): boolean;
+  setClearbufferatendofutterance(value: boolean): void;
+
+  getSoundidclass(): SoundIdClassMap[keyof SoundIdClassMap];
+  setSoundidclass(value: SoundIdClassMap[keyof SoundIdClassMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ValidateEventConfig.AsObject;
   static toObject(includeInstance: boolean, msg: ValidateEventConfig): ValidateEventConfig.AsObject;
@@ -930,6 +940,8 @@ export namespace ValidateEventConfig {
     userid: string,
     sensitivity: ThresholdSensitivityMap[keyof ThresholdSensitivityMap],
     topn: number,
+    clearbufferatendofutterance: boolean,
+    soundidclass: SoundIdClassMap[keyof SoundIdClassMap],
   }
 }
 
@@ -1238,12 +1250,22 @@ export interface WordStateMap {
 export const WordState: WordStateMap;
 
 export interface ThresholdSensitivityMap {
-  LOWEST: 0;
-  LOW: 1;
-  MEDIUM: 2;
-  HIGH: 3;
+  MEDIUM: 0;
   HIGHEST: 4;
+  HIGH: 3;
+  LOW: 2;
+  LOWEST: 1;
 }
 
 export const ThresholdSensitivity: ThresholdSensitivityMap;
+
+export interface SoundIdClassMap {
+  ALL: 0;
+  EMERGENCYSERVICES: 1;
+  HOMEALERTS: 2;
+  BABYMONITOR: 3;
+  AUTOMOTIVE: 4;
+}
+
+export const SoundIdClass: SoundIdClassMap;
 
