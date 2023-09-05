@@ -1,6 +1,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { Config, SDKInitConfig } from "../config";
-import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig, TranscribeWord, TranscribeWordResponse, CustomVocabularyWords, TranscribeEventConfig } from "../generated/v1/audio/audio_pb";
+import { AudioConfig, AuthenticateConfig, AuthenticateRequest, AuthenticateResponse, CreateEnrolledEventRequest, CreateEnrollmentEventConfig, CreateEnrollmentConfig, CreateEnrollmentRequest, CreateEnrollmentResponse, GetModelsRequest, GetModelsResponse, ThresholdSensitivity, ThresholdSensitivityMap, TranscribeConfig, TranscribeRequest, TranscribeResponse, ValidateEventConfig, ValidateEventRequest, ValidateEventResponse, ValidateEnrolledEventRequest, ValidateEnrolledEventConfig, ValidateEnrolledEventResponse, SynthesizeSpeechResponse, SynthesizeSpeechRequest, VoiceSynthesisConfig, TranscribeWord, TranscribeWordResponse, CustomVocabularyWords, TranscribeEventConfig, SoundIdClassMap, SoundIdClass } from "../generated/v1/audio/audio_pb";
 import { AudioBiometricsClient, AudioEventsClient, AudioModelsClient, AudioSynthesisClient, AudioTranscriptionsClient } from "../generated/v1/audio/audio_pb_service";
 import { BidirectionalStream } from "../generated/v1/management/enrollment_pb_service";
 import { ITokenManager } from "../token-manager/token.manager";
@@ -11,6 +11,7 @@ import { NIL } from "uuid";
 export type AudioRecognitionSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type CustomVocabularySensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
 export type ThresholdSensitivity = ThresholdSensitivityMap[keyof ThresholdSensitivityMap];
+export type SoundIdClass = SoundIdClassMap[keyof SoundIdClassMap];
 export type AudioSecurityThreshold = AuthenticateConfig.ThresholdSecurityMap[keyof AuthenticateConfig.ThresholdSecurityMap];
 export type EnrollmentIdentifier = {enrollmentId: string, enrollmentGroupId?: never} | {enrollmentId?: never, enrollmentGroupId: string};
 export type TranscriptionConfig = {
@@ -174,7 +175,9 @@ export class AudioService {
    * @param  {string} userId - the unique userId for the user requesting this event
    * @param  {AudioRecognitionSensitivity=ThresholdSensitivity.MEDIUM} sensitivity - the sensitivity of the recognition engine. Defaults to medium.
    * @param  {string} languageCode? - the language code of the enrollment. Defaults to language code specified in the config.
-   * @param  {number} topN? - the number of most likely sounds to return when using the sound_id_topn model.
+   * @param  {number} topN - the number of most likely sounds to return when using the sound_id_topn model.
+   * @param  {boolean} clearBufferAtEndOfUtterance - boolean designating whether or not to clear the audio buffer if an end of utterance is detected.
+   * @param  {SoundIdClass=SoundIdClass.ALL} soundIdClass - the sound id class. Defaults to all sounds.
    * @returns Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> - a bidirectional stream where ValidateEventRequests can be passed to the cloud and ValidateEventResponses are passed back
    */
   public async streamEvent(
@@ -182,7 +185,9 @@ export class AudioService {
     modelName: string,
     sensitivity: AudioRecognitionSensitivity = ThresholdSensitivity.MEDIUM,
     languageCode?: string,
-    topN: number = 10): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
+    topN: number = 10,
+    clearBufferAtEndOfUtterance: boolean = true,
+    soundIdClass: SoundIdClass = SoundIdClass.ALL): Promise<BidirectionalStream<ValidateEventRequest, ValidateEventResponse>> {
     const meta = await this.tokenManager.getAuthorizationMetadata();
     const eventStream = this.getEventClient().validateEvent(meta);
 
@@ -200,6 +205,8 @@ export class AudioService {
 
     config.setAudio(audio);
     config.setTopn(topN);
+    config.setClearbufferatendofutterance(clearBufferAtEndOfUtterance);
+    config.setSoundidclass(soundIdClass);
     request.setConfig(config);
 
     // Send config

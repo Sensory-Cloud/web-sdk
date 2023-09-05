@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 var validate_validate_pb = require('../../validate/validate_pb.js');
 goog.object.extend(proto, validate_validate_pb);
@@ -43,6 +49,7 @@ goog.exportSymbol('proto.sensory.api.v1.audio.CreateEnrollmentResponse', null, g
 goog.exportSymbol('proto.sensory.api.v1.audio.CustomVocabularyWords', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.GetModelsRequest', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.GetModelsResponse', null, global);
+goog.exportSymbol('proto.sensory.api.v1.audio.SoundIdClass', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.SoundIdTopNResponse', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.SynthesizeSpeechRequest', null, global);
 goog.exportSymbol('proto.sensory.api.v1.audio.SynthesizeSpeechResponse', null, global);
@@ -4167,7 +4174,8 @@ proto.sensory.api.v1.audio.SoundIdTopNResponse.toObject = function(includeInstan
   var f, obj = {
     resultid: jspb.Message.getFieldWithDefault(msg, 1, ""),
     logitscore: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
-    probabilityscore: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0)
+    probabilityscore: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
+    success: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -4216,6 +4224,10 @@ proto.sensory.api.v1.audio.SoundIdTopNResponse.deserializeBinaryFromReader = fun
       var value = /** @type {number} */ (reader.readFloat());
       msg.setProbabilityscore(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSuccess(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -4263,6 +4275,13 @@ proto.sensory.api.v1.audio.SoundIdTopNResponse.serializeBinaryToWriter = functio
   if (f !== 0.0) {
     writer.writeFloat(
       3,
+      f
+    );
+  }
+  f = message.getSuccess();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -4320,6 +4339,24 @@ proto.sensory.api.v1.audio.SoundIdTopNResponse.prototype.getProbabilityscore = f
  */
 proto.sensory.api.v1.audio.SoundIdTopNResponse.prototype.setProbabilityscore = function(value) {
   return jspb.Message.setProto3FloatField(this, 3, value);
+};
+
+
+/**
+ * optional bool success = 4;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.SoundIdTopNResponse.prototype.getSuccess = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.SoundIdTopNResponse} returns this
+ */
+proto.sensory.api.v1.audio.SoundIdTopNResponse.prototype.setSuccess = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -6949,7 +6986,9 @@ proto.sensory.api.v1.audio.ValidateEventConfig.toObject = function(includeInstan
     modelname: jspb.Message.getFieldWithDefault(msg, 2, ""),
     userid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     sensitivity: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    topn: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    topn: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    clearbufferatendofutterance: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    soundidclass: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -7006,6 +7045,14 @@ proto.sensory.api.v1.audio.ValidateEventConfig.deserializeBinaryFromReader = fun
     case 5:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setTopn(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setClearbufferatendofutterance(value);
+      break;
+    case 7:
+      var value = /** @type {!proto.sensory.api.v1.audio.SoundIdClass} */ (reader.readEnum());
+      msg.setSoundidclass(value);
       break;
     default:
       reader.skipField();
@@ -7069,6 +7116,20 @@ proto.sensory.api.v1.audio.ValidateEventConfig.serializeBinaryToWriter = functio
   if (f !== 0) {
     writer.writeInt32(
       5,
+      f
+    );
+  }
+  f = message.getClearbufferatendofutterance();
+  if (f) {
+    writer.writeBool(
+      6,
+      f
+    );
+  }
+  f = message.getSoundidclass();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      7,
       f
     );
   }
@@ -7181,6 +7242,42 @@ proto.sensory.api.v1.audio.ValidateEventConfig.prototype.getTopn = function() {
  */
 proto.sensory.api.v1.audio.ValidateEventConfig.prototype.setTopn = function(value) {
   return jspb.Message.setProto3IntField(this, 5, value);
+};
+
+
+/**
+ * optional bool clearBufferAtEndOfUtterance = 6;
+ * @return {boolean}
+ */
+proto.sensory.api.v1.audio.ValidateEventConfig.prototype.getClearbufferatendofutterance = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.sensory.api.v1.audio.ValidateEventConfig} returns this
+ */
+proto.sensory.api.v1.audio.ValidateEventConfig.prototype.setClearbufferatendofutterance = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+
+/**
+ * optional SoundIdClass soundIdClass = 7;
+ * @return {!proto.sensory.api.v1.audio.SoundIdClass}
+ */
+proto.sensory.api.v1.audio.ValidateEventConfig.prototype.getSoundidclass = function() {
+  return /** @type {!proto.sensory.api.v1.audio.SoundIdClass} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/**
+ * @param {!proto.sensory.api.v1.audio.SoundIdClass} value
+ * @return {!proto.sensory.api.v1.audio.ValidateEventConfig} returns this
+ */
+proto.sensory.api.v1.audio.ValidateEventConfig.prototype.setSoundidclass = function(value) {
+  return jspb.Message.setProto3EnumField(this, 7, value);
 };
 
 
@@ -9184,11 +9281,22 @@ proto.sensory.api.v1.audio.WordState = {
  * @enum {number}
  */
 proto.sensory.api.v1.audio.ThresholdSensitivity = {
-  LOWEST: 0,
-  LOW: 1,
-  MEDIUM: 2,
+  MEDIUM: 0,
+  HIGHEST: 4,
   HIGH: 3,
-  HIGHEST: 4
+  LOW: 2,
+  LOWEST: 1
+};
+
+/**
+ * @enum {number}
+ */
+proto.sensory.api.v1.audio.SoundIdClass = {
+  ALL: 0,
+  EMERGENCYSERVICES: 1,
+  HOMEALERTS: 2,
+  BABYMONITOR: 3,
+  AUTOMOTIVE: 4
 };
 
 goog.object.extend(exports, proto.sensory.api.v1.audio);
