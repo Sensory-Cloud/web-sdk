@@ -1261,10 +1261,19 @@ export const ThresholdSensitivity: ThresholdSensitivityMap;
 
 export interface SoundIdClassMap {
   ALL: 0;
-  EMERGENCYSERVICES: 1;
-  HOMEALERTS: 2;
-  BABYMONITOR: 3;
-  AUTOMOTIVE: 4;
+  ANIMALS: 1;
+  AUTOMOTIVE: 2;
+  BABY_MONITOR: 3;
+  COMBAT: 4;
+  EMERGENCY_SERVICES: 5;
+  HEARING_IMPAIRED_INSIDE: 6;
+  HEARING_IMPAIRED_OUTSIDE: 7;
+  HOME_ALERTS: 8;
+  INDUSTRIAL_ALERTS: 9;
+  INSTRUMENTS: 10;
+  MUSIC_GENRES: 11;
+  SPORTS: 12;
+  TOP_40: 13;
 }
 
 export const SoundIdClass: SoundIdClassMap;
